@@ -1,0 +1,49 @@
+{
+  "position": "bottom",
+  "height": 30,
+  "modules-left": ["tray"],
+  "modules-center": [
+    "sway/window"
+  ],
+  "modules-right": [
+    "network",
+    "cpu",
+    "memory",
+    "clock"
+  ],
+  "tray": {
+    "icon-size": 21,
+    "spacing": 10
+  },
+  "clock": {
+    "format": "{:%a %d-%m %T}",
+    "interval": 1,
+    "tooltip": false
+  },
+  "network": {
+    "format-wifi": "{essid} {signalStrength}%",
+    "format-ethernet": "{ifname}: {ipaddr}/{cidr}",
+    "format-linked": "{ifname} (No IP)",
+    "format-disconnected": "Disconnected",
+    "format-alt": "{ifname}: {ipaddr}/{cidr}",
+    "tooltip": false
+  },
+  "cpu": {
+    "format": "cpu {usage:2}%",
+    "interval": 3,
+    "states": {
+      "warning": 50,
+      "critical": 90
+    },
+    "tooltip": false
+  },
+  "memory": {
+    "format": "mem {used:0.2f}G ({}%)",
+    "interval": 3,
+    "states": {
+      "warning": 50,
+      "critical": 90
+    },
+    "tooltip": false
+  }
+}

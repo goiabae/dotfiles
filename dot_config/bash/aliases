@@ -1,0 +1,19 @@
+# colors and short descriptors (e.g. */?)
+alias ls='ls -F --color=auto'
+# follow symlinks
+alias cd='cd -P'
+alias speed='speedometer -r enp7s0'
+alias speedb='speedometer -r enp7s0 -t enp7s0'
+alias instowl="xbps-install"
+alias sinq="xbps-install -u"
+alias mack="macchina"
+alias gpg="gpg2"
+alias pong="ping -c 20 gnu.org"
+alias cop="xclip -selection clipboard"
+alias no32="grep -v 32bit"
+
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+alias em="emacsclient --tty --socket-name=emacsd"

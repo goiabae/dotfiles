@@ -1,0 +1,819 @@
+de=cat ./doc/environments | fzf
+de=cat doc/environments | fzf
+de=$(cat doc/environments | fzf)
+echo $de
+echo ${!de}
+exit
+ls /etc
+ls /etc/sv
+srv e greetd
+ls
+dbus-run-session river > log
+echo $sudoprefix
+surch build
+surch essential
+surch base-devel
+dbus-run-session river
+ldesktop 
+./a.out &> /dev/null
+vim sys/script/desktop 
+man tee
+surch tee
+surch greet
+exit
+awk '$1 == "background_opacity:" {print $2; exit}' ~/.config/alacritty/alacritty.yml
+toggle-alacritty-op 
+vim .config/alacritty/alacritty.yml 
+exit
+echo [ 0 -eq NULL ]
+echo $([ 0 -eq NULL ])
+echo $([ 0 == NULL ])
+echo $([ 0 = NULL ])
+echo $([[ 0 == NULL ]])
+$ echo -ne '\0'
+echo -ne '\0'
+echo ^_
+echo \^_
+exit
+darkhttpd -p 8000 source/hwrd.free/public/  &> /dev/null
+killall darkhttpd
+surch shut
+surch quiet
+surch silence
+hyop
+htop
+sudo vsv
+vim /etc/sv/pipewire/run 
+srv down pipewire
+srv d pipewire
+srv d pipewire-pulse
+sudo vsv
+srv r pipewire
+srv r pipewire-pulse
+sudo vsv
+wget https://cdn.simplecss.org/simple.min.css
+vim simple.min.css 
+bat simple.min.css 
+ls source
+fd simple.min.css
+el dl
+bat simple.min.css 
+nnn
+7z e ghostwriter_x64_portable.7z 
+ls
+wine ghostwriter.exe 
+surch wine
+sudo xbps-install wine
+wine ghostwriter.exe 
+surch markdown
+xbps-query -Rv Marker | grep home | cop
+printf "\033P\033]4;236;rgb:32/30/2f\007\033\\"
+printf "\033]4;236;rgb:32/30/2f\033\\"
+$(id -Gn "$USER" | tr ' ' ':')
+id -Gn "$USER"
+man chpst
+exit
+getopts --help
+setact --help
+surch setact
+xlocate setact
+man sv
+bat /etc/profile
+sudo vsv
+ls /etc/sv
+cp -r /etc/sv/darkhttpd/ .
+ls
+ls darkhttpd/
+exit
+river
+ls
+vim sys/script/desktop 
+desktop
+ls sys/script/
+lsix
+surch sixel
+sudo xbps-install libsixel
+lsix
+ls .local/service/
+rm .local/service/
+rm .local/service/swaybg 
+ls -s ~/sys/sv/swaybg/ ~/.local/service/
+ln -s ~/sys/sv/swaybg/ ~/.local/service/
+vsv -u ~/.local/service/
+sv status ~/.local/service/*
+el sys/sv
+chmod  +x swaybg/run
+vsv --help
+svr
+srv
+srv -d swaybg
+man sv
+SVDIR=$HOME/.local/service sv status swaybg
+SVDIR=$HOME/.local/service sv up swaybg
+SVDIR=$HOME/.local/service sv status swaybg
+srv
+vsv
+vim vsvvsv -u ~/.local/service/
+vsv -u ~/.local/service/
+SVDIR=$HOME/.local/service sv restart swaybg
+rbw get utfpr | cop
+vsv -u ~/.local/service/
+SVDIR=$HOME/.local/service sv start swaybg
+vsv -u ~/.local/service/
+exit
+SVDIR=~/.local/service/
+SVDIR=~/.local/service/ sv down waybar
+SVDIR=~/.local/service/ sv down swaybg
+rm .local/service/{waybar, swaybg}
+rm .local/service/{waybar,swaybg}
+ls .local/service/
+sh
+man dbus-launch 
+htop
+vim sys/script/desktop 
+bat sys/script/bs
+vim sys/script/desktop 
+killall pipewire-pulse
+killall pipewire
+htop
+desktop
+dbus-run-session river
+SVDIR=~/.local/service/ vsv
+waybar
+htop
+swaybg -i ~/img/wpp/submarine-bliss_heat.jpg 
+swaybg -i ~/img/wpp/submarine-bliss_heat.jpg > /dev/null &
+toggle-alacritty-op 
+vim .config/alacritty/alacritty.yml 
+waybar
+surch valgrind
+sudo xbps-install valgrind
+surch mediaplayer
+waybar
+killall waybar
+exit
+echo $MANPATH
+ls usr/X11
+manpath ~/.local/share
+exit
+manpath="$(cat /etc/man.conf | rg manpath | awk '{print $2}' | tr '\n' ':')"
+echo "$manpath$HOME/doc/man"
+which river-shifttags
+river-shifttags 
+echo $(1 << 32)
+echo $((1 << 32))
+echo $((1 << 32) - 1)
+echo $(((1 << 32) - 1))
+sh
+man wayland-scanner
+wayland-scanner --help
+dbus-run-session river
+echo $XDG_RUNTIME_DIR
+echo $XDG_DATA_DIRS
+killall swaybg
+exit
+SVDIR=~/.local/service/ vsv
+ls .local/service/
+exit
+SVDIR=~/.local/service/ sv restart darkhttpd
+ls /etc/sv
+SVDIR=~/.local/service/ sudo vsv
+SVDIR=~/.local/service/ vsv
+rm .local/service/waybar
+man runsvdir
+ls .local/service/
+rm -r .local/service/
+el sys/
+exit
+htop
+clear
+dbus-run-session river
+sv status
+vsv
+man vsv
+echo SVDIR
+echo $SVDIR
+bat /etc/sv/runsvdir-goiabae/run 
+echo $WWWDIR
+dbus-run-session river
+exit
+vsv
+ls sys/sv-active/
+chmod +x sys/sv/darkhttpd/run
+vsv
+sv restart darkhttpd
+nnn
+sv restart darkhttpd
+vsv
+exit
+dbus-run-session river
+sudo echo "1" > /sys/class/leds/input8::scrolllock/brightness
+surch set
+surch set | no32
+surch utilit | rg w
+xbps-query -Rv weather
+xbps-query -Rv wayland-utils
+xbps-query -f wayland-utils
+xbps-query -Rf wayland-utils
+clear
+xlocate xset
+xbps-query -Rv xset
+el dl
+mkdir xset
+mv xset-1.2.4.tar.bz2 xset/
+el xset/
+tar xf xset-1.2.4.tar.bz2 
+ls
+el xset-1.2.4
+exit
+dbus-run-session hikari
+cat stdout
+cat /dev/stdout
+cat /dev/fb0 
+dbus-run-session hikari
+surch pipewire
+sudo xbps-install libpulseaudio-pipewire
+xbps-query -f libpipewire | less
+clear
+exit
+cd
+ls
+cat command
+pkexec /usr/bin/brillo -k -s "input8::scrolllock" -S 1
+htop
+el source/smithay/anvil/
+cargo run -- --tty-udev
+ls
+ls -a
+exit
+cat command
+pkexec /usr/bin/brillo -k -s "input8::scrolllock" -S 1
+brillo -k -s "input8::scrolllock" -S 0
+startxfce4 
+cat /usr/sbin/startxfce4 
+cat /usr/sbin/startxfce4 | less
+clear
+man river
+man 7 xkeyboard-config
+clear
+man riverctl
+man river
+dbus-run-session river
+ls
+ls /usr/lib/ | grep wl
+readlink /usr/lib/libwlroots.so
+ln -s ~/sys/lib/libwlroots.so.10 ~/sys/lib/libwlroots.so
+ls sys/lib/libwlroots.so
+ls sys/lib/l
+ls sys/lib/
+readlink sys/lib/libwlroots.so
+man mv
+ls
+sudo mv -f sys/lib/libwlroots.so /usr/lib/
+readlink /usr/lib/libwlroots.so
+dbus-run-session river
+startxfce4 
+dbus-run-session river
+ldd .local/bin/river
+el source/river
+zig build -Drelease-fast
+surch wlroot
+git pull
+startxfce4 
+dbus-launch startxfce4
+chmod +x install.sh 
+./install.sh 
+cd
+ls
+vim dl/install.sh 
+fd shox
+el dl
+mv shox-linux-amd64 ~/.local/bin/shox
+cd
+chmox +x .local/bin/shox 
+chmod +x .local/bin/shox 
+exit
+somehitng like that man
+exit
+somehitgn like that
+exit
+sinetio
+ls
+status?
+exit
+ip a
+nmap 192.168.0.2/24
+nmap -sn 192.168.0.2/24
+nmap 192.168.0.2/24 -p1-65535
+ping 192.168.0.1
+nmap 192.168.1.69
+www
+w3m duckduckgo.com
+vsv
+dbus-run-session river
+apt search nix
+which alacritty
+/usr/local/bin/alacritty 
+/usr/local/bin/alacritty --help
+/usr/local/bin/alacritty --command bash
+ln -s ~/sys/sv/pipewire ~/sys/sv-active/
+ln -s ~/sys/sv/pipewire-pulse ~/sys/sv-active/
+vsv
+ls sys/sv-active/
+ls -al sys/sv
+ls -al sys/sv/pipewire
+ls -al sys/sv/miniserve/
+vsv
+rm sys/sv/pipewire/supervise 
+rm sys/sv/pipewire-pulse/supervise 
+vsv
+sv restart pipewire
+ls sys/sv/pipewire
+vim sys/sv/pipewire/run 
+vim sys/sv/pipewire-pulse/run 
+vsv
+sv restart pipewire
+htop
+ls /etc/sv
+sudo vsv
+vsv
+htop
+vsv
+man pipewire
+man 5 pipewire.conf
+ls /usr/share/pipewire/
+bat /usr/share/pipewire/pipewire.conf 
+ls /usr/bin | rg pipewire
+surch pipewire
+sudo xbps-install libpulseaudio-pipewire
+xbps-query -f libpipewire
+xbps-query -f libpulseaudio-pipewire
+xbps-query -Rv libpulseaudio-pipewire
+vim sys/script/desktop 
+exit
+htop
+tuigreet --help
+vim /etc/greetd/config.toml 
+sudo vim /etc/greetd/config.toml 
+reboot
+sudo reboot
+clear
+killall pipewire-pulse
+killall pipewire
+pipewire &
+killall pipewire
+vsv
+sv up pipewire
+vsv
+sv restart pipewire
+dbus-launch pipewire
+dbus-run-session river
+sudo ln -s /etc/sv/elogind/ /var/service
+sudo ln -s /etc/sv/elogind/ /var/service[2~[2~clear
+clear
+killall
+clear
+rm /var/service/elogind
+sudo rm /var/service/elogind
+clear
+sudo vsv
+
+ls /var/service/
+readlink /var/service/
+readlink /var/service/sv/
+rm /var/service/sv
+sudo rm /var/service/sv
+sudo vsv
+pipewire
+xlocate libpipewire-module
+xlocate libpipewire-module-protocol
+ls /usr/lib/pipewire-0.3/ | rg proto
+killall pipewire
+pipewire
+echo $LD_LIBRARY_PATH
+vim .bashrc
+vim .config/bash/environment.conf 
+echo $LIBRARY_PATH
+vim .config/bash/environment.conf 
+env
+vim .config/bash/environment.conf 
+ld --verbose
+ld --verbose | rg  SEARCH_DIR
+ld --verbose | rg  SEARCH_DIR | tr -s ' :' \\012
+echo $SEARCH_DIR
+ld --verbose | rg  SEARCH_DIR | tr -s ' :'
+ld --verbose | rg  SEARCH_DIR | tr -s ' :' \\012 | sed 's/^SEARCH_DIR(//g'
+ld --verbose | rg  SEARCH_DIR | tr -s ' :' \\012 | sed 's/^SEARCH_DIR("//g' | sed 's/");\n/:/g'
+ld --verbose | rg  SEARCH_DIR | tr -s ' :' \\012 | sed 's/^SEARCH_DIR("//g' | sed 's/$");\n/:/g'
+ld --verbose | rg  SEARCH_DIR | tr -s ' :' \\012 | sed 's/^SEARCH_DIR("//g' | sed 's/");$/:/g'
+ld --verbose | rg  SEARCH_DIR | tr -s ' :' \\012 | sed 's/^SEARCH_DIR("//g' | sed 's/");$/:/g' | tr -d '\n'
+echo "ld --verbose | rg  SEARCH_DIR | tr -s ' :' \\012 | sed 's/^SEARCH_DIR("//g' | sed 's/");$/:/g' | tr -d '\n'"
+echo "ld --verbose | rg  SEARCH_DIR | tr -s ' :' \\012 | sed 's/^SEARCH_DIR("//g' | sed 's/");$/:/g' | tr -d '\n'" > file1
+ls /usr/lib
+dbus-run-session river
+sudo reboot
+dbus-run-session river
+clear
+dbus-run-session river
+./build.sh 
+make TARGET=visurf PREFIX=/usr LIBDIR=lib INCLUDEDIR=include
+env
+echo $CC
+which cc
+ls /usr/sbin/cc
+readlink /usr/sbin/cc
+which gcc
+which clang
+ls /usr/sbin/gcc
+sudo rm /usr/sbin/cc
+sudo ln -s /usr/bin/clang /usr/bin/cc
+readlink /usr/bin/cc
+sudo rm /usr/sbin/cc
+sudo ln -s clang /usr/sbin/cc
+/readlink /usr/sbin/cc
+readlink /usr/sbin/cc
+ls /usr/bin/cc
+sudo /usr/bin/cc
+sudo rm /usr/bin/cc
+which cc
+ls -l /usr/sbin | rg cc
+ls -l /usr/sbin
+ls -l /usr/sbin/ | rg cc
+ls /usr/sbin/cc
+ls /usr/bin/cc
+sudo ln -s clang /usr/sbin/cc
+ls /usr/sbin/cc
+readlink /usr/sbin/cc
+cc
+sudo xbps-install -u
+sudo xbps-install -S
+echo $(readlink /usr/sbin/cc)
+echo |$(readlink /usr/sbin/cc)"
+cc= "$(readlink /usr/sbin/cc)"
+CC="$(readlink /usr/sbin/cc)"
+echo $CC
+exit
+sudo startxfce4 
+sudo dbus-run-session river
+sudo su
+exit
+echo $DISPLAY
+c
+cd
+lsblk
+udevil umount -l /run/media/goiabae/Ventoy/
+clear
+surch linux | rg kernel
+uname -r
+dbus-run-session river
+cat ~/colors.txt >> factory/gruvbox-pink.txt 
+bat factory/gruvbox-pink.txt 
+ls
+ls build/
+ls build/lib/
+ls build/lib/factory/
+ls factory/
+python3 factory/__main__.py 
+dbus-run-session river
+echo $IFS
+echo "$IFS"
+echo "somehting${IFS}somehtingelse"
+IFS='|' echo "somehting${IFS}somehtingelse"
+echo $IFS
+surch math | rg font
+surch walrus
+xlocate walrus
+man gnuplot
+surch jupyter
+surch mathematica
+surch mathics
+surch ujson
+surch json | python
+surch json | rg python
+exit
+_name="palettable"
+echo "${_name:0:1}"
+exit
+dbus-run-session river
+PREFIX=~/.local make
+vim Makefile 
+make
+ani-cli
+ani-cli --help
+ani-cli -q 480
+exit
+dbus-launch river
+dbus-run-session river
+vsv
+ls /tmp
+man emacsclient
+dbus-run-session river
+cd
+exit
+cd
+Service_Dirs=("wayland" "default")
+echo "$HOME/sys/sv/${Service_Dirs}"
+echo "$HOME/sys/sv/${Service_Dirs[*]}"
+echo "$HOME/sys/sv/${Service_Dirs[@]}"
+printf '%s/sys/sv/%s\n' "$HOME" "${Service_Dirs[@]}"
+printf '/sys/sv/%s\n' "${Service_Dirs[@]}"
+echo "/sys/sv/${Service_Dirs[@]}"
+for $dir in "${Service_Dirs[@]"; do echo "$HOME/sys/sv/$dir"; done
+for dir in "${Service_Dirs[@]"; do echo "$HOME/sys/sv/$dir"; done
+for keys in "${Service_Dirs[@]}"; do echo "$keys"; done
+for keys in "${Service_Dirs[@]}"; do echo "$HOME/$keys"; done
+for keys in "${Service_Dirs[@]}"; do echo "$HOME/sys/sv/$keys"; done
+for keys in "${Service_Dirs[@]}"; do echo "$HOME/sys/service/$keys"; done
+ls sys/service/
+for keys in "${Service_Dirs[@]}"; do vsv -u "$HOME/sys/service/$keys"; done
+exit
+source .config/bash/bashrc
+srv -l
+exit
+Service_Dirs=("wayland" "default")
+for keys in "${Service_Dirs[@]}"; do vsv -u "$HOME/sys/service/$keys"; done
+for key in "${Service_Dirs[@]}"; do echo "Instance: $key"; vsv -u "$HOME/sys/service/$key"; done
+surch netsurf
+sudo xbps-install netsurf
+exit
+WINEPREFIX=$HOME/sys/app/wine-SpaceCadet/prefix WINEARCH=wine32 WINEPATH=$HOME/sys/app/wine-SpaceCadet/ wineboot --init
+WINEPREFIX=$HOME/sys/app/wine-SpaceCadet/prefix WINEARCH=win32 WINEPATH=$HOME/sys/app/wine-SpaceCadet/ wineboot --init
+WINEPREFIX=$HOME/sys/app/wine-SpaceCadet/prefix WINEARCH=win32 WINEPATH=$HOME/sys/app/wine-SpaceCadet/ winetricks 
+WINEPREFIX=$HOME/sys/app/wine-SpaceCadet/prefix WINEARCH=win32 WINEPATH=$HOME/sys/app/wine-SpaceCadet/ ./SpaceCadetPinball.exe
+sudo WINEPREFIX=$HOME/sys/app/wine-SpaceCadet/prefix WINEARCH=win32 WINEPATH=$HOME/sys/app/wine-SpaceCadet/ ./SpaceCadetPinball.exe
+ls
+reset
+printf "string separated  with    spaces\n some new line with leading space"
+exit
+printf "string separated  with    spaces\n some new line with leading space" > file
+cat file
+exit
+echo $WAYLAND_DISPLAY
+$(ps "${ps_flags[@]}" | grep -m 1 -o -F
+echo $(ps "${ps_flags[@]}" | grep -m 1 -o -F
+de=$(ps "${ps_flags[@]}" | grep -m 1 -o -F
+de=$(ps "${ps_flags[@]}" | grep -m 1 -o -F -e river
+)
+echo $de
+de=$(ps "${ps_flags[@]}" | grep -m 1 -o -F)
+de=$(ps "${ps_flags[@]}")
+echo $de
+sudo vim /usr/sbin/neofetch 
+neofetch
+neofetch --help
+neofetch --disable de
+man neofetch
+neofetch --print_config
+neofetch --print_config | less
+exit
+echo $SVDIR
+SVDIR=$HOME/sys/service/wayland/ sv down swayidle
+SVDIR=$HOME/sys/service/wayland/ sv restart swayidle
+exot
+exit
+mkdir $HOME/zls && cd $HOME/sys/app/zls && curl -L https://github.com/zigtools/zls/releases/download/0.1.0/x86_64-linux.tar.xz | tar -xJ --strip-components=1 -C .
+ls
+bat zls.json 
+vim README.md 
+ls
+cd
+exit
+source .config/bash/bashrc
+dbus-run-session river
+el source/netsurf-all-3.10/
+make TARGET=visurf PREFIX=$HOME/.local LIBDIR=lib INCLUDEDIR=include
+ls
+ls inst-visurf/
+ls inst-visurf/bin
+make TARGET=visurf PREFIX=/usr LIBDIR=lib INCLUDEDIR=include
+ls
+ls buildsystem/
+vim README.md 
+ls
+ls visurf/
+ls visurf/frontends/
+ls visurf/frontends/visurf/
+broot
+sudo make TARGET=visurf PREFIX=/usr LIBDIR=lib INCLUDEDIR=include
+ls
+vim Makefile 
+ls visurf/
+bat visurf/Makefile
+surch doxygen
+sudo xbps-install doxygen
+ls
+mv visurf/netsurf
+mv visurf netsurf
+ls
+make TARGET=visurf PREFIX=/usr LIBDIR=lib INCLUDEDIR=include
+sudo make TARGET=visurf PREFIX=/usr LIBDIR=lib INCLUDEDIR=include
+fd nsvi .
+ls inst-visurf/
+ls inst-visurf/bin
+fd surf .
+ls netsurf/tools/
+./netsurf/tools/
+ls netsurf/tools/
+man fd
+fd -t x .
+ls inst-visurf/
+ls inst-visurf/build-stamp 
+file inst-visurf/build-stamp 
+bat inst-visurf/build-stamp 
+ls inst-visurf/share/
+ls inst-visurf/share/netsurf-buildsystem/
+el inst-visurf/
+ls share/
+ls lib/
+ls include/
+./bin/nsgenbind 
+cd ..
+make TARGET=visurf PREFIX=/usr LIBDIR=lib INCLUDEDIR=include
+ls /usr/bin | rg surf
+w3m https://lists.sr.ht/~sircmpwn/visurf-devel?page=3&search=bin
+w3m https://lists.sr.ht/~sircmpwn/visurf-devel
+exit
+YTFZF_CONFIG_FILE=$HOME/.config/ytfzf/conf.sh ytfzf -S
+YTFZF_CONFIG_FILE=$HOME/.config/ytfzf/ ytfzf -S
+ytfzf -S
+exit
+make TARGET=visurf PREFIX=$HOME/.local LIBDIR=lib INCLUDEDIR=include
+ls
+ls visurf/
+ls ~/.local/bin/
+fd visurf .
+ls
+ls inst-visurf/
+ls inst-visurf/bin/
+clear
+surch miniflux
+sudo xbps-install miniflux
+echo $SVDIR
+sv restart miniflux
+vsv
+miniflux.app -c conf
+ls
+ls supervise/
+ls supervise/control 
+ls
+rm -r supervise/
+sv restart miniflux
+vsv
+ls
+cd ..
+rm service/default/miniflux
+ln -s ~/sys/sv/miniflux/ ~/sys/service/
+vsv
+sv start miniflux
+rm ~/sys/service/miniflux
+ln -s ~/sys/sv/miniflux/ ~/sys/service/default/
+vsv
+sv start miniflux
+sv restart miniflux
+exit
+ls
+source conf
+chpst -u miniflux miniflux.app
+miniflux.app
+miniflux.app -c conf 
+vsv
+exit
+dbus-run-session river
+echo "$(cat /etc/man.conf | rg manpath | awk '{print $2}' | tr '\n' ':')"
+ls doc/man/
+fd river /usr/
+fd river /usr/share/man
+ls source/void-packages/hostdir/binpkgs/
+sudo nnn
+exit
+SVDIR=$HOME/sys/sv/waybar/ sv restart waybar
+SVDIR=$HOME/sys/service/wayland/ sv restart waybar
+waybar
+surch gtk | rg layer
+man xbps
+man xbps-install
+SVDIR=$HOME/sys/service/wayland/ sv restart waybar
+wayland
+waybar
+surch river | grep comp
+xbps-query -Rv river
+fuzzypkg 
+clear
+nnn
+sudo xbps-install river
+dbus-run-session river
+sudo xbps-install -f gtk-layer-shell
+dbus-run-session 
+dbus-run-session river
+ls somthing like that man
+ls
+dbus-run-session river
+sudo vim /etc/greetd/
+man tuigreet
+sudo vim /etc/greetd/config.toml 
+exit
+sudo reboot
+emacs -nw
+man emacsclient
+emacsclient -nw
+ls /run/user/1000/emacs/
+exit
+exi
+exit
+echo $DISPLAY
+echo $WAYLAND_DISPLAY
+tty
+xlocate tty
+which tty
+file /usr/sbin/tty
+xlocate /usr/sbin/tty
+xlocate tty | rg /usr/sbin
+xlocate tty | rg /usr
+xlocate tty | rg sbin
+ps ax
+ps ax | grep $$
+readlink /dev/fd/0
+readlink /dev/pts/0
+surch xcb
+el source
+exit
+echo $WAYLAND_DISPLAY
+echo $DISPLAY
+leftwm
+startxfce4 
+dbus-run-session startxfce4 
+surch window | rg manager
+muffin
+xinit
+startx
+clear
+echo $TTy
+echo $TTY
+echo $(tty)
+readlink /dev/fd/0
+el source/test/clang/
+./a.out 
+dbus-run-session river
+em
+ls /run/user/1000/
+vsv
+ls /run/user/1000/
+emacs --tty
+ls /run/user/100
+ls /run/user/1000/
+sv restart emacs
+ls /run/user/1000/
+em
+ls /run/user/1000/emacs/
+emacs --tty
+source .bashrc
+em
+emacsclient --tty
+ls /run/user/1000/
+ls /run/user/1000/emacs/
+ls -l /run/user/1000/emacs/
+emacsclient --tty --socket-name=emacsd
+dbus-run-session 
+dbus-run-session river
+apt search mint
+dpkg -L mint-backgrounds-ulyana
+clear
+neofetch
+el source
+el test/clang/
+apt search evdev
+sudo apt install libevdev-dev
+clang input.c 
+apt search clang
+clang-10 input.c 
+apt search evdev
+clang-10 input.c 
+echo $USER
+sudo gpasswd -a $USER plugdev
+groups
+dbus-run-session river
+ip a
+ssh 1234@192.168.15.1
+man xclip
+vim something
+dbus-run-session river
+startxfce4 
+startxfce4 
+dbus-run-session river
+exit
+dbus-run-session river
+echo $TERM
+surch terminology
+alacritty msg create-window
+alacritty --help
+man alacritty
+open file 
+exit
+emacsclient -s server --tty
+vsv
+bat .config/nu/config.nu
+emacsclient -s server --tty -a 'emacs'
+man terminology
+terminology
+clear
+exit

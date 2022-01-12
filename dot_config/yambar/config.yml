@@ -1,0 +1,396 @@
+# Typical laptop setup, with wifi, brightness, battery etc, for
+# i3/Sway.
+
+# For X11/i3, you'll want to replace calls to swaymsg with i3-msg, and
+# the sway-xkb module with the xkb module.
+#
+bg_tit: &bg_tit {stack: [{background: {color: 79740edd}}, {underline: {size: 2, color: d6580eff}}]}
+#bg_tot: &bg_tot {stack: [{background: {color: a9b665dd}}, {underline: {size: 2, color: ea6962ff}}]}
+
+bg_tot: &bg_tot {underline: {size: 2, color: d6580eff}}
+
+# fonts we'll be re-using here and there
+awesome: &awesome Hack Nerd Font Mono:style=Regular:pixelsize=18
+awesome_brands: &awesome_brands Font Awesome 5 Brands:pixelsize=16
+
+std_underline: &std_underline {underline: { size: 2, color: ff0000ff}}
+
+# This is THE bar configuration
+bar:
+  height: 26
+  location: bottom
+  spacing: 5
+  margin: 5
+
+  # Default font
+  font: Hack Nerd Font Mono:pixelsize=14
+
+  foreground: ebdbb2ff
+  background: 181818ff
+
+  left:
+    - river:
+        content:
+          map:
+            tag: id
+            values:
+              1:
+                map:
+                  tag: state
+                  values:
+                    focused:
+                      string:
+                        text: "1"
+                        right-margin: 13
+                        left-margin: 10
+                        on-click: riverctl set-focused-tags 1
+                        deco: *bg_tit
+                    invisible:
+                      map:
+                        tag: occupied
+                        values:
+                          true:
+                            string:
+                              text: "1"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 1
+                              deco: *bg_tot
+                          false:
+                            string:
+                              text: "1"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 1
+
+              2:
+                map:
+                  tag: state
+                  values:
+                    focused:
+                      string:
+                        text: "2"
+                        right-margin: 13
+                        left-margin: 10
+                        on-click: riverctl set-focused-tags 2
+                        deco: *bg_tit
+                    invisible:
+                      map:
+                        tag: occupied
+                        values:
+                          true:
+                            string:
+                              text: "2"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 2
+                              deco: *bg_tot
+                          false:
+                            string:
+                              text: "2"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 2
+              3:
+                map:
+                  tag: state
+                  values:
+                    focused:
+                      string:
+                        text: "3"
+                        right-margin: 13
+                        left-margin: 10
+                        on-click: riverctl set-focused-tags 4
+                        deco: *bg_tit
+                    invisible:
+                      map:
+                        tag: occupied
+                        values:
+                          true:
+                            string:
+                              text: "3"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 4
+                              deco: *bg_tot
+                          false:
+                            string:
+                              text: "3"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 4
+              4:
+                map:
+                  tag: state
+                  values:
+                    focused:
+                      string:
+                        text: "4"
+                        right-margin: 13
+                        left-margin: 10
+                        on-click: riverctl set-focused-tags 8
+                        deco: *bg_tit
+                    invisible:
+                      map:
+                        tag: occupied
+                        values:
+                          true:
+                            string:
+                              text: "4"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 8
+                              deco: *bg_tot
+                          false:
+                            string:
+                              text: "4"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 8
+              5:
+                map:
+                  tag: state
+                  values:
+                    focused:
+                      string:
+                        text: "5"
+                        right-margin: 13
+                        left-margin: 10
+                        on-click: riverctl set-focused-tags 16
+                        deco: *bg_tit
+                    invisible:
+                      map:
+                        tag: occupied
+                        values:
+                          true:
+                            string:
+                              text: "5"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 16
+                              deco: *bg_tot
+                          false:
+                            string:
+                              text: "5"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 16
+              6:
+                map:
+                  tag: state
+                  values:
+                    focused:
+                      string:
+                        text: "6"
+                        right-margin: 13
+                        left-margin: 10
+                        on-click: riverctl set-focused-tags 32
+                        deco: *bg_tit
+                    invisible:
+                      map:
+                        tag: occupied
+                        values:
+                          true:
+                            string:
+                              text: "6"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 32
+                              deco: *bg_tot
+                          false:
+                            string:
+                              text: "6"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 32
+              7:
+                map:
+                  tag: state
+                  values:
+                    focused:
+                      string:
+                        text: "7"
+                        right-margin: 13
+                        left-margin: 10
+                        on-click: riverctl set-focused-tags 64
+                        deco: *bg_tit
+                    invisible:
+                      map:
+                        tag: occupied
+                        values:
+                          true:
+                            string:
+                              text: "7"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 64
+                              deco: *bg_tot
+                          false:
+                            string:
+                              text: "7"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 64
+              8:
+                map:
+                  tag: state
+                  values:
+                    focused:
+                      string:
+                        text: "8"
+                        right-margin: 13
+                        left-margin: 10
+                        on-click: riverctl set-focused-tags 128
+                        deco: *bg_tit
+                    invisible:
+                      map:
+                        tag: occupied
+                        values:
+                          true:
+                            string:
+                              text: "8"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 128
+                              deco: *bg_tot
+                          false:
+                            string:
+                              text: "8"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 128
+              9:
+                 map:
+                  tag: state
+                  values:
+                    focused:
+                      string:
+                        text: "9"
+                        right-margin: 13
+                        left-margin: 10
+                        on-click: riverctl set-focused-tags 256
+                        deco: *bg_tit
+                    invisible:
+                      map:
+                        tag: occupied
+                        values:
+                          true:
+                            string:
+                              text: "9"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 256
+                              deco: *bg_tot
+                          false:
+                            string:
+                              text: "9"
+                              right-margin: 13
+                              left-margin: 10
+                              on-click: riverctl set-focused-tags 256
+
+  center:
+    - river:
+        title:
+          string:
+            left-margin: 5
+            right-margin: 5
+            text: "{seat}://{title}"
+            max: 50
+        content:
+          empty: {}
+
+  right:
+    - removables:
+        spacing: 5
+        content:
+          map:
+            tag: mounted
+            values:
+              false:
+                map:
+                  tag: optical
+                  on-click: udevil mount -l {device}
+                  values:
+                    false: {string: {text: "{label}", foreground: fabd2fff}}
+                    true: {string: {text: "{label}", foreground: fabd2fff}}
+              true:
+                map:
+                  tag: optical
+                  on-click: udevil unmount -l {device}
+                  values:
+                    false:
+                      - string: {text: "{label}"}
+                    true:
+                      - string: {text: "{label}"}
+    - network:
+        name: enp7s0
+        content:
+          map:
+            tag: carrier
+            values:
+              false: {empty: {}}
+              true:
+                map:
+                  tag: state
+                  default: {string: {text: , font: *awesome, foreground: ffffff66}}
+                  values:
+                    up:
+                      map:
+                        tag: ipv4
+                        default: {string: {text: , font: *awesome}}
+                        values:
+                          "": {string: {text: , font: *awesome, foreground: ffffff66}}
+    - alsa:
+        card: default
+        mixer: "IEC958"
+        content:
+          map:
+            tag: online
+            values:
+              false: {string: {text: , font: *awesome, foreground: fb4934ff}}
+              true:
+                map:
+                  on-click: /bin/sh -c "pamixer -q sset Speaker unmute && pamixer -q sset Headphone unmute && pamixer -q sset Master toggle"
+                  tag: muted
+                  values:
+                    true: {string: {text: , font: *awesome, foreground: ebdbb2ff}}
+                    false:
+                      ramp:
+                        tag: volume
+                        items:
+                          - string: {text: , font: *awesome}
+                          - string: {text: , font: *awesome}
+                          - string: {text: , font: *awesome}
+                          - string: {text: , font: *awesome}
+                          - string: {text: , font: *awesome}
+    - clock:
+        time-format: "%H:%M:%S"
+        content:
+          - string:
+              text: ""
+              font: *awesome
+              right-margin: 0
+              left-margin: 0
+              foreground: ebdbb2ff
+          - string:
+              text: " {date}"
+              right-margin: 5
+              left-margin: 5
+              foreground: ebdbb2ff
+          - string:
+              text: ""
+              font: *awesome
+              right-margin: 0
+              left-margin: 0
+              foreground: ebdbb2ff
+          - string:
+              text: " {time}"
+              right-margin: 5
+              left-margin: 5
+              foreground: ebdbb2ff
+    - label:
+        content:
+          string:
+            on-click: loginctl poweroff
+            text: 
+            font: *awesome

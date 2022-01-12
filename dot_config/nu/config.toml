@@ -1,0 +1,45 @@
+disable_table_indexes = true
+path = ["/home/goiabae/.emacs.d/bin", "/home/goiabae/.cargo/bin", "/home/goiabae/sys/script", "/home/goiabae/.local/bin", "/usr/local/sbin", "/usr/local/bin", "/usr/sbin", "/usr/bin", "/sbin", "/bin", "/opt/texlive/2021/bin/x86_64-linux"]
+prompt = "build-string (ansi (if (id -u | str to-int) == 0 {'rb'} {'lu'})) ((whoami) | str trim \n) (ansi reset) '@' (ansi lrb) (sys | get host.hostname) (ansi reset) '(' (ansi cb) (do -i { git rev-parse --abbrev-ref HEAD } | str trim ) (ansi reset) ') ' (ansi gb) (shortpath) (char newline) (ansi yb) '|> ' (ansi reset)"
+skip_welcome_message = true
+startup = ["source /home/goiabae/.config/nu/config.nu"]
+syntax_theme = "battery"
+table_mode = "none"
+
+[color_config]
+header_align = "l"
+header_bold = false
+header_color = "cb"
+index_color = "red"
+leading_trailing_space_bg = "white"
+primitive_binary = "red"
+primitive_boolean = "cyan"
+primitive_columnpath = "white"
+primitive_date = "white"
+primitive_decimal = "purple"
+primitive_duration = "white"
+primitive_filesize = "white"
+primitive_int = "purple"
+primitive_line = "white"
+primitive_path = "white"
+primitive_pattern = "white"
+primitive_range = "yellow"
+primitive_string = "white"
+separator_color = "u" # green|g, red|r, blue|u, black|b, yellow|y, purple|p, cyan|c, white|w
+
+[line_editor]
+auto_add_history = true
+bell_style = "audible"
+color_mode = "enabled"
+completion_prompt_limit = 100
+completion_type = "circular"
+edit_mode = "emacs"
+history_duplicates = "ignoreconsecutive"
+history_ignore_space = false
+keyseq_timeout_ms = 500
+max_history_size = 100000
+tab_stop = 4
+
+[textview]
+true_color = true
+grid = false
