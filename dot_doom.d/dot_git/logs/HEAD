@@ -1,4 +1,0 @@
-0000000000000000000000000000000000000000 5819818f816631c7583ad17262a1f88b243023d9 goiabae <goiabae@github.com> 1633732644 -0300	commit (initial): initial commit
-5819818f816631c7583ad17262a1f88b243023d9 667ed397ef8bd6351c7ce005911f195e90638b08 goiabae <goiabae@github.com> 1633733396 -0300	checkout: moving from master to remotes/origin/main
-667ed397ef8bd6351c7ce005911f195e90638b08 5819818f816631c7583ad17262a1f88b243023d9 goiabae <goiabae@github.com> 1633733431 -0300	checkout: moving from 667ed397ef8bd6351c7ce005911f195e90638b08 to master
-5819818f816631c7583ad17262a1f88b243023d9 2f96245eefbe00466bdaca3968fb7356111a81f8 goiabae <goiabae@github.com> 1633733521 -0300	pull --set-upstream origin main --allow-unrelated-histories: Merge made by the 'recursive' strategy.
