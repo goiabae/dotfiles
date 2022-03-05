@@ -1,0 +1,17 @@
+(setq visible-cursor nil)
+(column-number-mode)
+(show-paren-mode)
+
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(tooltip-mode -1)
+(set-fringe-mode 4) ; Give some breathing room
+;; (menu-bar-mode -1)
+
+																				; (set-default-font "Fira Code-12")
+
+(use-package mini-modeline
+	:straight t
+	:config
+	(setq mini-modeline-right-padding 2)
+	(mini-modeline-mode nil))
