@@ -1,25 +1,47 @@
 # -- ALIASES -- #
 
-if [ -f $BASHDOTDIR/aliases ]; then
-    source $BASHDOTDIR/aliases
+if [ -f $BASH_DOT_DIR/aliases ]; then
+    source $BASH_DOT_DIR/aliases
 fi
+
+alias surch="xbps-query -Rs"
 
 # -- FUNCTIONS -- #
-git_branch() {
-temp=$(git branch 2>/dev/null | sed 's/^\* //')
-if [ $(echo $temp | wc -l) -eq 1 ]; then
-  echo $temp
-fi
+git_branch() { # get current git branch
+	temp=$(git branch 2>/dev/null | sed 's/^\* //')
+	if [ $(echo $temp | wc -l) -eq 1 ]; then
+		echo $temp
+	fi
 }
 
-srccl() {
+srccl() { # source .bashrc and clear tty
 	clear
-    source ~/.bashrc
+  source ~/.bashrc
 }
 
-el() {
+el() { # enter and list directory
 	cd -P "$1"
     ls -F --color=auto --group-directories-first;
+}
+
+link-bin() { # link file to user-local binary folder
+  ln -s $(pwd)/$1 ~/.local/bin
+}
+
+www() { # search on the web
+		w3m "https://lite.duckduckgo.com/lite/?q=$(echo $@ | tr ' ' '+')"
+}
+
+fns() { # show available shell functions
+		cat <<EOF
+Shell script functions:
+  git_branch   get current git branch
+  srccl        source .bashrc and clear tty
+  el           enter and list directory
+  link-bin     link file to user-local binary folder
+  www          search on the web
+  fns          show available shell functions
+EOF
 }
 
 # --- VARIABLES --- #
@@ -28,15 +50,16 @@ if [ -f $BASHDOTDIR/environment.conf ]; then
     source $BASHDOTDIR/environment.conf
 fi
 
-export PATH=$HOME/sys/script:$HOME/go/bin:$HOME/.emacs.d/bin:$HOME/.local/bin:$PATH
+export PATH=$HOME/.opam/default/bin:$HOME/sys/script:$HOME/go/bin:$HOME/.emacs.d/bin:$HOME/.local/bin:$PATH
 # alter this to add paths for desktop entries
 export XDG_DATA_DIRS=$XDG_DATA_DIRS:$HOME/.local/share/applications
 export XDG_CURRENT_DESKTOP=Unity
+export XDG_RUNTIME_DIR=/tmp/$(id -u)
 
 export TERMINAL=alacritty
 export EDITOR=micro
 export VISUAL=vim
-export BROWSER=w3m
+export BROWSER=luakit
 export GIT_PAGER=delta
 
 # for gnupg-agent to work properly
@@ -49,9 +72,8 @@ export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quo
 export GRIM_DEFAULT_DIR="$HOME/img/scrshot"
 
 manpath="$(cat /etc/man.conf | rg manpath | awk '{print $2}' | tr '\n' ':')"
-export MANPATH="$manpath$HOME/doc/man"
+# export MANPATH="$manpath$HOME/doc/man"
 export SVDIR="$HOME/sys/service/default"
-export BROWSER=firefox
 export QT_STYLE_OVERRIDE=kvantum
 export GTK_MODULES="canberra-gtk-module"
 export XBPS_DISTDIR=$HOME/source/vowoid-src
@@ -70,8 +92,13 @@ HISTSIZE=1000
 HISTFILESIZE=2000
 
 # full path for emacs daemon socket. used to avoid confusing emacs client
-export EMACS_SERVER_FILE=/run/user/1000/emacs/emacsd
-export EMACS_SOCKET_NAME=/run/user/1000/emacs/emacsd
+export EMACS_SERVER_FILE=/tmp/1000/emacs/emacsd
+export EMACS_SOCKET_NAME=/tmp/1000/emacs/emacsd
+
+export OPAM_SWITCH_PREFIX='/home/goiabae/.opam/default'
+export CAML_LD_LIBRARY_PATH='/home/goiabae/.opam/default/lib/stublibs:/usr/lib/ocaml/stublibs:/usr/lib/ocaml'
+export OCAML_TOPLEVEL_PATH='/home/goiabae/.opam/default/lib/toplevel'
+export MANPATH='/usr/local/share/man:/usr/share/man:/home/goiabae/doc/man:/home/goiabae/.opam/default/man'
 
 # -- PROMPT -- #
 

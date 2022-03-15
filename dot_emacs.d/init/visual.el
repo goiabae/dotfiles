@@ -5,14 +5,18 @@
 (tool-bar-mode -1)
 (tooltip-mode -1)
 (set-fringe-mode 4) ; Give some breathing room
-;; (menu-bar-mode -1)
+(menu-bar-mode -1)
+(blink-cursor-mode 0)
 ; (set-default-font "Fira Code-12")
+(set-frame-parameter nil 'undecorated t)
 
+(setq electric-pair-skip-self t)
 (setq electric-pair-pairs
-			'((34 . 34)
-				(8216 . 8217)
-				(8220 . 8221)
-				(?\< . ?\>)))
+			'((?\{ . ?\})
+				(?\(. ?\))
+				(?\[ . ?\])
+				(?\< . ?\>)
+				(?\" . ?\")))
 (electric-pair-mode)
 
 (use-package hl-todo
@@ -56,4 +60,23 @@
 (require 'theme-changer)
 ;; relay it by 30 minutes so that i changes at 18:30 rather than 19:00
 (setq theme-changer-delay-seconds (- 1800))
-(change-theme 'gruvbox-light-hard 'battery)
+(if (not (string-equal system-name "nikaido"))
+    (change-theme 'gruvbox-light-hard 'battery))
+
+(setq org-format-latex-options
+      '(:foreground default
+                    :background default
+                    :scale 1.4
+                    :html-foreground "Black"
+                    :html-background "Transparent"
+                    :html-scale 1.0
+                    :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+
+(setq org-startup-with-latex-preview t)
+(load "~/.emacs.d/source/org-fragtog.el" t)
+(require 'org-fragtog)
+(add-hook 'org-mode-hook 'org-fragtog-mode)
+
+(setq scroll-preserve-screen-position t)
+(setq scroll-conservatively 2)
+(setq frame-resize-pixelwise t)

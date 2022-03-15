@@ -12,11 +12,13 @@
 Super="Mod4"
 mod="Mod4"
 
-# Mod+Shift+Return to start an instance of alacritty
-riverctl map normal $Super T spawn "alacritty"
+riverctl map normal $Super O spawn "emacsclient --alternate-editor=emacs --create-frame"
+riverctl map normal $Super T spawn "foot" # foot terminal
+riverctl map normal $Super P spawn "power.sh" # power menu
 
 # launcher
-riverctl map normal $Super M spawn "sirula"
+# riverctl map normal $Super M spawn "wofi --show drun"
+riverctl map normal $Super M spawn "fuzzel.sh"
 
 # Mod+Q to close the focused view
 riverctl map normal $Super Q close
@@ -75,7 +77,7 @@ riverctl map normal $Super+Mod1+Shift K resize vertical -100
 riverctl map normal $Super+Mod1+Shift L resize horizontal 100
 
 # Mod + Left Mouse Button to move views
-riverctl map-pointer normal $mod BTN_LEFT move-view
+riverctl map-pointer normal $Super BTN_LEFT move-view
 
 # Mod + Right Mouse Button to resize views
 riverctl map-pointer normal $Super BTN_RIGHT resize-view
@@ -166,6 +168,11 @@ riverctl csd-filter-add app-id "gedit"
 # Set and exec into the default layout generator, rivertile.
 # River will send the process group of the init executable SIGTERM on exit.
 riverctl default-layout rivertile
+
+light -S 50
+
+pipewire &
+pipewire-pulse &
 
 mkdir -p /home/goiabae/sys/service/wayland
 svdir="/home/goiabae/sys/service/wayland"

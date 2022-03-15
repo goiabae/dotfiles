@@ -17,3 +17,6 @@ alias la='ls -A'
 alias l='ls -CF'
 
 alias em="emacsclient --tty --socket-name=emacsd"
+alias surch="xbps-query -Rs"
+alias fuzzel="fuzzel -b 242424ff -t ebdbb2ff -B 0 -r 0 -S 504945ff -x 20 -y 12"
+

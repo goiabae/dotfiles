@@ -2,11 +2,12 @@
         border:        none;
         border-radius: 0;
         font-family:   Font Awesome, Hack Nerd Font;
-        font-size:     14px;
+        font-size:     10px;
         box-shadow:    none;
         text-shadow:   none;
         transition-duration: 0s;
         color:      #d5c4a1;
+        padding: 0px;
 }
 
 window {
@@ -35,7 +36,7 @@ window {
 }
 
 #network, #pulseaudio, #clock, #custom-power, #custom-qbitstats {
-        margin:     0px 2px 0px 2px;
+        margin:     0px 0px 0px 0px;
         min-width:  10px;
 
 }
@@ -52,5 +53,5 @@ window {
 }
 
 #waybar > box:nth-child(2) > box:nth-child(3) > * > label {
-        padding: 0 3px;
+        padding: 0 0px;
 }

@@ -64,7 +64,7 @@
   (bright-cyan   "#8ec07c" "#8ec07c"))
 
     ;; specifications for Emacs faces.
-  ((default             (:background grey1 :foreground grey9))
+  ((default             (:background grey0 :foreground grey9))
 	 (button              (:underline t :weight 'bold :foreground yellow))
    (cursor              (:background grey9))
    (mode-line           (:background grey4 :foreground grey9 :box nil))

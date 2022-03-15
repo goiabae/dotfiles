@@ -93,7 +93,7 @@
 	(setq vertico-count 6))
 
 ;; manually load vertico-grid because `use-package` was having issues
-(load "~/.emacs.d/source/vertico-grid.el")
+(load "~/.emacs.d/source/vertico-grid.el" t)
 (require 'vertico-grid)
 (vertico-grid-mode 1)
 
@@ -113,11 +113,11 @@
 ;; load modules
 (defun load-modules (modules)
   (mapcar
-    (lambda (a)
+   (lambda (a)
 	    (load (concat
-					"~/.emacs.d" "/init/"
+						 "~/.emacs.d" "/init/"
 					a ".el")))
- modules))
+		modules))
 
 ;; (let ((a (getenv "EMACS_SESSION")))
 ;; 	(when (not (= (length a) 0))
@@ -130,5 +130,8 @@
 (load-modules '("visual" "lang"))
 
 (setq-default display-line-numbers-width 2)
+
+(setq confirm-kill-processes nil)
+(setq fill-column 80)
 
 

@@ -1,4 +1,7 @@
 #!/bin/sh
-pipewire &
-pipewire-pulse &
-alacritty -e "macchina" &
+
+brillo -s "$(brillo -L | tail -1)" -S 50
+
+# svdir="$HOME/sys/service/wayland"
+# mkdir -p $svdir
+# exec runsvdir $svdir

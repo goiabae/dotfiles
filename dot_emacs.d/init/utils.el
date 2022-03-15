@@ -96,3 +96,12 @@
 		 '("z" . meow-pop-selection)
 		 '("'" . repeat)
 		 '("<escape>" . ignore)))
+
+(defun eshell/sudo-open (filename)
+	"Open a file as root in Eshell."
+	(let ((qual-filename (if (string-match "^/" filename)
+													 filename
+												 (concat (expand-file-name (eshell/pwd)) "/" filename))))
+		(switch-to-buffer
+		 (find-file-noselect
+			(concat "/sudo::" qual-filename)))))
