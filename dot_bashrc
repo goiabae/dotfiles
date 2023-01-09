@@ -1,0 +1,2 @@
+source $HOME/.profile
+source "$XDG_CONFIG_HOME/bash/config.sh"
