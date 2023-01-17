@@ -80,6 +80,10 @@ functions' body."
   '(interactive))
      ,@body))
 
+;; This assumes that this version of Emacs has the `bind-key' included
+;; in the default distribution
+(require 'bind-key)
+
 (bind-keys
  ("C-c w s b" . split-window-below)
  ("C-c w s r" . split-window-right)
