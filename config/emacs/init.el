@@ -198,6 +198,9 @@ functions' body."
 (setq temporary-file-directory
       (expand-file-name "emacs/" (xdg-runtime-dir)))
 
+(unless (file-exists-p temporary-file-directory)
+  (make-directory temporary-file-directory))
+
 (setq auto-save-default nil
       delete-auto-save-files t
       auto-save-list-file-prefix
