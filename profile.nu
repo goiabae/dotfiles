@@ -25,12 +25,12 @@ let YTFZF_SYSTEM_ADDON_DIR = ($home | path join lib/sh/ytfzf/addons)
 let OCAML_TOPLEVEL_PATH = ($home | path join lib/ocaml/toplevel)
 let GOPATH = ($home | path join app/go/)
 
-let XDG_DATA_HOME   = ($home | path join data)
-let XDG_STATE_HOME  = ($home | path join data/state)
-let XDG_CACHE_HOME  = ($home | path join data/cache)
 let XDG_CONFIG_HOME = ($home | path join config)
+let XDG_DATA_HOME   = ($home | path join var)
+let XDG_STATE_HOME  = ($XDG_DATA_HOME | path join state)
+let XDG_CACHE_HOME  = ($XDG_DATA_HOME | path join cache)
 
-let XDG_RUNTIME_DIR = $"/tmp/run/user/($uid)"
+let XDG_RUNTIME_DIR = $"/run/user/($uid)"
 let XDG_CURRENT_DESKTOP = 'Unity'
 let XDG_DATA_DIRS = (
   [ /usr/local/share
@@ -44,7 +44,7 @@ let XDG_DATA_DIRS = (
 )
 
 let XAUTHORITY = ($XDG_RUNTIME_DIR | path join "Xauthority")
-let QT_QPA_PLATFORM = 'wayland;xcb'
+#let QT_QPA_PLATFORM = 'wayland;xcb'
 let MOZ_ENABLE_WAYLAND = '1'
 # don't put duplicate lines or lines starting with spaces on history
 let HISTCONTROL = "ignoreboth"
@@ -77,11 +77,15 @@ let IPFS_PATH          = ($XDG_DATA_HOME | path join ipfs)
 let WINEPREFIX         = ($XDG_DATA_HOME | path join wineprefixes/default)
 let LESSHISTFILE       = ($XDG_DATA_HOME | path join less.hist)
 let TERMINFO_DIRS      = ($XDG_DATA_HOME | path join terminfo:/usr/share/terminfo)
+
 let SQLITE_HISTORY     = ($XDG_DATA_HOME | path join sqlite.hist)
 let OPAMROOT           = ($XDG_DATA_HOME | path join opam)
 let NODE_REPL_HISTORY  = ($XDG_DATA_HOME | path join node.hist)
 let GNUPGHOME          = ($XDG_DATA_HOME | path join gnupg)
 let PASSWORD_STORE_DIR = ($XDG_DATA_HOME | path join pass)
+let JULIA_DEPOT_PATH   = $"($XDG_DATA_HOME | path join julia):($env | get -i JULIA_DEPOT_PATH)"
+let XCURSOR_PATH = $"/usr/share/icons:($XDG_DATA_HOME | path join icons)"
+
 
 let ICEAUTHORITY = ($XDG_CACHE_HOME | path join ICEauthority)
 
@@ -118,11 +122,20 @@ let PYTHONPATH = ([
   ($home | path join lib/python3.10/site-packages)
 ] | str join ':')
 
+let PYTHONSTARTUP = "/etc/python/pythonrc"
+
 let PATH = (
   $env.PATH
   | append ($CARGO_HOME | path join "bin")
   | str join ':'
 )
+
+# SECRETS
+let DZR_CBC = "g4el58wc0zvf9na1"
+
+let W3M_DIR = ($XDG_DATA_HOME | path join w3m)
+let GRADLE_USER_HOME = ($XDG_DATA_HOME | path join gradle)
+let ANDROID_HOME = ($XDG_DATA_HOME | path join android)
 
 let e = {
   EDITOR: $EDITOR
@@ -146,7 +159,7 @@ let e = {
   XDG_CURRENT_DESKTOP: $XDG_CURRENT_DESKTOP
   XDG_DATA_DIRS: $XDG_DATA_DIRS
   XAUTHORITY: $XAUTHORITY
-  QT_QPA_PLATFORM: $QT_QPA_PLATFORM
+  #QT_QPA_PLATFORM: $QT_QPA_PLATFORM
   MOZ_ENABLE_WAYLAND: $MOZ_ENABLE_WAYLAND
   HISTCONTROL: $HISTCONTROL
   SYS_LOG_FILE: $SYS_LOG_FILE
@@ -181,6 +194,8 @@ let e = {
   NODE_REPL_HISTORY: $NODE_REPL_HISTORY
   GNUPGHOME: $GNUPGHOME
   PASSWORD_STORE_DIR: $PASSWORD_STORE_DIR
+  JULIA_DEPOT_PATH: $JULIA_DEPOT_PATH
+  XCURSOR_PATH: $XCURSOR_PATH
   ICEAUTHORITY: $ICEAUTHORITY
   OPAM_SWITCH_PREFIX: $OPAM_SWITCH_PREFIX
   XBPS_DISTDIR: $XBPS_DISTDIR
@@ -188,6 +203,11 @@ let e = {
   CAML_LD_LIBRARY_PATH: $CAML_LD_LIBRARY_PATH
   PYTHONPATH: $PYTHONPATH
   PATH: $PATH
+  DZR_CBC: $DZR_CBC
+  W3M_DIR: $W3M_DIR
+  PYTHONSTARTUP: $PYTHONSTARTUP
+  GRADLE_USER_HOME: $GRADLE_USER_HOME
+  ANDROID_HOME: $ANDROID_HOME
 }
 
 $e | to json

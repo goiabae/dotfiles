@@ -1,15 +1,74 @@
 (require 'autothemer)
 
-(defmacro battery-deftheme (name description palette &rest body)
+(defmacro battery-deftheme (name description greys contrasts)
   `(autothemer-deftheme
     ,name
     ,description
-    ,palette
+    ,(append
+      '((((class color) (min-colors #xFFFFFF))))
+      '((neutral0  "#101010")
+        (neutral1  "#191919")
+        (neutral2  "#262524")
+        (neutral3  "#353231")
+        (neutral4  "#403c3a")
+        (neutral5  "#504845")
+        (neutral6  "#635852")
+        (neutral7  "#7b6c61")
+        (neutral8  "#958172")
+        (neutral9  "#a89984")
+        (neutral10 "#bdae93")
+        (neutral11 "#d2c3a5")
+        (neutral12 "#e7d8b3")
+        (neutral13 "#f2e4ba")
+        (neutral14 "#faedc9")
+        (neutral15 "#fef5d8"))
+      greys
+      '((darker-red      "#67191b")
+        (darker-orange   "#572e1a")
+        (darker-yellow   "#423818")
+        (darker-olive    "#302f16")
+        (darker-green    "#183815")
+        (darker-cyan     "#1a2d1e")
+        (darker-purple   "#462929")
+
+        (dark-red        "#be241e")
+        (dark-orange     "#ac4003")
+        (dark-yellow     "#a57109")
+        (dark-olive      "#746f06")
+        (dark-green      "#24601c")
+        (dark-cyan       "#2b5434")
+        (dark-purple     "#a63445")
+
+        (red             "#e83437")
+        (orange          "#d6580e")
+        (yellow          "#d09420")
+        (olive           "#98952a")
+        (green           "#3f9f32")
+        (cyan            "#689e69")
+        (purple          "#b16262")
+
+        (light-red       "#fc5356")
+        (light-orange    "#fc823c")
+        (light-yellow    "#fac240")
+        (light-olive     "#b5ba25")
+        (light-green     "#5ac04e")
+        (light-cyan      "#8ec07c")
+        (light-purple    "#ed8585")
+
+        (lighter-red     "#fca39c")
+        (lighter-orange  "#fca765")
+        (lighter-yellow  "#edd76d")
+        (lighter-olive   "#dfe26c")
+        (lighter-green   "#a2ea98")
+        (lighter-cyan    "#aed8a0")
+        (lighter-purple  "#f7b4b4"))
+      contrasts)
+
     ((default             (:background bg :foreground fg))
      (button              (:underline t :weight 'bold :foreground yellow))
      (cursor              (:background fg))
-     (mode-line           (:background grey5 :foreground bg :box (:line-width 1 :color "#f8edd1" :style 'released-button))) ; FIXME hardcoded
-     (mode-line-inactive  (:background grey3 :foreground bg :box (:line-width 1 :color "#efe4c4" :style 'released-button))) ; FIXME hardcoded
+     (mode-line           (:background neutral10 :foreground neutral2 :box (:line-width 1 :color neutral15 :style 'released-button)))
+     (mode-line-inactive  (:inherit 'mode-line))
      (fringe              (:background bg))
      (hl-line             (:background bg))
      (region              (:background grey5)) ;;selection
@@ -32,6 +91,8 @@
      (highlight           (:background grey4 :foreground fg))
      (homoglyph           (:foreground yellow))
      (match               (:foreground grey0 :background cyan))
+
+     (lighter-yellow (:background lighter-yellow))
 
      ;; Font lock (syntax highlighting)
      (font-lock-builtin-face        (:foreground high-cyan))
@@ -71,39 +132,34 @@
      (company-echo-common                  (:foreground red))
 
      ;; org-mode
-     (org-latex-and-related     (:inherit 'fixed-pich :foreground lower-yellow))
-     (org-document-info-keyword (:inherit 'fixed-pitch))
+     (org-latex-and-related     (:foreground lower-yellow))
+     ; (org-document-info-keyword ())
      (org-document-title        (:foreground high-purple))
-     (org-block-begin-line      (:inherit 'fixed-pitch
-                                 :foreground grey6
-                                 :background grey0))
-     (org-block-end-line        (:inherit 'fixed-pitch
-                                 :foreground grey6
-                                 :background grey0))
-     (org-special-keyword       (:inherit (font-lock-comment-face
-                                           'fixed-pitch)))
-     (org-property-value        (:inherit 'fixed-pitch))
+     (org-block-begin-line      (:foreground grey6 :background grey0))
+     (org-block-end-line        (:foreground grey6 :background grey0))
+     (org-special-keyword       (:foreground grey8))
+     ; (org-property-value        ())
      (org-document-info         (:foreground orange))
-     (org-meta-line             (:inherit (font-lock-comment-face
-                                           'fixed-pitch)))
-     (org-verbatim (:inherit 'fixed-pitch))
-     (org-level-1  (:foreground high-orange :inherit 'fixed-pitch))
-     (org-level-2  (:foreground high-red :inherit 'fixed-pitch))
-     (org-level-3  (:foreground high-yellow :inherit 'fixed-pitch))
-     (org-level-4  (:foreground high-olive :inherit 'fixed-pitch))
-     (org-level-5  (:foreground high-cyan :inherit 'fixed-pitch))
-     (org-level-6  (:foreground high-purple :inherit 'fixed-pitch))
-     (org-level-7  (:foreground green :inherit 'fixed-pitch))
-     (org-level-8  (:foreground orange :inherit 'fixed-pitch))
-     (org-drawer   (:foreground grey7 :inherit 'fixed-pitch))
-     (org-tag      (:weight 'bold :inherit 'fixed-pitch))
-     (org-link     (:inherit 'fixed-pitch :underline (:style 'line :color grey9)))
-     (org-todo     (:foreground yellow :inherit 'fixed-pitch))
-     (org-code     (:inherit 'fixed-pitch))
-     (org-table    (:inherit 'fixed-pitch :foreground grey12))
-     (org-block    (:inherit 'fixed-pitch))
-     (org-footnote (:inherit 'fixed-pitch :foreground yellow))
-     (org-checkbox (:inherit 'fixed-pitch))
+     (org-meta-line             (:foreground grey8))
+     ; (org-verbatim ())
+     (org-level-1  (:foreground high-orange))
+     (org-level-2  (:foreground high-red))
+     (org-level-3  (:foreground high-yellow))
+     (org-level-4  (:foreground high-olive))
+     (org-level-5  (:foreground high-cyan))
+     (org-level-6  (:foreground high-purple))
+     (org-level-7  (:foreground green))
+     (org-level-8  (:foreground orange))
+     (org-drawer   (:foreground grey7))
+     (org-tag      (:weight 'bold))
+     (org-link     (:underline (:style 'line :color grey9)))
+     (org-done     (:foreground grey6))
+     (org-todo     (:foreground high-yellow))
+     ; (org-code     ())
+     (org-table    ( :foreground grey12))
+     ; (org-block    ())
+     (org-footnote ( :foreground yellow))
+     ; (org-checkbox ())
      (org-checkbox-statistics-todo (:foreground higher-purple))
      (org-checkbox-statistics-done (:foreground high-cyan))
 
@@ -199,11 +255,45 @@
      (git-gutter:modified (:foreground higher-purple :weight 'bold))
      (git-gutter:deleted (:foreground higher-red :weight 'bold))
 
+     ;; whitespace
+     (whitespace-tab      (:background bg :foreground grey6))
+     (whitespace-space    (:background bg :foreground grey6))
+     (whitespace-hspace   (:background bg :foreground grey6))
+     (whitespace-newline  (:background bg :foreground grey6))
+     (whitespace-line     (:background bg :foreground grey6))
+     (whitespace-empty    (:background bg :foreground grey6))
+     (whitespace-indentation      (:background bg :foreground grey6))
+     (whitespace-big-indent       (:background bg :foreground grey6))
+     (whitespace-space-after-tab  (:background bg :foreground grey6))
+     (whitespace-space-before-tab       (:background high-red))
+     (whitespace-missing-newline-at-eof (:background high-red))
+     (whitespace-trailing               (:background high-red))
+
+     ;; diff
+     (diff-header      (:extend t :background grey3))
+     (diff-hunk-header (:inherit 'diff-header))
+     (diff-file-header (:weight 'bold :extend t :background grey4))
+     (diff-changed nil)
+     (diff-removed (:extend t :background lower-red   :inherit 'diff-changed))
+     (diff-added   (:extend t :background lower-green :inherit 'diff-changed))
+     (diff-refine-changed nil)
+     (diff-refine-removed (:background low-red   :inherit 'diff-refine-changed))
+     (diff-refine-added   (:background low-green :inherit 'diff-refine-changed))
+
+     ; (diff-index (:inherit 'diff-file-header))
+     ; (diff-changed-unspecified (:extend t :background grey0 :inherit 'diff-changed))
+     ; (diff-indicator-removed (:foreground high-red :inherit 'diff-removed))
+     ; (diff-indicator-added (:foreground green :inherit 'diff-added))
+     ; (diff-indicator-changed (:foreground light-olive :inherit 'diff-changed))
+     ; (diff-function (:inherit 'diff-header))
+     ; (diff-context (:extend t))
+     ; (diff-nonexistent (:inherit 'diff-file-header))
+     ; (diff-error (:weight 'bold :foreground red :background grey15))
+
      ;; other
      (mini-modeline-mode-line  (:background low-olive :height 0.14 :box nil))
      (yeet/mode-line-meow-mode (:foreground higher-olive :background grey4))
-     (whitespace-tab      (:background bg :foreground grey6))
-     (whitespace-trailing (:background high-red))
+
      (show-paren-match    (:background cyan))
      (help-key-binding    (:foreground high-orange :background grey4 :box (:line-width 1 :color grey6)))
      (escape-glyph        (:foreground higher-purple))
@@ -211,18 +301,24 @@
      (dired-symlink (:foreground cyan))
      (dired-directory (:foreground orange))
 
-     (isearch (:foreground grey13 :background high-purple))
+     (isearch (:foreground grey13 :background lower-purple))
+     (isearch-fail (:foreground grey13 :background lower-red))
+     (isearch-group-1 (:foreground high-red :background low-purple))
+     (isearch-group-2 (:foreground high-red :background low-purple))
+     (lazy-highlight (:background grey4))
+
+     (query-replace (:inherit 'isearch))
 
      (sly-warning-face (:underline (:color high-orange)))
 
      (minimap-active-region (:background grey10))
 
-     (meow-normal-indicator (:foreground higher-olive))
-     (meow-insert-indicator (:foreground higher-red))
-     (meow-beacon-indicator (:foreground higher-cyan))
-     (meow-keypad-indicator (:foreground higher-purple))
-     (meow-motion-indicator (:foreground higher-green))
-     (meow-search-indicator (:foreground higher-yellow))
+     (meow-normal-indicator (:foreground darker-olive))
+     (meow-insert-indicator (:foreground darker-red))
+     (meow-beacon-indicator (:foreground darker-cyan))
+     (meow-keypad-indicator (:foreground darker-purple))
+     (meow-motion-indicator (:foreground darker-green))
+     (meow-search-indicator (:foreground darker-yellow))
 
      (vterm-color-cyan    (:foreground cyan))
      (vterm-color-green   (:foreground olive))
@@ -234,7 +330,51 @@
      (vterm-color-magenta (:foreground purple))
 
      (csv-separator-face (:foreground high-cyan))
+
+     (eglot-highlight-symbol-face (:inherit 'bold))
+     (eglot-mode-line (:foreground low-purple :weight 'bold :inherit 'font-lock-constant-face))
+     (eglot-diagnostic-tag-unnecessary-face (:inherit 'shadow))
+     (eglot-diagnostic-tag-deprecated-face (:strike-through t :inherit 'shadow))
+
+     (realgud-debugger-running     (:weight 'bold :foreground high-green))
+     (realgud-debugger-not-running (:inherit 'font-lock-warning-face))
+     (realgud-overlay-arrow1       (:inherit 'realgud-debugger-running))
+     (realgud-overlay-arrow2       (:weight 'bold :foreground grey15))
+     (realgud-overlay-arrow3       (:foreground grey6))
+     (debugger-running             (:weight 'bold :foreground high-green))
+     (debugger-not-running (:inherit 'font-lock-warning-face))
+     (realgud-bp-enabled-face       (:weight 'bold :foreground high-red))
+     (realgud-bp-line-enabled-face  (:box (:color high-red)))
+     (realgud-bp-disabled-face      (:weight 'bold :foreground grey10))
+     (realgud-bp-line-disabled-face (:box (:color grey10)))
+     (realgud-line-numbers (:inherit 'font-lock-variable-name-face))
+     (realgud-file-name (:inherit 'font-lock-preprocessor-face))
+     (realgud-backtrace-number (:weight 'bold :foreground bg))
+
+     ;; ansi-color
+     (ansi-color-red     (:foreground red    :background red))
+     (ansi-color-green   (:foreground olive  :background olive))
+     (ansi-color-yellow  (:foreground yellow :background yellow))
+     (ansi-color-blue    (:foreground orange :background orange))
+     (ansi-color-magenta (:foreground purple :background purple))
+     (ansi-color-cyan    (:foreground cyan   :background cyan))
+
+     (ansi-color-bright-red     (:foreground light-red    :background light-red))
+     (ansi-color-bright-green   (:foreground light-olive  :background light-olive))
+     (ansi-color-bright-yellow  (:foreground light-yellow :background light-yellow))
+     (ansi-color-bright-blue    (:foreground light-orange :background light-orange))
+     (ansi-color-bright-magenta (:foreground light-purple :background light-purple))
+     (ansi-color-bright-cyan    (:foreground light-cyan   :background light-cyan))
      )
-    ,@body))
+    (custom-theme-set-variables
+       (quote ,name)
+       `(ansi-color-names-vector
+         [,red
+          ,olive
+          ,orange
+          ,purple
+          ,yellow
+          ,green
+          ,cyan]))))
 
 (provide 'battery)

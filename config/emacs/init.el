@@ -47,6 +47,7 @@
       '(not obsolete interactive-only lexical docstrings))
 
 (setq user-emacs-directory (expand-file-name "emacs" (xdg-config-home)))
+(push (expand-file-name "~/lib/elisp") load-path)
 
 (setq straight-base-dir
       (expand-file-name "emacs/straight" (xdg-data-home)))
@@ -80,33 +81,6 @@ functions' body."
   '(interactive))
      ,@body))
 
-;; This assumes that this version of Emacs has the `bind-key' included
-;; in the default distribution
-(require 'bind-key)
-
-(bind-keys
- ("C-c w s b" . split-window-below)
- ("C-c w s r" . split-window-right)
- ("C-c w d"   . delete-window)
- ("C-c w h"   . windmove-left)
- ("C-c w j"   . windmove-down)
- ("C-c w k"   . windmove-up)
- ("C-c w l"   . windmove-right)
- ("C--"       . text-scale-decrease)
- ("C-="       . text-scale-increase)
- ("C-c r"     . yeet/reload-config)
- ("C-c f d"   . delete-frame)
- ("C-c f m"   . make-frame)
- ("C-c i d"   . user-insert-date)
- ("C-c s"     . async-shell-command)
- ("C-c c"     . compile)
- ("C-c t l"   . display-line-numbers-mode)
- ("C-c t t"   . toggle-truncate-lines)
- ("C-c b i"   . ibuffer)
- ("C-c o j"   . yeet/open-weekly-journal)
- ("C-c p u"   . straight-use-package)
- ("C-c p r"   . straight-get-recipe))
-
 (defun meow-setup ()
     (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
     (meow-motion-overwrite-define-key
@@ -114,7 +88,6 @@ functions' body."
      '("k" . meow-prev)
      '("<escape>" . ignore))
     (meow-leader-define-key
-     ; '("w" . "C-c w")
      '("h" . "C-h")
      '("/" . meow-keypad-describe-key)
      '("?" . meow-cheatsheet))
@@ -137,53 +110,67 @@ functions' body."
      '("." . meow-bounds-of-thing)
      '("[" . meow-beginning-of-thing)
      '("]" . meow-end-of-thing)
-     '("a" . meow-append)
-     '("A" . meow-append)
-     '("b" . meow-back-word)
-     '("B" . meow-back-symbol)
-     '("c" . meow-change)
-     '("d" . meow-delete)
-     '("D" . meow-backward-delete)
-     '("e" . meow-next-word)
-     '("E" . meow-next-symbol)
-     '("f" . meow-find)
-     '("F" . isearch-forward-regexp)
-     '("g" . meow-cancel-selection)
-     '("G" . meow-grab)
-     '("h" . meow-left)
-     '("H" . meow-left-expand)
-     '("i" . meow-insert)
-     '("I" . meow-open-above)
-     '("j" . meow-next)
-     '("J" . meow-next-expand)
-     '("k" . meow-prev)
-     '("K" . meow-prev-expand)
-     '("l" . meow-right)
-     '("L" . meow-right-expand)
-     '("m" . meow-join)
-     '("n" . meow-search)
-     '("o" . meow-open-below)
-     '("O" . meow-to-block)
-     '("p" . meow-yank)
-     '("q" . meow-quit)
-     '("Q" . meow-goto-line)
-     '("r" . meow-replace)
-     '("R" . meow-swap-grab)
-     '("s" . meow-kill)
-     '("t" . meow-till)
-     '("u" . meow-undo)
-     '("U" . meow-undo-in-selection)
-     '("V" . meow-line)
-     '("v" . meow-visit)
-     '("w" . meow-mark-word)
-     '("W" . meow-mark-symbol)
-     '("x" . meow-line)
-     '("X" . meow-goto-line)
-     '("y" . meow-save) ; this really is meow-yank
-     '("Y" . meow-sync-grab)
-     '("z" . meow-pop-selection)
      '("'" . repeat)
-     '("<escape>" . ignore)))
+     '("<escape>" . ignore)
+
+     '("q" . meow-quit)
+     '("w" . meow-mark-word)
+     '("e" . meow-next-word)
+     '("r" . meow-replace)
+     '("t" . meow-till)
+     '("y" . meow-save) ; this really is meow-yank
+     '("u" . meow-undo)
+     '("i" . meow-insert)
+     '("o" . meow-open-below)
+     '("p" . meow-yank)
+
+     '("a" . meow-append)
+     '("s" . meow-kill)
+     '("d" . meow-delete)
+     '("f" . meow-find)
+     '("g" . meow-cancel-selection)
+     '("h" . meow-left)
+     '("j" . meow-next)
+     '("k" . meow-prev)
+     '("l" . meow-right)
+
+     '("z" . meow-pop-selection)
+     '("x" . meow-line)
+     '("c" . meow-change)
+     '("v" . meow-visit)
+     '("b" . meow-back-word)
+     '("n" . meow-search)
+     '("m" . meow-join)
+
+     '("Q" . meow-goto-line)
+     '("W" . meow-mark-symbol)
+     '("E" . meow-next-symbol)
+     '("R" . meow-swap-grab)
+     ; '("T" . TODO)
+     '("Y" . meow-sync-grab)
+     '("U" . meow-undo-in-selection)
+     '("I" . meow-open-above)
+     '("O" . meow-to-block)
+     ; '("P" . TODO)
+
+     '("A" . meow-append)
+     ; '("S" . TODO)
+     '("D" . meow-backward-delete)
+     '("F" . isearch-forward-regexp)
+     '("G" . meow-grab)
+     '("H" . meow-left-expand)
+     '("J" . meow-next-expand)
+     '("K" . meow-prev-expand)
+     '("L" . meow-right-expand)
+
+     ; '("Z" . TODO)
+     '("X" . meow-goto-line)
+     '("C" . meow-block)
+     '("V" . meow-line)
+     '("B" . meow-back-symbol)
+     ; '("N" . TODO)
+     ; '("M" . TODO)
+     ))
 
 (use-package meow
   :config
@@ -231,23 +218,26 @@ functions' body."
 (use-package no-littering)
 
 ;; remove unused UI elements
-(menu-bar-mode -1)
+; (menu-bar-mode -1)
+; (scroll-bar-mode -1)
 (tool-bar-mode -1)
-(scroll-bar-mode -1)
 (blink-cursor-mode -1)
+
+;; faces
+(defface lighter-yellow nil "Background color lightest yellow.")
 
 ;; load theme
 (add-to-list 'custom-theme-load-path
        (expand-file-name "themes/" user-emacs-directory))
 
 (use-package autothemer)
-(load-theme 'battery-dark)
 
 (use-package theme-changer
-  :disabled
-  :config (setq calendar-latitude  -23.61
-                calendar-longitude -46.65)
-  :init (change-theme 'battery-light 'battery-dark))
+  ; :disabled
+  ;; Set for Toledo, PR, BR
+  :config (setq calendar-latitude  -24.735140
+                calendar-longitude -53.742062)
+  (change-theme 'battery-light 'battery-dark))
 
 (show-paren-mode 1)
 
@@ -299,13 +289,14 @@ functions' body."
 
 (setq-default mode-line-format
   '((:eval (meow-indicator))
-    "%b"
     (:eval
-     (when (buffer-modified-p)
-       (propertize "M" 'help-echo "Buffer has been modified")))
+     (if (buffer-modified-p)
+       (propertize " %b " 'face 'lighter-yellow
+                   'help-echo (concat "Buffer " (buffer-file-name) " has been modified"))
+       (propertize " %b " 'help-echo (concat "Buffer " (buffer-file-name) " has been modified"))))
     (:eval
      (when buffer-read-only
-       (propertize "L" 'help-echo "Buffer is marked as read-only")))
+       (propertize " <ro>" 'help-echo "Buffer is marked as read-only")))
     " "
     mode-line-position
     " "
@@ -314,12 +305,12 @@ functions' body."
     (:eval
      (propertize " " 'display
            `((space
-        :align-to (-
-             (+ right right-fringe right-margin)
-             ,(+ 3 (string-width
-              (if (listp mode-name)
-                  (car mode-name)
-                  mode-name))))))))))
+              :align-to (-
+                         (+ right right-fringe right-margin)
+                         ,(+ 3 (string-width
+                                (if (listp mode-name)
+                                    (car mode-name)
+                                  mode-name))))))))))
 
 ;;; fonts
 (set-face-attribute 'default nil
@@ -332,16 +323,17 @@ functions' body."
  :family "NotoSans Display Nerd Font" :height 105)
 
 ;; set font for character sets from languages of East Asia
-(set-fontset-font t 'unicode-bmp   (font-spec :family "FontAwesome"))
+(set-fontset-font t 'unicode-bmp "FontAwesome")
 (set-fontset-font t 'han      "Noto Sans Mono CJK SC")
 (set-fontset-font t 'kana     "Noto Sans Mono CJK JP")
 (set-fontset-font t 'hangul   "Noto Sans Mono CJK KR")
 (set-fontset-font t 'cjk-misc "Noto Sans Mono CJK KR")
-(set-fontset-font t
-                  (if (version< emacs-version "28.1")
-                      '(#x1f300 . #x1fad0)
-                      'emoji)
-                  (font-spec :family "FontAwesome"))
+(let ((chars
+       (if (version< emacs-version "28.1")
+           '(#x1f300 . #x1fad0)
+           'emoji)))
+  (set-fontset-font t chars "FontAwesome"))
+
 
 ;;; else
 (use-package whitespace
@@ -371,7 +363,8 @@ functions' body."
   :hook (prog-mode . company-mode)
   :config
   (setq company-selection-wrap-around t
-        company-minimum-prefix-length 1))
+        company-minimum-prefix-length 1
+        company-clang-use-compile-flags-txt t))
 
 (use-package orderless
   :config
@@ -386,7 +379,8 @@ functions' body."
          (dired-mode . dired-hide-details-mode)))
 
 ;;; org-mode
-(require 'org)
+(use-package org)
+; (require 'org)
 
 (setq org-directory "~/doc/note"
       org-adapt-indentation nil
@@ -396,47 +390,89 @@ functions' body."
       org-startup-with-inline-images t
       org-indent-indentation-per-level 1
       org-hide-emphasis-markers nil
-      org-fontify-whole-block-delimiter-line t)
+      org-fontify-whole-block-delimiter-line t
+      org-startup-folded nil)
 
 ;; latex
 (setq org-startup-with-latex-preview t
       org-latex-inputenc-alist '(("utf8" . "utf8x"))
-      org-preview-latex-image-directory
-        (expand-file-name "org-latex" (xdg-cache-home))
-      org-format-latex-options
-        (plist-put org-format-latex-options :scale 1.4))
+      org-preview-latex-image-directory (expand-file-name "org-latex" (xdg-cache-home))
+      ; org-format-latex-options (plist-put org-format-latex-options :scale 1.4)
+      )
 
 ;; babel
 (setq org-confirm-babel-evaluate t)
 
-;; TODO maybe use `org-roam' for this (?)
-(defvar yeet/org-weekly-journal-directory
-  (expand-file-name "journal/weekly/" org-directory))
-
-(defcommand yeet/open-weekly-journal ()
-  (find-file
-   (expand-file-name
-    (format-time-string "%U-%Y\.org")
-    yeet/org-weekly-journal-directory)))
-
 (require 'org-tempo)
 
 (add-hook 'org-mode-hook #'prettify-symbols-mode)
+; (add-hook 'org-mode-hook #'variable-pitch-mode)
+(add-hook 'org-mode-hook #'org-indent-mode)
+; (add-hook 'org-mode-hook #'turn-on-auto-fill)
 (add-hook 'org-mode-hook #'visual-line-mode)
-(add-hook 'org-mode-hook #'variable-pitch-mode)
-(add-hook 'org-mode-hook #'turn-on-auto-fill)
+(add-hook 'org-mode-hook #'olivetti-mode)
 (add-hook 'org-mode-hook
           #'(lambda ()
-              (setq left-margin-width 2.0
+              (setq left-margin-width 1
                     fill-column 60)))
+
+(use-package org-roam
+  :custom
+  (org-roam-directory org-directory)
+  (org-roam-dailies-directory "journal/")
+  (org-roam-file-exclude-regexp '("\\.stfolder" "\\.stignore" "\\.stversions" "data/"))
+  (org-roam-capture-templates
+   '(("r" "random" plain "%?"
+      :target (file+head "random/${slug}.org" "#+title: ${title}\n")
+      :unnarrowed t)
+     ("p" "persona" plain "%?"
+      :target (file+head "persona/${slug}.org" "#+title: ${title}\n#+filetags: :persona:\n")
+      :unnarrowed t)
+     ("m" "music")
+     ("ml" "list" plain "%?"
+      :target (file+head "music/list/${slug}.org" "#+title: ${title}\n#+filetags: :music:list:\n")
+      :unnarrowed t)
+     ("mt" "track" plain "%?"
+      :target (file+head "music/track/${slug}.org" "#+title: ${title}\n#+filetags: :music:track:\n")
+      :unnarrowed t)
+     ("f" "film")
+     ("fa" "anime" plain "%?"
+      :target (file+head "film/anime/${slug}.org" "#+title: ${title}\n#+filetags: :film:anime:\n")
+      :unnarrowed t)
+     ("fc" "Cartoon" plain "%?"
+      :target (file+head "film/cartoon/${slug}.org" "#+title: ${title}\n#+filetags: :film:cartoon:\n")
+      :unnarrowed t)
+     ("fm" "movie" plain "%?"
+      :target (file+head "film/movie/${slug}.org" "#+title: ${title}\n#+filetags: :film:movie:\n")
+      :unnarrowed t)
+     ("l" "literature")
+     ("lb" "book" plain "%?"
+      :target (file+head "literature/book/${slug}.org" "#+title: ${title}\n#+filetags: :literature:book:\n")
+      :unnarrowed t)
+     ("lm" "manga" plain "%?"
+      :target (file+head "literature/manga/${slug}.org" "#+title: ${title}\n#+filetags: :literature:manga:\n")
+      :unnarrowed t)))
+  (org-roam-dailies-capture-templates
+   '(("t" "Daily journal" entry "* %?"
+      :target (file+head "%<%d-%m-%Y->.org" "#+title: %<%d-%m-%Y>\n#+filetags: :journal:\n"))
+     ("w" "Weekly journal" plain "* %?"
+      :target (file+head "%<%Y-W%U>.org" "#+title: %<%U>th week of %<%Y>\n#+filetags: :journal:\n")))))
 
 ;; spell checker
 (use-package ispell
+  :disabled
   :straight nil
   :hook (org-mode . flyspell-mode)
   :config
   ;; csv of dictionaries
-  (setq ispell-dictionary "en_US,pt_BR"))
+  (setq ispell-dictionary
+        (c-concat-separated
+         '("en_US"
+           ; "pt_BR"
+           )
+         ","))
+  (ispell-set-spellchecker-params)
+  (ispell-hunspell-add-multi-dic ispell-dictionary))
 
 ;; auto generate inline latex images
 (use-package org-fragtog
@@ -524,10 +560,13 @@ functions' body."
   :commands nix-mode)
 
 (use-package nushell-mode
-  :disabled
-  :straight
-  (nushell-mode :type git :host github :repo "azzamsa/nushell-mode")
-  :config (setq nushell-indent-offset 2))
+  :straight (nushell-mode
+             :type git
+             :host github
+             :repo "azzamsa/emacs-nushell")
+  :mode "\\.nu\\'"
+  :defer t
+  :commands nushell-mode)
 
 (use-package prolog
   :defer t
@@ -575,43 +614,39 @@ functions' body."
   :config (setq inferior-lisp-program "/bin/sbcl"))
 
 ;;; ide/debugging/programming support
-(setq compile-command "make ")
+(setq compile-command "make")
 
 ;; C/C++
-(use-package lsp-mode
-  :defer t
-  ; :requires lsp-clangd
-  :hook ((c-mode c++-mode) . lsp)
+(use-package eglot
+  :hook ((c-mode c++-mode) . eglot-ensure)
   :config
-  (setq lsp-keymap-prefix "C-c l"
-        lsp-headerline-breadcrumb-enable nil))
+  (when (not (locate-file "clangd" exec-path))
+    (warn "`clangd' not in `exec-path'. Emacs won't be able to connect to C/C++ LSP server."))
+  (add-to-list 'eglot-server-programs '((c-mode c++-mode) . ("clangd" "--enable-config"))))
 
-(use-package lsp-clangd
-  :disabled
-  :defer t
+(use-package clang-format
   :config
-  (add-to-list 'lsp-clients-clangd-library-directories "/home/goiabae/lib/c"))
+  (setq clang-format-style "file"
+        ;; if no `.clang-format' is found, don't do anything
+        clang-format-fallback-style "none"))
 
-(use-package dap-mode
-  :defer t
-  :requires (dap-lldb dap-gdb-lldb)
-  :init
-  (dap-mode 1)
-  (dap-tooltip-mode 1)
-  (dap-auto-configure-mode 1)
-  (dap-ui-controls-mode 1)
-  :bind (:map dap-mode-map
-         ([f5] . dap-debug)
-         ("M-d i" . dap-step-in)
-         ("M-d o" . dap-step-out)
-         ("M-d n" . dap-next)
-         ("M-d g" . dap-continue)
-         ("M-d t" . dap-breakpoint-toggle))
-  :config (setq dap-lldb-debug-program "/usr/bin/lldb-vscode"))
+(defun yeet/clang-format-buffer-on-save ()
+  "Add auto-save hook for clang-format-buffer-smart."
+  (add-hook 'before-save-hook 'clang-format-buffer nil t))
 
-(add-function :after after-focus-change-function
-              (lambda ()
-                (unless (frame-focus-state) (save-some-buffers t))))
+(add-hook 'c-mode-hook 'yeet/clang-format-buffer-on-save)
+(add-hook 'c++-mode-hook 'yeet/clang-format-buffer-on-save)
+
+(use-package realgud)
+(use-package rmsbolt)
+
+(use-package yasnippet-snippets)
+(use-package yasnippet
+  :requires yasnippet-snippets
+  :hook ((c-mode c++-mode) . yas-minor-mode)
+  :config (yas-reload-all))
+
+;; other
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (if (version< emacs-version "28.1")
@@ -633,8 +668,8 @@ functions' body."
 ;; pop-ups should create a new frame, instead of splitting a window
 ;; use the system's window manager for managing buffers
 ;; May not work with all modes
-(setq-default pop-up-frames t
-              pop-up-windows nil)
+;(setq-default pop-up-frames t
+;              pop-up-windows nil)
 
 (setq-default x-select-enable-clipboard t
               x-select-enable-primary nil)
@@ -647,8 +682,8 @@ functions' body."
       visible-bell nil
       ring-bell-function
       #'(lambda ()
-    (invert-face 'mode-line)
-    (run-with-timer 0.1 nil #'invert-face 'mode-line)))
+          (invert-face 'mode-line)
+          (run-with-timer 0.1 nil #'invert-face 'mode-line)))
 
 ;; don't ask for confirmation when changing region case
 (put   'upcase-region 'disabled nil)
@@ -657,27 +692,13 @@ functions' body."
 (defcommand yeet/reload-config ()
   (load (expand-file-name "init.el" user-emacs-directory)))
 
-(defcommand yeet/insert-date ()
-  (insert (format-time-string "%d/%m/%Y")))
-
-(defun yeet/pipe-in (a)
-  (let ((b (create-file-buffer "*stdin*")))
-    (switch-to-buffer b)
-    (insert-file-contents a)
-    (delete-file a)
-    (pipe-mode)))
-
-(defcommand yeet/pipe-out ()
-  (with-current-buffer (get-buffer "*stdin*")
-    (write-file "/dev/stdout")))
-
 (use-package openwith
   :config
   (setq openwith-associations
-        '(("\\.pdf\\'"                                   "zathura"  (file))
-          ("\\.mp3\\'"                                   "deadbeef" (file))
-          ("\\.\\(?:mpe?g\\|avi\\|wmv\\|mp4\\|mkv\\)\\'" "mpv"      (file))
-          ("\\.\\(?:jp?g\\|png\\|webp\\|gif\\)\\'"       "imv"      (file))))
+        `((,(rx ".pdf")                                   "xdg-open"  (file))
+          (,(rx ".mp3")                                   "deadbeef" (file))
+          (,(rx (or ".mpeg" ".avi" ".wmv" ".mp4" ".mkv")) "mpv"      (file))
+          (,(rx (or ".jpg" ".jpeg" ".webp" ".gif"))       "imv"      (file))))
   :init (openwith-mode t))
 
 (unless (daemonp)
@@ -686,3 +707,34 @@ functions' body."
 (global-dash-fontify-mode)
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region 'disabled nil)
+
+(use-package titlecase)
+
+;; This assumes that this version of Emacs has the `bind-key' included
+;; in the default distribution
+(require 'bind-key)
+
+(bind-keys
+ ("C-c w s b" . split-window-below)
+ ("C-c w s r" . split-window-right)
+ ("C-c w d"   . delete-window)
+ ("C-c w h"   . windmove-left)
+ ("C-c w j"   . windmove-down)
+ ("C-c w k"   . windmove-up)
+ ("C-c w l"   . windmove-right)
+ ("C--"       . text-scale-decrease)
+ ("C-="       . text-scale-increase)
+ ("C-c r"     . yeet/reload-config)
+ ("C-c f d"   . delete-frame)
+ ("C-c f m"   . make-frame)
+ ("C-c i d"   . user-insert-date)
+ ("C-c s"     . async-shell-command)
+ ("C-c c"     . compile)
+ ("C-c t l"   . display-line-numbers-mode)
+ ("C-c t t"   . toggle-truncate-lines)
+ ("C-c b i"   . ibuffer)
+ ("C-c o r j" . org-roam-dailies-find-today)
+ ("C-c o r f" . org-roam-node-find)
+ ("C-c o r i" . org-roam-node-insert)
+ ("C-c p u"   . straight-use-package)
+ ("C-c p r"   . straight-get-recipe))
