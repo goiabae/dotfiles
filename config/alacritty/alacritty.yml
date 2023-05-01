@@ -1,0 +1,97 @@
+---
+window:
+  opacity: 1.0
+  dynamic_title: true
+  dimensions:
+    columns: 70
+    lines: 25
+  padding:
+    x: 2
+    y: 4
+schemes:
+  bloombox: &bloombox
+    primary:
+      background: "0x252528"
+      foreground: "0xebdbb2"
+    normal:
+      black: "0x3c3836"
+      red: "0xb43536"
+      green: "0x87812b"
+      yellow: "0xbe8a3a"
+      blue: "0xbb5729"
+      magenta: "0xa66d70"
+      cyan: "0x729670"
+      white: "0xd5c4a1"
+    bright:
+      black: "0x928374"
+      red: "0xe24f48"
+      green: "0xa7a43a"
+      yellow: "0xdfab4a"
+      blue: "0xdf6d38"
+      magenta: "0xc99093"
+      cyan: "0x95b785"
+      white: "0xfbf1c7"
+  battery: &battery
+    primary:
+      background: "0x101010"
+      foreground: "0xebdbb2"
+    normal:
+      black: "0x3c3836"
+      red: "0xcc241d"
+      green: "0x98952a"
+      yellow: "0xd09420"
+      blue: "0xd6580e"
+      magenta: "0xb16262"
+      cyan: "0x689e69"
+      white: "0xd5c4a1"
+    bright:
+      black: "0x928374"
+      red: "0xff402b"
+      green: "0xbbb726"
+      yellow: "0xfabd2f"
+      blue: "0xfe6e19"
+      magenta: "0xd38686"
+      cyan: "0x8ec07c"
+      white: "0xfbf1c7"
+  battery_light: &battery_light
+    primary:
+      background: "0xfbf1c7"
+      foreground: "0x252525"
+    normal:
+      black: "0x3c3836"
+      red: '0x751518'
+      green: '0x4f4b10'
+      yellow: '0x7f5615'
+      blue: '0x5e2a11'
+      magenta: '0x603333'
+      cyan: '0x2f4f36'
+      white: "0x7c6f64"
+    bright:
+      black: "0x504945"
+      red: '0xab090f'
+      green: '0x79740e'
+      yellow: '0xb57614'
+      blue: '0xa93d0a'
+      magenta: '0x894949'
+      cyan: '0x427a4e'
+      white: "0xbdae93"
+
+colors: *battery
+shell:
+ program: /usr/bin/nu
+tabspaces: 2
+font:
+  family: 
+  size: 9
+  normal:
+    family: SauceCodePro Nerd Font
+    style: Medium
+  bold:
+    family: SauceCodePro Nerd Font
+    style: Bold
+  italic:
+    family: SauceCodePro Nerd Font
+    style: Italic
+  bold_italic:
+    family: SauceCodePro Nerd Font
+    style: Bold Italic
