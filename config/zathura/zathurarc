@@ -1,0 +1,7 @@
+set selection-clipboard clipboard
+set window-height 940
+set window-width 680
+set recolor "true"
+set default-bg rgba(40,40,40,0.9)
+set recolor-darkcolor "#000000"
+set recolor-lightcolor "#fef5d8"
