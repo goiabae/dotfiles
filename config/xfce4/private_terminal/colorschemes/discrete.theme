@@ -1,0 +1,6 @@
+[Scheme]
+Name=Discrete
+ColorForeground=#f2f2e5e5bcbc
+ColorBackground=#101010101010
+ColorPalette=rgb(16,16,16);rgb(169,75,73);rgb(135,134,71);rgb(178,143,88);rgb(178,105,74);rgb(159,114,114);rgb(118,148,118);rgb(146,131,116);rgb(50,48,47);rgb(215,112,103);rgb(162,164,92);rgb(216,181,112);rgb(212,129,92);rgb(193,149,149);rgb(151,180,142);rgb(185,166,147)
+ColorCursor=#d65bc4cd8ca1
