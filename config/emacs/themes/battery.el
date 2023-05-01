@@ -332,7 +332,7 @@
      (csv-separator-face (:foreground high-cyan))
 
      (eglot-highlight-symbol-face (:inherit 'bold))
-     (eglot-mode-line (:foreground low-purple :weight 'bold :inherit 'font-lock-constant-face))
+     (eglot-mode-line (:foreground dark-purple :weight 'bold :inherit 'font-lock-constant-face))
      (eglot-diagnostic-tag-unnecessary-face (:inherit 'shadow))
      (eglot-diagnostic-tag-deprecated-face (:strike-through t :inherit 'shadow))
 

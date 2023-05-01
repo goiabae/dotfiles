@@ -1,5 +1,4 @@
 (setq package-enable-at-startup nil
-      package--init-file-ensured t
       package-archives nil)
 
 (setq gc-cons-threshold most-positive-fixnum
