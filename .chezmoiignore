@@ -1,7 +1,7 @@
 app/
 audio/
 bin/
-data/
+var/
 desktop/
 doc/
 etc/
