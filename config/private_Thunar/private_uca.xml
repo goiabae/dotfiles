@@ -12,4 +12,26 @@
 	<startup-notify/>
 	<directories/>
 </action>
+<action>
+	<icon>insert-link</icon>
+	<name>Create Symlink</name>
+	<unique-id>1656835785505279-1</unique-id>
+	<command>ln -s %f %n.link</command>
+	<description>Create a symblic link in the current directory</description>
+	<patterns>*</patterns>
+	<directories/>
+	<audio-files/>
+	<image-files/>
+	<other-files/>
+	<text-files/>
+	<video-files/>
+</action>
+<action>
+	<icon>security-medium</icon>
+	<name>Scan File</name>
+	<unique-id>1656835842738264-2</unique-id>
+	<command>/bin/clamscan %f</command>
+	<description>Scan file for potential malware</description>
+	<patterns>*</patterns>
+</action>
 </actions>
