@@ -1,0 +1,94 @@
+
+# This is THE bar configuration
+bar:
+  height: 18
+  location: top
+  spacing: 2
+  margin: 2
+
+  # Default font
+  font: Hack Nerd Font Mono:pixelsize=12
+
+  foreground: ebdbb2ff
+  background: 181818ff
+
+  left:
+    - label:
+        content: {string: {text: "("}}
+    - label:
+        content: {string: {text: "(area"}}	
+    - river:
+        anchors:
+          - base: &river_base
+              left-margin: 6
+              right-margin: 6 
+              tag: id 
+              default: {string: {text: "t"}}
+              values:
+                1: {string: {text: "1"}}  
+                2: {string: {text: "2"}}  
+                3: {string: {text: "3"}}  
+                4: {string: {text: "4"}}  
+                5: {string: {text: "5"}}
+        content:
+          map:
+            on-click: 
+              left: sh -c "riverctl set-focused-tags $((1 << ({id} - 1)))"
+              right: sh -c "riverctl toggle-focused-tags $((1 << ({id} -1)))"
+              middle: sh -c "riverctl toggle-view-tags $((1 << ({id} -1)))"
+            tag: state
+            values:
+              urgent:
+                map:
+                  <<: *river_base
+                  deco: {background: {color: ff4b38ff}}
+              focused:
+                map:
+                  <<: *river_base
+                  deco: {background: {color: 3c3836ff}}
+              visible:
+                map:
+                  tag: occupied
+                  values:
+                    false: {map: {<<: *river_base}}
+                    true: {map: {<<: *river_base}}
+              unfocused:
+                map:
+                  <<: *river_base
+              invisible:
+                map:
+                  tag: occupied
+                  values:
+                    false: {empty: {}}
+                    true: {map: {<<: *river_base, deco: {underline: {size: 3, color: ff4b38ff}}}}
+    - label:
+        content: {string: {text: ")"}}
+    - alsa:
+        card: hw:MID
+        mixer: Master
+        content: {string: {text: "(ALSA {volume}/127)"}}
+    - backlight:
+        name: acpi_video0
+        content: {string: {text: "(bright {percent})"}}
+    - script:
+        path: /home/goiabae/sys/script/yambar.sh
+        args: []
+        poll-interval: 20
+        content:
+          - string: {text: "(temp (max {maxtemp}) (avg {avgtemp}))"}
+          - string: {text: "(mem {mem}MB)"}
+#          - string: {text: "(title {windowtitle})"}
+  right:
+    - network:
+        name: wlp18s0b1
+        poll-interval: 10
+        content: {string: {text: "({name} {ssid} {ipv4} (speed (down {rx-bitrate}) (up {tx-bitrate}) MB))"}}
+    - battery:
+        name: BAT0
+        poll-interval: 30
+        content: {string: {text: "(bat {capacity}% {estimate}m)"}}
+    - clock:
+        time-format: "%H:%M:%S"
+        content: {string: {text: "(time {date} {time})"}}
+    - label:
+        content: {string: {text: ")"}}
