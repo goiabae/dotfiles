@@ -1,0 +1,20 @@
+default_provider: animepahe
+quality_string: 720/worst
+default_player: mpv
+#players:
+#  mpv:
+#    executable: mpv
+#    opts: []
+# ffmpeg:
+#     executable: ffmpeg
+#     hls_download: false
+#     submerge: true
+# discord_presence: true
+fzf:
+    executable: fzf
+    opts: []
+    state: true
+# schedule:
+#     site_url: https://graphql.anilist.co/ # DO NOT CHANGE UNLESS YOU KNOW WHAT YOU'RE DOING
+#     date_format: "%b. %d, %A"
+#     time_format: "%X"
