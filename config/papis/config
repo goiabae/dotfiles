@@ -1,0 +1,9 @@
+[papers]
+dir = ~/doc/pdf/paper
+
+[book]
+dir = ~/doc/pdf/book
+
+[settings]
+default-library = papers
+opentool = xdg-open
