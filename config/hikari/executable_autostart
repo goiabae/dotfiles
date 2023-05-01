@@ -1,0 +1,5 @@
+#!/bin/sh
+
+SVDIR="$HOME/data/runit/hikari"
+mkdir -p $SVDIR
+exec runsvdir $SVDIR
