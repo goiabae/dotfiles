@@ -1,0 +1,138 @@
+* {
+  highlight: bold;
+	scrollbar: true;
+	
+  dark-red:     #ab090f;
+  dark-olive:   #79740e;
+  dark-yellow:  #b57614;
+  dark-orange:  #a93d0a;
+  dark-purple:  #894949;
+  dark-green:   #207016;
+  dark-cyan:    #427a4e;
+  red:          #cc241d;
+  olive:        #98952a;
+  yellow:       #d09420;
+  orange:       #d6580e;
+  purple:       #b16262;
+  green:        #3f9f32;
+  cyan:         #689e69;
+
+  grey0:    #161616;
+  grey1:    #202020;
+  grey1-5:  #252525;
+  grey2:    #3c3836;
+  grey3:    #504945;
+  grey4:    #7c6f64;
+  grey5:    #928374;
+  grey6:    #a89984;
+  grey7:    #b7ac98;
+	grey8:    #bdaea0;
+	grey9:    #d1c4b8;
+	grey9-5:  #eddfce;
+	grey10:   #fdfbf4;
+
+	pale6:    #ebdbb2;
+  pale8:    #fbf1c7;
+
+  background:  @grey9-5;
+  foreground:  @grey0;
+  lines-color: @grey6;
+
+  background-color:      @background;
+  border-color:          @lines-color;
+  text-color:            @foreground;
+}
+
+window {
+    background-color: @background;
+    border:           4;
+    padding:          4;
+}
+
+mainbox {
+    border:  0;
+    padding: 0;
+}
+
+message {
+    border:       2px 0 0;
+    border-color: @lines-color;
+    padding:      1px;
+}
+
+textbox {
+    highlight:  @highlight;
+    text-color: @foreground;
+}
+
+element selected {
+    background-color: @grey6;
+}
+
+element {
+    border:  0;
+    padding: 2px;
+}
+
+element.alternate.normal {
+  background-color: @grey9;
+}
+
+element-text, element-icon {
+  background-color: inherit;
+  text-color: inherit;
+}
+
+scrollbar {
+    width:        4px;
+    border:       0;
+    handle-color: @lines-color;
+    handle-width: 8px;
+    padding:      0;
+}
+
+inputbar {
+    spacing:    0;
+    text-color: @foreground;
+		background-color: @grey10;
+    padding:    2px;
+    children:   [ prompt, textbox-prompt-sep, entry, case-indicator ];
+}
+
+case-indicator,
+entry,
+prompt,
+button {
+    spacing:    0;
+		background-color: inherit; 
+    text-color: @foreground;
+}
+
+textbox-prompt-sep {
+    expand:     false;
+		background-color: inherit;
+    str:        ":";
+    text-color: @foreground;
+    margin:     0 0.3em 0 0;
+}
+
+/*
+listview {
+    border:       2px solid 0 0;
+    padding:      2px 0 0;
+    border-color: @lines-color;
+    spacing:      2px;
+    scrollbar:    @scrollbar;
+}
+
+mode-switcher {
+    border:       2px 0 0;
+    border-color: @lines-color;
+}
+
+button.selected {
+    background-color: @selected-normal-background;
+    text-color:       @selected-normal-foreground;
+}
+
+*/
