@@ -436,3 +436,9 @@
   (advice-add #'display-startup-echo-area-message :override #'ignore))
 
 (global-dash-fontify-mode)
+
+(use-package himalaya
+  :straight (himalaya
+             :type git
+             :host github
+             :repo "dantecatalfamo/himalaya-emacs"))
