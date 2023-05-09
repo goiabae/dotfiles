@@ -2,6 +2,10 @@ external_menu () {
   rofi -dmenu -p "$1"
 }
 
+video_player() {
+	mpv --ao=pulse "$@"
+}
+
 ytdl_pref="247"
 sub_link_count=1
 
