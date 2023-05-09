@@ -365,7 +365,14 @@
      (ansi-color-bright-blue    (:foreground light-orange :background light-orange))
      (ansi-color-bright-magenta (:foreground light-purple :background light-purple))
      (ansi-color-bright-cyan    (:foreground light-cyan   :background light-cyan))
-     )
+
+     ;; message
+     (message-header-other (:foreground orange))
+     (message-header-to (:weight 'bold :foreground fg))
+     (message-header-subject (:foreground fg))
+     (message-header-name (:foreground light-yellow))
+    )
+
     (custom-theme-set-variables
        (quote ,name)
        `(ansi-color-names-vector
