@@ -1,0 +1,68 @@
+downloads-dir = "/home/goiabae/net/dl"
+display-name = "Guilherme MACHADO"
+signature = "Grato, Guilherme."
+email-listing-page-size = 50
+
+[utfpr]
+default = true
+email = "machadog@alunos.utfpr.edu.br"
+
+backend = "imap"
+imap-host = "imap.gmail.com"
+imap-port = 993
+imap-login = "machadog@alunos.utfpr.edu.br"
+imap-passwd-cmd = "pass show utfpr-gmail"
+
+sender = "smtp"
+smtp-host = "smtp.gmail.com"
+smtp-port = 465
+smtp-login = "machadog@alunos.utfpr.edu.br"
+smtp-passwd-cmd = "pass show utfpr-gmail"
+
+[utfpr.folder-aliases]
+inbox = "[Gmail]/Todos os e-mails"
+drafts = "[Gmail]/Rascunhos"
+sent = "[Gmail]/E-mails enviados"
+trash = "[Gmail]/Lixeira"
+
+[gm4ch4d0]
+email = "gm4ch4d0@gmail.com"
+
+backend = "imap"
+imap-host = "imap.gmail.com"
+imap-port = 993
+imap-login = "gm4ch4d0@gmail.com"
+imap-passwd-cmd = "pass show gm4ch4d0-gmail"
+
+sender = "smtp"
+smtp-host = "smtp.gmail.com"
+smtp-port = 465
+smtp-login = "gm4ch4d0@gmail.com"
+smtp-passwd-cmd = "pass show gm4ch4d0-gmail"
+
+[gm4ch4d0.folder-aliases]
+inbox = "[Gmail]/Todos os e-mails"
+drafts = "[Gmail]/Rascunhos"
+sent = "[Gmail]/E-mails enviados"
+trash = "[Gmail]/Lixeira"
+
+[mrcrash32]
+email = "mrcrash32@gmail.com"
+
+backend = "imap"
+imap-host = "imap.gmail.com"
+imap-port = 993
+imap-login = "mrcrash32@gmail.com"
+imap-passwd-cmd = "pass show mrcrash32-gmail"
+
+sender = "smtp"
+smtp-host = "smtp.gmail.com"
+smtp-port = 465
+smtp-login = "mrcrash32@gmail.com"
+smtp-passwd-cmd = "pass show mrcrash32-gmail"
+
+[mrcrash32.folder-aliases]
+inbox = "[Gmail]/Todos os e-mails"
+drafts = "[Gmail]/Rascunhos"
+sent = "[Gmail]/E-mails enviados"
+trash = "[Gmail]/Lixeira"
