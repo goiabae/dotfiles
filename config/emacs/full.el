@@ -367,6 +367,23 @@
     (warn "`clangd' not in `exec-path'. Emacs won't be able to connect to C/C++ LSP server."))
   (add-to-list 'eglot-server-programs '((c-mode c++-mode) . ("clangd" "--enable-config"))))
 
+(defun yeet/cmake-prepare (generate-compile-commands is-release)
+  (interactive
+   (list (yes-or-no-p "Should generate compile_commands.json? ")
+         (yes-or-no-p "Set build type to Release (otherwise Debug)? ")))
+  (let ((default-directory (project-root (project-current t)))
+        (compile-command
+         (concat "cmake -S . -B build"
+                 " -D CMAKE_BUILD_TYPE=" (if is-release "Release" "Debug")
+                 (if generate-compile-commands " -D CMAKE_EXPORT_COMPILE_COMMANDS=1" nil))))
+    (call-interactively 'compile)))
+
+(defun yeet/cmake-build ()
+  (interactive)
+  (let ((default-directory (project-root (project-current t)))
+        (compile-command "cmake --build build"))
+    (call-interactively 'compile)))
+
 (use-package clang-format
   :hook ((c-mode c++-mode) . (lambda () (add-hook 'before-save-hook 'clang-format-buffer nil t)))
   :config
