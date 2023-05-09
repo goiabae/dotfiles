@@ -2,8 +2,8 @@ let uid = (id -u | str trim -r)
 let home = $nu.home-path
 
 # default applications
-let EDITOR = "vim"
-let VISUAL = "emacs"
+let EDITOR = "emacs"
+let VISUAL = "emacs --no-window-system"
 let BROWSER = "luakit"
 
 # for gnupg-agent to work properly
