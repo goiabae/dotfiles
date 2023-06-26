@@ -117,7 +117,12 @@ Add some directories to better integrate with the system. Prevent packages from 
 #+end_src
 
 ** package manager
+*** DISABLED straight.el
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 Use straight.el as the package manager.
+
 #+begin_src elisp
 (setq straight-base-dir
       (expand-file-name "emacs/straight" (xdg-data-home))
@@ -142,6 +147,58 @@ Use straight.el as the package manager.
 (straight-use-package 'use-package)
 #+end_src
 
+*** elpaca
+Testing usage of elpaca, in place of =straight.el=.
+
+#+begin_src elisp
+(defvar elpaca-installer-version 0.4)
+(defvar elpaca-directory (expand-file-name "emacs/elpaca" (xdg-data-home)))
+(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+                              :ref nil
+                              :files (:defaults (:exclude "extensions"))
+                              :build (:not elpaca--activate-package)))
+(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+       (build (expand-file-name "elpaca/" elpaca-builds-directory))
+       (order (cdr elpaca-order))
+       (default-directory repo))
+  (add-to-list 'load-path (if (file-exists-p build) build repo))
+  (unless (file-exists-p repo)
+    (make-directory repo t)
+    (when (< emacs-major-version 28) (require 'subr-x))
+    (condition-case-unless-debug err
+        (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                 ((zerop (call-process "git" nil buffer t "clone"
+                                       (plist-get order :repo) repo)))
+                 ((zerop (call-process "git" nil buffer t "checkout"
+                                       (or (plist-get order :ref) "--"))))
+                 (emacs (concat invocation-directory invocation-name))
+                 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                 ((require 'elpaca))
+                 ((elpaca-generate-autoloads "elpaca" repo)))
+            (kill-buffer buffer)
+          (error "%s" (with-current-buffer buffer (buffer-string))))
+      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+  (unless (require 'elpaca-autoloads nil t)
+    (require 'elpaca)
+    (elpaca-generate-autoloads "elpaca" repo)
+    (load "./elpaca-autoloads")))
+(add-hook 'after-init-hook #'elpaca-process-queues)
+(elpaca `(,@elpaca-order))
+
+;; Install use-package support
+(elpaca elpaca-use-package
+  ;; Enable :elpaca use-package keyword.
+  (elpaca-use-package-mode)
+  ;; Assume :elpaca t unless otherwise specified.
+  (setq elpaca-use-package-by-default t))
+
+;; Block until current queue processed.
+(elpaca-wait)
+#+end_src
+
 ** littering
 #+begin_src elisp
 (use-package no-littering
@@ -153,7 +210,7 @@ Use straight.el as the package manager.
 ** text encoding
 #+begin_src elisp
 (use-package mule
-  :straight nil
+  :elpaca nil
   :config
   (prefer-coding-system          'utf-8)
   (set-default-coding-systems    'utf-8-unix)
@@ -183,27 +240,34 @@ Use straight.el as the package manager.
      '("/" . meow-keypad-describe-key)
      '("?" . meow-cheatsheet))
     (meow-normal-define-key
-     '("0" . meow-expand-0)
-     '("9" . meow-expand-9)
-     '("8" . meow-expand-8)
-     '("7" . meow-expand-7)
-     '("6" . meow-expand-6)
-     '("5" . meow-expand-5)
-     '("4" . meow-expand-4)
-     '("3" . meow-expand-3)
-     '("2" . meow-expand-2)
      '("1" . meow-expand-1)
-     '("$" . move-end-of-line)
-     '("^" . move-beginning-of-line)
+     '("2" . meow-expand-2)
+     '("3" . meow-expand-3)
+     '("4" . meow-expand-4)
+     '("5" . meow-expand-5)
+     '("6" . meow-expand-6)
+     '("7" . meow-expand-7)
+     '("8" . meow-expand-8)
+     '("9" . meow-expand-9)
+     '("0" . meow-expand-0)
      '("-" . negative-argument)
-     '(";" . meow-reverse)
-     '("," . meow-inner-of-thing)
-     '("." . meow-bounds-of-thing)
-     '("[" . meow-beginning-of-thing)
-     '("]" . meow-end-of-thing)
-     '("'" . repeat)
-     '("<escape>" . ignore)
+     '("=" . undefined)
+     ; TODO <backspace>
 
+     '("!" . undefined)
+     '("@" . undefined)
+     '("#" . undefined)
+     '("$" . move-end-of-line)
+     '("%" . undefined)
+     '("^" . move-beginning-of-line)
+     '("&" . undefined)
+     '("*" . meow-universal-argument)
+     '("(" . backward-list)
+     '(")" . forward-list)
+     '("_" . undefined)
+     '("+" . undefined)
+
+     ; TODO <tab>
      '("q" . meow-quit)
      '("w" . meow-mark-word)
      '("e" . meow-next-word)
@@ -214,65 +278,90 @@ Use straight.el as the package manager.
      '("i" . meow-insert)
      '("o" . meow-open-below)
      '("p" . meow-yank)
+     '("[" . meow-beginning-of-thing)
+     '("]" . meow-end-of-thing)
+     '("\\" . undefined)
 
+     ; TODO S-TAB
+     '("Q" . undefined)
+     '("W" . meow-mark-symbol)
+     '("E" . meow-next-symbol)
+     '("R" . meow-swap-grab)
+     '("T" . undefined)
+     '("Y" . meow-sync-grab)
+     '("U" . meow-undo-in-selection)
+     '("I" . meow-open-above)
+     '("O" . meow-to-block)
+     '("P" . undefined)
+     '("{" . undefined)
+     '("}" . undefined)
+     '("|" . undefined)
+
+     '("<escape>" . ignore)
      '("a" . meow-append)
      '("s" . meow-kill)
      '("d" . meow-delete)
      '("f" . meow-find)
      '("g" . meow-cancel-selection)
      '("h" . meow-left)
+     '("i" . meow-insert)
      '("j" . meow-next)
      '("k" . meow-prev)
      '("l" . meow-right)
+     '(";" . meow-reverse)
+     '("'" . repeat)
+     ; TODO <return>
+
+     '("A" . meow-append)
+     '("S" . undefined)
+     '("D" . meow-backward-delete)
+     '("F" . undefined)
+     '("G" . meow-grab)
+     '("H" . meow-left-expand)
+     '("I" . undefined)
+     '("J" . meow-next-expand)
+     '("K" . meow-prev-expand)
+     '("L" . meow-right-expand)
+     '(":" . meow-goto-line)
+     '("\"" . undefined)
 
      '("z" . meow-pop-selection)
-     ; '("x" . TODO)
+     '("x" . undefined)
      '("c" . meow-change)
      '("v" . meow-visit)
      '("b" . meow-back-word)
      '("n" . meow-search)
      '("m" . meow-join)
+     '("," . meow-inner-of-thing)
+     '("." . meow-bounds-of-thing)
+     '("/" . isearch-forward-regexp)
 
-     '("Q" . meow-goto-line)
-     '("W" . meow-mark-symbol)
-     '("E" . meow-next-symbol)
-     '("R" . meow-swap-grab)
-     ; '("T" . TODO)
-     '("Y" . meow-sync-grab)
-     '("U" . meow-undo-in-selection)
-     '("I" . meow-open-above)
-     '("O" . meow-to-block)
-     ; '("P" . TODO)
-
-     '("A" . meow-append)
-     ; '("S" . TODO)
-     '("D" . meow-backward-delete)
-     '("F" . isearch-forward-regexp)
-     '("G" . meow-grab)
-     '("H" . meow-left-expand)
-     '("J" . meow-next-expand)
-     '("K" . meow-prev-expand)
-     '("L" . meow-right-expand)
-
-     ; '("Z" . TODO)
+     '("Z" . undefined)
      '("X" . meow-goto-line)
      '("C" . meow-block)
      '("V" . meow-line)
      '("B" . meow-back-symbol)
-     ; '("N" . TODO)
-     ; '("M" . TODO)
+     '("N" . undefined)
+     '("M" . undefined)
+     '("<" . undefined)
+     '(">" . undefined)
+     '("?" . isearch-backward-regexp)
      ))
 
 (use-package meow
   :config
   (meow-setup)
-  (setq meow-use-clipboard t)
+  (setq meow-use-clipboard t
+        meow-visit-sanitize-completion nil)
   (meow-global-mode 1)
-  (meow-normal-define-key
-    ; move point to next/previous parentheses
-    '(")" . forward-list)
-    '("(" . backward-list)
-    '("/" . isearch-forward-regexp)))
+  (setq-default meow-cursor-type-insert 'box
+                meow-cursor-type-beacon 'box
+                meow-cursor-type-normal 'box
+                meow-cursor-type-keypad 'box
+                meow-cursor-type-motion 'box
+                meow-cursor-type-default 'box
+                meow-cursor-type-region-cursor 'box
+                ))
 #+end_src
 
 ** better defaults?
@@ -367,6 +456,7 @@ This assumes that this version of Emacs has the `bind-key' included in the defau
 (require 'bind-key)
 
 (bind-keys
+ ("DEL" . backward-delete-char)
  ("C-c w s b" . split-window-below)
  ("C-c w s r" . split-window-right)
  ("C-c w d"   . delete-window)
@@ -383,8 +473,8 @@ This assumes that this version of Emacs has the `bind-key' included in the defau
  ("C-c c"     . compile)
  ("C-c t t"   . toggle-truncate-lines)
  ("C-c b i"   . ibuffer)
- ("C-c p u"   . straight-use-package)
- ("C-c p r"   . straight-get-recipe))
+ ("C-c p u"   . elpaca-manager)
+ ("C-c p r"   . elpaca-recipe))
 #+end_src
 
 ** formatting and navigation
@@ -392,13 +482,13 @@ Stop =electric= from indent things automatically. Highlight matching pairs of ch
 
 #+begin_src elisp
 (use-package electric
-  :straight nil
+  :elpaca nil
   :custom (electric-indent-inhibit t)
   ;; disable auto-identation
   :config (electric-indent-mode nil))
 
 (use-package elec-pair
-  :straight nil
+  :elpaca nil
   :after electric
   :custom (electric-pair-skip-self t)
           (electric-pair-pairs
@@ -445,11 +535,11 @@ When pressing chorded commands show a little banned on the modeline givin hints 
 ** highlight bad whitespace
 #+begin_src elisp
 (use-package whitespace
-  :disabled
+  :elpaca nil
+  :hook ((prog-mode text-mode) . whitespace-mode)
   :custom (whitespace-style '(face tabs tab-mark trailing))
-          (whitespace-display-mappings
-           '((tab-mark ?\t [?· ?\t] [?\\ ?\t])))
-  :config (global-whitespace-mode))
+  (whitespace-display-mappings
+   '((tab-mark ?\t [?· ?\t] [?\\ ?\t]))))
 #+end_src
 
 ** load full.el
@@ -481,11 +571,20 @@ Don't show toolbar.
 *** theme
 The type of theme (light or dark) accompanies the day-night cycle (in theory, at least). I want to get the coordinates to be automatic, at some point. Maybe by calling an external [[id:5b304736-46f1-4c24-a62b-d68f98fda37a][nushell]] script or something.
 
+The advice ensures that the color palette is available to the user as global variables of each color.
+
 #+begin_src elisp
 (add-to-list 'custom-theme-load-path
        (expand-file-name "themes/" user-emacs-directory))
 
-(use-package autothemer)
+(use-package autothemer
+  :config
+  (define-advice autothemer-deftheme
+      (:before (_ _ palette &rest _) defcolors)
+    (mapcar (lambda (e)
+              (setf (symbol-value (car e))
+                    (cadr e)))
+            (cdr palette))))
 
 (use-package theme-changer
   :after autothemer
@@ -529,7 +628,9 @@ Show git status of lines on the left side of the windows. Change the default ugl
 
 *** modeline
 #+begin_src elisp
-(defface yeet/mode-line-buffer-name nil "Background color lightest yellow.")
+(defface yeet/mode-line-buffer-name
+  `((t :inherit 'default))
+  "Background color lightest yellow.")
 
 ;; include column number in mode-line coordinates
 (setq column-number-mode t)
@@ -588,6 +689,7 @@ I don't know if this is the best way of doing this. I would want to do something
 *** line numbers
 #+begin_src elisp
 (use-package display-line-numbers
+  :elpaca nil
   :bind ("C-c t l" . display-line-numbers-mode)
   :hook ((c-mode c++-mode) . display-line-numbers-mode)
   :config (setq-default display-line-numbers-width 2))
@@ -618,16 +720,43 @@ I don't know if this is the best way of doing this. I would want to do something
 ** directory navigation
 #+begin_src elisp
 (use-package dired
-  :straight nil
+  :elpaca nil
   :hook ((dired-mode . auto-revert-mode)
          (dired-mode . dired-hide-details-mode)))
 #+end_src
 
 ** better menus
+*** mini buffer selection
+The =vertico= package replaces the default minibuffer input area with a *vertical list of items* (a grid is also available). In general, this makes it easier to find things.
+
 #+begin_src elisp
 (use-package vertico
+  :elpaca (vertico
+           :protocol https
+           :inherit t
+           :depth 1
+           :host github
+           :files (:defaults "extensions/*")
+           :repo "minad/vertico")
   :init (vertico-mode)
-  :config (setq vertico-count 5))
+  :custom
+  (vertico-count 5)
+  (vertico-preselect 'prompt))
+#+end_src
+
+*** better help
+The =helpful= package puts *more information* into the =*Help*= buffers, making the more useful.
+
+#+begin_src elisp
+(use-package helpful
+  :elpaca (helpful
+           :type git
+           :host github
+           :repo "Wilfred/helpful")
+  :bind (("C-h f" . helpful-callable)
+         ("C-h v" . helpful-variable)
+         ("C-h k" . helpful-key)
+         ("C-h x" . helpful-command)))
 #+end_src
 
 ** completions
@@ -677,10 +806,49 @@ I don't know if this is the best way of doing this. I would want to do something
               :html-foreground "Black"
               :html-background "Transparent"
               :html-scale 1.0
-              :matchers '("begin" "$1" "$" "$$" "\\(" "\\["))))
+              :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
+  ;; specify the justification you want
+  (plist-put org-format-latex-options :justify 'center)
+
+  (defun org-justify-fragment-overlay (beg end image imagetype)
+    "Adjust the justification of a LaTeX fragment.
+The justification is set by :justify in
+`org-format-latex-options'. Only equations at the beginning of a
+line are justified."
+    (cond
+     ;; Centered justification
+     ((and (eq 'center (plist-get org-format-latex-options :justify))
+           (= beg (line-beginning-position)))
+      (let* ((img (create-image image 'imagemagick t))
+             (width (car (image-size img)))
+             (offset (floor (- (/ (window-text-width) 2) (/ width 2)))))
+        (overlay-put (ov-at) 'before-string (make-string offset ? ))))
+     ;; Right justification
+     ((and (eq 'right (plist-get org-format-latex-options :justify))
+           (= beg (line-beginning-position)))
+      (let* ((img (create-image image 'imagemagick t))
+             (width (car (image-display-size (overlay-get (ov-at) 'display))))
+             (offset (floor (- (window-text-width) width (- (line-end-position) end)))))
+        (overlay-put (ov-at) 'before-string (make-string offset ? ))))))
+
+  (defun org-latex-fragment-tooltip (beg end image imagetype)
+    "Add the fragment tooltip to the overlay and set click function to toggle it."
+    (overlay-put (ov-at) 'help-echo
+                 (concat (buffer-substring beg end)
+                         "mouse-1 to toggle."))
+    (overlay-put (ov-at) 'local-map (let ((map (make-sparse-keymap)))
+                                      (define-key map [mouse-1]
+                                        `(lambda ()
+                                           (interactive)
+                                           (org-remove-latex-fragment-image-overlays ,beg ,end)))
+                                      map)))
+
+  ;; advise the function to a
+  (advice-add 'org--format-latex-make-overlay :after 'org-justify-fragment-overlay)
+  (advice-add 'org--format-latex-make-overlay :after 'org-latex-fragment-tooltip))
 
 (use-package org-tempo
-  :straight nil
+  :elpaca nil
   :after org)
 
 (use-package org-contrib
@@ -688,14 +856,14 @@ I don't know if this is the best way of doing this. I would want to do something
 
 ;; org-babel
 (use-package ob
-  :straight nil
+  :elpaca nil
   :after org
   :custom
   (org-babel-load-languages '((emacs-lisp . t) (J . t)))
   (org-confirm-babel-evaluate t))
 
 (use-package ob-J
-  :straight nil
+  :elpaca nil
   :after (ob org-contrib j-mode)
   :custom (org-babel-J-command "jconsole"))
 
@@ -711,11 +879,16 @@ I don't know if this is the best way of doing this. I would want to do something
   :hook (org-mode . olivetti-mode))
 
 (use-package org-roam
-  :after org
+  :requires org
   :bind (("C-c o r j" . org-roam-dailies-find-today)
          ("C-c o r f" . org-roam-node-find)
          ("C-c o r i" . org-roam-node-insert)
          ("C-c o r w" . yeet/goto-notes-weekly))
+  :config
+  (defun yeet/goto-notes-weekly ()
+    "Opens current week's `org-roam' entry."
+    (interactive)
+    (org-roam-dailies-find-today "w"))
   :custom
   (org-roam-directory org-directory)
   (org-roam-dailies-directory "journal/")
@@ -782,7 +955,7 @@ I don't know if this is the best way of doing this. I would want to do something
 ;; spell checker
 (use-package ispell
   :disabled
-  :straight nil
+  :elpaca nil
   :hook (org-mode . flyspell-mode)
   :config
   ;; csv of dictionaries
@@ -799,7 +972,7 @@ I don't know if this is the best way of doing this. I would want to do something
 ** eshell
 #+begin_src elisp
 (use-package esh-mode
-  :straight nil
+  :elpaca nil
   :config (setq eshell-directory-name
                 (expand-file-name "emacs/eshell/" (xdg-data-home))))
 #+end_src
@@ -845,7 +1018,7 @@ Highlight things like TODO, FIXME and NOTE on comments and =org-mode= headings.
 **** Emacs Lisp
 #+begin_src elisp
 (use-package elisp-mode
-  :straight (:type built-in)
+  :elpaca nil
   :hook ((emacs-lisp-mode . dash-fontify-mode)
          (emacs-lisp-mode . yeet/disable-tabs)))
 #+end_src
@@ -853,7 +1026,7 @@ Highlight things like TODO, FIXME and NOTE on comments and =org-mode= headings.
 **** Common LISP
 #+begin_src elisp
 (use-package lisp-mode
-  :straight (:type built-in)
+  :elpaca nil
   :hook (lisp-mode . yeet/disable-tabs))
 
 (use-package sly
@@ -865,7 +1038,7 @@ Highlight things like TODO, FIXME and NOTE on comments and =org-mode= headings.
 *** C/C++
 #+begin_src elisp
 (use-package cc-mode
-  :straight (:type built-in)
+  :elpaca nil
   :config (setq c-label-minimum-indentation 0))
 
 ;; C/C++
@@ -920,7 +1093,7 @@ Highlight things like TODO, FIXME and NOTE on comments and =org-mode= headings.
 #+end_src
 
 *** J
-On Void Linux this is pretty finnicky since the default name of the console is =jc= due to conflicts with other packages.
+On Void Linux this is pretty finnicky since the default name of the console executable is =jc= due to conflicts with other packages.
 
 #+begin_src elisp
 (use-package j-mode
@@ -932,8 +1105,14 @@ On Void Linux this is pretty finnicky since the default name of the console is =
 (use-package     bnf-mode :commands bnf-mode)
 (use-package     csv-mode :commands csv-mode)
 (use-package haskell-mode :commands haskell-mode)
-(use-package  tuareg-mode :commands tuareg-mode)
 (use-package    yaml-mode :commands yaml-mode)
+
+(use-package tuareg-mode
+  :elpaca (tuareg-mode
+           :type git
+           :host github
+           :repo "ocaml/tuareg")
+  :commands tuareg-mode)
 
 (use-package web-mode
   :hook
@@ -942,7 +1121,7 @@ On Void Linux this is pretty finnicky since the default name of the console is =
   :commands web-mode)
 
 (use-package js
-  :straight nil
+  :elpaca nil
   :config (setq js-indent-level 2))
 
 (use-package julia-mode
@@ -963,7 +1142,7 @@ On Void Linux this is pretty finnicky since the default name of the console is =
   :commands nix-mode)
 
 (use-package nushell-mode
-  :straight (nushell-mode
+  :elpaca (nushell-mode
              :type git
              :host github
              :repo "mrkkrp/emacs-nushell")
@@ -973,11 +1152,12 @@ On Void Linux this is pretty finnicky since the default name of the console is =
   (setq nushell-indent-offset 2))
 
 (use-package prolog
+  :elpaca nil
   :commands prolog-mode
   :mode ("\\.pl\\'" . prolog-mode))
 
 (use-package python
-  :straight nil
+  :elpaca nil
   :config (setq python-indent-offset 2))
 
 (use-package zig-mode
@@ -1053,7 +1233,7 @@ Open some file types using external programs.
 ** email
 #+begin_src elisp
 (use-package himalaya
-  :straight (himalaya
+  :elpaca (himalaya
              :type git
              :host github
              :repo "dantecatalfamo/himalaya-emacs")
