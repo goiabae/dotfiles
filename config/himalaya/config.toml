@@ -6,18 +6,26 @@ email-listing-page-size = 50
 [utfpr]
 default = true
 email = "machadog@alunos.utfpr.edu.br"
+sync = true
+sync-dir = "~/net/mail/machadog@alunos.utfpr.edu.br"
+# notify-cmd = """📫 machadog "<sender>" "<subject>""""
 
 backend = "imap"
 imap-host = "imap.gmail.com"
 imap-port = 993
 imap-login = "machadog@alunos.utfpr.edu.br"
-imap-passwd-cmd = "pass show utfpr-gmail"
+imap-auth = "passwd"
+imap-passwd = { cmd = "pass show utfpr-gmail" }
+imap-notify-cmd = "notify-send \"Nem email from <sender>\" \"<subject>\""
+imap-notify-query = "NOT SEEN"
+imap-watch-cmds = ["himalaya --account utfpr account sync"]
 
 sender = "smtp"
 smtp-host = "smtp.gmail.com"
 smtp-port = 465
 smtp-login = "machadog@alunos.utfpr.edu.br"
-smtp-passwd-cmd = "pass show utfpr-gmail"
+smtp-auth = "passwd"
+smtp-passwd = { cmd = "pass show utfpr-gmail" }
 
 [utfpr.folder-aliases]
 inbox = "[Gmail]/Todos os e-mails"
@@ -27,18 +35,24 @@ trash = "[Gmail]/Lixeira"
 
 [gm4ch4d0]
 email = "gm4ch4d0@gmail.com"
+sync = true
+sync-dir = "~/net/mail/gm4ch4d0@gmail.com"
+# notify-cmd = """📫 gm4ch4d0 "<sender>" "<subject>""""
 
 backend = "imap"
 imap-host = "imap.gmail.com"
 imap-port = 993
 imap-login = "gm4ch4d0@gmail.com"
-imap-passwd-cmd = "pass show gm4ch4d0-gmail"
+imap-auth = "passwd"
+imap-passwd = { cmd = "pass show gm4ch4d0-gmail" }
+imap-watch-cmds = ["himalaya --account gm4ch4d0 account sync"]
 
 sender = "smtp"
 smtp-host = "smtp.gmail.com"
 smtp-port = 465
 smtp-login = "gm4ch4d0@gmail.com"
-smtp-passwd-cmd = "pass show gm4ch4d0-gmail"
+smtp-auth = "passwd"
+smtp-passwd = { cmd = "pass show gm4ch4d0-gmail" }
 
 [gm4ch4d0.folder-aliases]
 inbox = "[Gmail]/Todos os e-mails"
@@ -48,18 +62,24 @@ trash = "[Gmail]/Lixeira"
 
 [mrcrash32]
 email = "mrcrash32@gmail.com"
+sync = true
+sync-dir = "~/net/mail/mrcrash32@gmail.com"
+# notify-cmd = """📫 mrcrash32 "<sender>" "<subject>""""
 
 backend = "imap"
 imap-host = "imap.gmail.com"
 imap-port = 993
 imap-login = "mrcrash32@gmail.com"
-imap-passwd-cmd = "pass show mrcrash32-gmail"
+imap-auth = "passwd"
+imap-passwd = { cmd = "pass show mrcrash32-gmail" }
+imap-watch-cmds = ["himalaya --account mrcrash32 account sync"]
 
 sender = "smtp"
 smtp-host = "smtp.gmail.com"
 smtp-port = 465
 smtp-login = "mrcrash32@gmail.com"
-smtp-passwd-cmd = "pass show mrcrash32-gmail"
+smtp-auth = "passwd"
+smtp-passwd = { cmd = "pass show mrcrash32-gmail" }
 
 [mrcrash32.folder-aliases]
 inbox = "[Gmail]/Todos os e-mails"
