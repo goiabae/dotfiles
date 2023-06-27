@@ -480,7 +480,7 @@ def weather [--city (-c): string] {
   let i = (if $city == $nothing { "Toledo" } else { $city })
   let id = ($tab | where name == $i | first | get id)
   let appid = "5f3a866fcadbf0e0615e100650378d72"
-  fetch $"http://api.openweathermap.org/data/2.5/weather?id=($id)&units=metric&appid=($appid)"
+  http get $"http://api.openweathermap.org/data/2.5/weather?id=($id)&units=metric&appid=($appid)"
 }
 
 def "get random" [] {
@@ -499,7 +499,7 @@ def 'flatpak search' [query: string] {
 }
 
 def 'mal anime season' [year: string, season: string] {
-  let resp = (fetch $"https://myanimelist.net/anime/season/($year)/($season)")
+  let resp = (http get $"https://myanimelist.net/anime/season/($year)/($season)")
   let categories = ($resp | query web --as-html --query '.seasonal-anime-list')
   let seasonal_anime = (
     $categories | each { |cat|
