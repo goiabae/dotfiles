@@ -42,26 +42,15 @@ let-env PROMPT_INDICATOR_VI_INSERT = ": "
 let-env PROMPT_INDICATOR_VI_NORMAL = "|> "
 let-env PROMPT_MULTILINE_INDICATOR = "::: "
 
-# The prompt indicators are environmental variables that represent
-# the state of the prompt
-let-env PROMPT_INDICATOR = { || [(ansi yb) "|> " (prompt-overlays)] | str join }
-let-env PROMPT_INDICATOR_VI_INSERT = { || ": " }
-let-env PROMPT_INDICATOR_VI_NORMAL = { || "|> " }
-let-env PROMPT_MULTILINE_INDICATOR = { || "::: " }
+let comma_sep = {
+  from_string: { |s| $s | split row (char esep) }
+  to_string: { |v| $v | path expand | str join (char esep) }
+}
 
-# Specifies how environment variables are:
-# - converted from a string to a value on Nushell startup (from_string)
-# - converted from a value back to a string when running external commands (to_string)
 # Note: The conversions happen *after* config.nu is loaded
 let-env ENV_CONVERSIONS = {
-  "PATH": {
-    from_string: { |s| $s | split row (char esep) }
-    to_string: { |v| $v | path expand | str join (char esep) }
-  }
-  "Path": {
-    from_string: { |s| $s | split row (char esep) }
-    to_string: { |v| $v | path expand | str join (char esep) }
-  }
+  "PATH": $comma_sep
+  "Path": $comma_sep
 }
 
 # Directories to search for scripts when calling source or use
@@ -78,12 +67,5 @@ let-env NU_PLUGIN_DIRS = [
   ($nu.config-path | path dirname | path join 'plugins')
   $"($nu.home-path)/exe/nu.d"
 ]
-
-# To add entries to PATH (on Windows you might use Path), you can use the following pattern:
-# let-env PATH = ($env.PATH | split row (char esep) | prepend '/some/path')
-
-let-env XBPS_SRC_CONFIG = $"($env.XDG_CONFIG_HOME)/xbps-src/config.ini"
-
-let-env YTFZF_SYSTEM_ADDON_DIR = $"($nu.home-path)/lib/sh/ytfzf"
 
 nu ~/profile.nu | from json | load-env
