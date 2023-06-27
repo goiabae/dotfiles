@@ -21,34 +21,42 @@ let dark_theme = {
     list: white
     block: white
     hints: dark_gray
+    search_result: { bg: red fg: white }
 
-    shape_garbage: { fg: "#FFFFFF" bg: "#FF0000" attr: b}
+    shape_and: purple_bold
     shape_binary: purple
+    shape_block: white
     shape_bool: purple
-    shape_int: purple
-    shape_float: purple
-    shape_range: cyan
-    shape_internalcall: yellow
+    shape_closure: green_bold
+    shape_custom: green
+    shape_datetime: cyan
+    shape_directory: green
     shape_external: white
     shape_externalarg: white
+    shape_filepath: green
+    shape_flag: blue
+    shape_float: purple
+    shape_garbage: { fg: "#FFFFFF" bg: "#FF0000" attr: b}
+    shape_globpattern: cyan
+    shape_int: purple
+    shape_internalcall: yellow
+    shape_list: white
     shape_literal: white
+    shape_match_pattern: green
+    shape_matching_brackets: { attr: n }
+    shape_nothing: light_cyan
     shape_operator: white
+    shape_or: purple_bold
+    shape_pipe: purple_bold
+    shape_range: cyan
+    shape_record: white
+    shape_redirection: purple_bold
     shape_signature: blue
     shape_string: green
     shape_string_interpolation: cyan
-    shape_datetime: cyan
-    shape_list: white
     shape_table: white
-    shape_record: white
-    shape_block: white
-    shape_filepath: green
-    shape_directory: green
-    shape_globpattern: cyan
     shape_variable: yellow
-    shape_flag: blue
-    shape_custom: green
-    shape_nothing: light_cyan
-    shape_matching_brackets: { attr: n }
+    shape_vardecl: purple
 }
 
 let light_theme = {
