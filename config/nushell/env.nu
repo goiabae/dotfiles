@@ -54,18 +54,15 @@ let-env ENV_CONVERSIONS = {
 }
 
 # Directories to search for scripts when calling source or use
-#
-# By default, <nushell-config-dir>/scripts is added
 let-env NU_LIB_DIRS = [
   ($nu.config-path | path dirname | path join 'scripts')
+  ($nu.home-path | path join lib nu)
 ]
 
 # Directories to search for plugin binaries when calling register
-#
-# By default, <nushell-config-dir>/plugins is added
 let-env NU_PLUGIN_DIRS = [
   ($nu.config-path | path dirname | path join 'plugins')
-  $"($nu.home-path)/exe/nu.d"
+  ($nu.home-path | path join bin nu.d)
 ]
 
 nu ~/profile.nu | from json | load-env
