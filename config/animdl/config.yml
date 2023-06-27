@@ -9,7 +9,11 @@ default_player: mpv
 #     executable: ffmpeg
 #     hls_download: false
 #     submerge: true
-# discord_presence: true
+check_for_updates: false
+discord_presence: false
+download_auto_retry: 300
+download_directory: "."
+force_streaming_quality_selection: true
 fzf:
     executable: fzf
     opts: []
