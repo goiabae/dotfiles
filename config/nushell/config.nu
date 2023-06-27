@@ -656,6 +656,6 @@ def next-ascension [--pretty (-p)] {
 }
 
 alias surch = xbps search
-alias wget = wget --hsts-file=$"($env.XDG_DATA_HOME | path join wget.hist)"
+alias wget = ^wget --hsts-file ($env.XDG_DATA_HOME | path join wget.hist)
 alias yt = sfeed view -p /bin/mpv youtube
 def s [] { ls | grid --color }
