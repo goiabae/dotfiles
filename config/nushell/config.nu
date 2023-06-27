@@ -114,15 +114,16 @@ let light_theme = {
 # configuration is setup.
 let-env config = {
   color_config: $dark_theme
-  use_grid_icons: false
-  footer_mode: 20
-  float_precision: 2
+  bracketed_paste: true
   buffer_editor: "emacs"
-  use_ansi_coloring: true
   edit_mode: emacs
+  float_precision: 2
+  footer_mode: 20
+  render_right_prompt_on_last_line: false
   shell_integration: true
   show_banner: false
-  render_right_prompt_on_last_line: false
+  use_grid_icons: false
+  use_ansi_coloring: true
 
   cursor_shape: {
     emacs: block
@@ -146,13 +147,71 @@ let-env config = {
   table: {
     mode: none
     index_mode: auto
-    trim: { methodology: wrapping, wrapping_try_keep_words: true }
+    show_empty: true
+    trim: {
+      methodology: wrapping
+      wrapping_try_keep_words: true
+      truncating_suffix: "..."
+    }
   }
+
+  explore: {
+    help_banner: true
+    exit_esc: false
+    command_bar_text: '#C4C9C6'
+    status_bar_background: { fg: '#1D1F21' bg: '#C4C9C6' }
+    highlight: { bg: 'yellow' fg: 'black' }
+
+    status: {
+      # warn: {bg: 'yellow', fg: 'blue'}
+      # error: {bg: 'yellow', fg: 'blue'}
+      # info: {bg: 'yellow', fg: 'blue'}
+    }
+
+    try: {
+      # border_color: 'red'
+      # highlighted_color: 'blue'
+      # reactive: false
+    }
+
+    table: {
+      split_line: '#404040'
+
+      cursor: true
+
+      line_index: true
+      line_shift: true
+      line_head_top: true
+      line_head_bottom: true
+
+      show_head: true
+      show_index: true
+
+      # selected_cell: {fg: 'white', bg: '#777777'}
+      # selected_row: {fg: 'yellow', bg: '#C1C2A3'}
+      # selected_column: blue
+
+      # padding_column_right: 2
+      # padding_column_left: 2
+
+      # padding_index_left: 2
+      # padding_index_right: 1
+    }
+
+    config: {
+      cursor_color: { bg: 'yellow' fg: 'black' }
+
+      # border_color: white
+      # list_color: green
+    }
+  }
+
 
   history: {
     max_size: 10000
     sync_on_enter: false
     file_format: "plaintext"
+    history_isolation: true
   }
 
   completions: {
@@ -169,15 +228,19 @@ let-env config = {
   }
 
   hooks: {
-    pre_prompt:    [{ || $nothing }]
-    pre_execution: [{ || $nothing }]
-    env_change: {
-      PWD: [{ |before, after| $nothing }]
+    pre_prompt:    [{ || null }]
+    pre_execution: [{ || null }]
+    env_change: { PWD: [{ |before, after| null }] }
+    display_output: { ||
+      # if (term size).columns >= 100 {
+      #   with-env [config ($env.config | update table.mode "rounded")] {
+      #     table -e
+      #   }
+      # } else {
+      #   $in
+      # }
     }
-    # this gets unreadable in table_mode: none
-    # display_output: {
-    #   if (term size).columns >= 100 { table -e } else { table }
-    # }
+    command_not_found: { || null }
   }
 
   menus: [{
