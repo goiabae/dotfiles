@@ -468,6 +468,7 @@ use ~/lib/nu/x11.nu *
 use ~/lib/nu/yt.nu
 
 register ~/bin/nu.d/nu_plugin_query
+register ~/bin/nu.d/nu_plugin_formats
 
 def weather [--city (-c): string] {
   let tab = [
