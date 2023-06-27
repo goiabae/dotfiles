@@ -78,10 +78,10 @@ schemes:
 
 colors: *battery
 shell:
- program: /usr/bin/nu
+ program: nu
 tabspaces: 2
 font:
-  family: 
+  family:
   size: 9
   normal:
     family: SauceCodePro Nerd Font
