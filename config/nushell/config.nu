@@ -460,13 +460,7 @@ let-env config = {
   ]
 }
 
-use ~/lib/nu/ani-cli.nu *
-use ~/lib/nu/make.nu *
-use ~/lib/nu/nix.nu *
-use ~/lib/nu/ytfzf.nu *
-use ~/lib/nu/xbps.nu *
-use ~/lib/nu/git.nu *
-use ~/lib/nu/cargo.nu *
+use ~/lib/nu/completions.nu *
 use ~/lib/nu/xdg.nu
 use ~/lib/nu/sfeed.nu
 use ~/lib/nu/unix.nu
