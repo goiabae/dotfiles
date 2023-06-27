@@ -594,6 +594,68 @@ def accountances [] {
 	}
 }
 
+def 'music' [] {
+  let file = '~/doc/table/music.3.csv'
+  open --raw $file | from csv --no-infer | into int score revisions
+}
+
+def 'music add' [] {
+  let entry = ($in | default {
+    author: (input 'Enter author (+ separated list): ')
+    title: (input 'Enter title: ')
+    type: ([track list] | input list 'Select type: ')
+    score: (input 'Enter score (0-10 nat): ' | into decimal)
+    revisions: 0
+    added: (date now | date format '%Y-%m-%d')
+    modified: (date now | date format '%Y-%m-%d')
+  })
+  let file = '~/doc/table/music.3.csv'
+  let mus = (open $file)
+  if ($entry | select author title) not-in ($mus | select author title) {
+    $mus | append $entry | save --force $file
+  }
+}
+
+def 'music review' [] {
+  let input = $in
+  let file = '~/doc/table/music.3.csv'
+  let mus = (open $file)
+  let res = (
+    $mus
+    | select author title
+    | enumerate
+    | where $it.item == $input
+  )
+  if ($res | is-empty) {
+    return
+  }
+  let index = ($res | first | get index)
+  let score = (input 'Enter new score: ')
+  let prev = ($mus | get $index)
+  $mus
+  | update $index (
+    $prev
+    | update revisions ($prev.revisions + 1)
+    | update score $score
+  )
+  | save --force $file
+}
+
+def next-ascension [--pretty (-p)] {
+  into string
+  | ^next-ascension
+  | lines
+  | first
+  | split column ' ' chips cookies
+  | first
+  | if not $pretty {
+    into int chips | into decimal cookies
+  } else {
+    $in
+  }
+}
+
 alias surch = xbps search
 alias wget = wget --hsts-file=$"($env.XDG_DATA_HOME | path join wget.hist)"
 alias yt = sfeed view -p /bin/mpv youtube
+def s [] { ls | grid --color }
