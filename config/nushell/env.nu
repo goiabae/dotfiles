@@ -1,7 +1,5 @@
-# Nushell Environment Config File
-
 def short-path [] {
-  let p = (pwd | str trim -r | path split)
+  let p = ($env.PWD | path split)
   let p = (if ($p | take 3 | $in == ($nu.home-path | path split)) {
     $p | skip 3 | prepend '~'
   } else {
@@ -14,45 +12,35 @@ def short-path [] {
   | path join
 }
 
-def prompt-overlays [] {
-  let overlays = (overlay list | where $it != zero)
-  if ($overlays | length | $in > 0) {
-    [ (ansi yellow_reverse)
-      ($overlays | str join ' ')
-      (ansi reset)
-      ' '
-    ] | str join
-  } else ""
-}
-
 def create_left_prompt [] {
   [ (ansi blue)
     (whoami | str trim -r)
     (ansi reset)
     "@"
-    (ansi lrb)
+    (ansi light_red_bold)
     (hostname | str trim -r)
     (ansi reset)
   ] | str join
 }
 
 def create_right_prompt [] {
-  let r = (do -i { git branch | complete })
-  [(ansi green) (short-path) (ansi reset)]
-  | if ($r.exit_code != 128) {
-    $in | append [
-      "@"
-      (ansi cb)
-      ($r.stdout | sed --quiet --regexp-extended 's/\*\s(.*)/\1/p' | tr -d "\n")
-      (ansi reset)
-    ]
-  } else $in
-  | str join
+  let branch_str = (
+    do -i { git branch --show-current | complete }
+    | if $in.exit_code != 128 {
+      ["@" (ansi cyan_bold) ($in.stdout | str trim -r) (ansi reset)] | str join
+    } else ''
+  )
+  [(ansi green) (short-path) (ansi reset) $branch_str] | str join
 }
 
-# Use nushell functions to define your right and left prompt
-let-env PROMPT_COMMAND = { || create_left_prompt }
-let-env PROMPT_COMMAND_RIGHT = { || create_right_prompt }
+# Closures that generate prompt strings
+let-env PROMPT_COMMAND = { create_left_prompt }
+let-env PROMPT_COMMAND_RIGHT = { create_right_prompt }
+
+let-env PROMPT_INDICATOR = $"(ansi yb)|> (ansi reset)"
+let-env PROMPT_INDICATOR_VI_INSERT = ": "
+let-env PROMPT_INDICATOR_VI_NORMAL = "|> "
+let-env PROMPT_MULTILINE_INDICATOR = "::: "
 
 # The prompt indicators are environmental variables that represent
 # the state of the prompt
