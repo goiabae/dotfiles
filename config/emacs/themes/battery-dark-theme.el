@@ -5,21 +5,14 @@
 ;; Author: Guilherme Machado <https://github.com/goiabae>
 ;; Maintainer: Guilherme Machado <TODO>
 ;; Created: fevereiro 02, 2022
-;; Modified: fevereiro 02, 2022
 ;; Version: 0.0.1
 ;; Keywords: convenience extensions faces files frames outlines
 ;; Homepage: https://github.com/goiabae/battery-theme
-;; Package-Requires: ((emacs "24.3"))
+;; Package-Requires: ((autothemer "0.2"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
 ;;; Commentary:
-
-;; Depends on autothemer
-
-;;
-;;  Description
-;;
 
 ;;  A warm, dark and vibrant color scheme inspired by the famous
 ;;  Gruvbox, from Vim.
