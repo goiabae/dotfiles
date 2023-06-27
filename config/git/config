@@ -1,9 +1,35 @@
 [user]
-	name = goiabae
-	email = goiabae@protonmail.com
+name = goiabae
+email = goiabae@protonmail.com
+
 [credential "https://github.com"]
-	helper = 
-	helper = !/usr/bin/gh auth git-credential
+helper =
+helper = !/usr/bin/gh auth git-credential
+
 [credential "https://gist.github.com"]
-	helper = 
-	helper = !/usr/bin/gh auth git-credential
+helper =
+helper = !/usr/bin/gh auth git-credential
+
+[core]
+pager = delta
+
+[interactive]
+diffFilter = delta --color-only
+
+[delta]
+navigate = true
+light = false # if background color is light
+features = decorations zenburn
+
+[delta "decorations"]
+file-style = omit cyan
+hunk-header-decoration-style = white box
+hunk-header-file-style = bold white
+hunk-header-line-number-style = bold yellow
+hunk-header-style = file line-number syntax
+
+[merge]
+conflictstyle = diff3
+
+[diff]
+colorMoved = default
