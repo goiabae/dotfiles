@@ -37,6 +37,6 @@ alias   e="emacsclient --tty --socket-name=emacsd"
 alias edit="emacsclient -nc --socket-name=emacsd"
 
 alias surch="xbps-query -R -s"
-alias wget='wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"'
+alias wget="wget --hsts-file=$XDG_CACHE_HOME/wget-hsts"
 alias anime="ani-cli -q 720"
 alias manga="manga-cli"
