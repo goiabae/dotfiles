@@ -991,11 +991,24 @@ Highlight things like TODO, FIXME and NOTE on comments and =org-mode= headings.
           ("WARN"  . warning))))
 #+end_src
 
+** project management
+After having some issues with =eglot= wanting to call a function not in the built-in distribution of package, I've decided to install =project=, instead.
+
+#+begin_src elisp
+(use-package project :demand t)
+#+end_src
+
 ** languages
 *** helper functions
 #+begin_src elisp
 (defun yeet/disable-tabs () (setq indent-tabs-mode nil))
 (defun yeet/enable-tabs  () (setq indent-tabs-mode t  ))
+#+end_src
+
+*** LSP client
+#+begin_src elisp
+(use-package eglot
+  :after project)
 #+end_src
 
 *** LISPs
@@ -1039,17 +1052,16 @@ Highlight things like TODO, FIXME and NOTE on comments and =org-mode= headings.
 #+begin_src elisp
 (use-package cc-mode
   :elpaca nil
-  :config (setq c-label-minimum-indentation 0))
-
-;; C/C++
-(setq compile-command "make")
-
-(use-package eglot
+  :requires eglot
   :hook ((c-mode c++-mode) . eglot-ensure)
+  :custom (c-label-minimum-indentation 0)
   :config
   (when (not (locate-file "clangd" exec-path))
     (warn "`clangd' not in `exec-path'. Emacs won't be able to connect to C/C++ LSP server."))
   (add-to-list 'eglot-server-programs '((c-mode c++-mode) . ("clangd" "--enable-config"))))
+
+;; C/C++
+(setq compile-command "make")
 
 (use-package cmake-mode)
 
@@ -1098,6 +1110,16 @@ On Void Linux this is pretty finnicky since the default name of the console exec
 #+begin_src elisp
 (use-package j-mode
   :config (setq j-console-cmd "jconsole"))
+#+end_src
+
+*** Zig
+Zig always indents by 4 spaces. Use =zls= as the language server.
+
+#+begin_src elisp
+(use-package zig-mode
+  :hook (zig-mode . eglot-ensure)
+  :commands zig-mode
+  :custom (zig-indent-offset 4))
 #+end_src
 
 *** &rest
@@ -1159,10 +1181,6 @@ On Void Linux this is pretty finnicky since the default name of the console exec
 (use-package python
   :elpaca nil
   :config (setq python-indent-offset 2))
-
-(use-package zig-mode
-  :commands zig-mode
-  :config (setq zig-indent-offset 2))
 
 (use-package rust-mode
   :commands rust-mode
