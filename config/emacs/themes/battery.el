@@ -464,6 +464,9 @@
      (eglot-mode-line (:foreground dark-purple :weight 'bold :inherit 'font-lock-constant-face))
      (eglot-diagnostic-tag-unnecessary-face (:inherit 'shadow))
      (eglot-diagnostic-tag-deprecated-face (:strike-through t :inherit 'shadow))
+     (eglot-inlay-hint-face (:inherit 'shadow))
+     (eglot-type-hint-face (:inherit 'eglot-inlay-hint-face))
+     (eglot-parameter-hint-face (:inherit 'eglot-inlay-hint-face))
 
      ;; realgud
      (realgud-debugger-running     (:weight 'bold :foreground high-green))
@@ -821,6 +824,9 @@
      (fixed-pitch (:family "SauceCodePro Nerd Font Mono" :height 100 :inherit 'default))
      (fixed-pitch-serif (:family "Monospace Serif"))
      (variable-pitch (:family "NotoSans Display Nerd Font" :height 105))
+
+     ;; nushell
+     (nushell-pay-attention-face (:inherit 'font-lock-builtin-face))
 
      (buffer-menu-buffer (:weight 'bold))
      (border nil)
