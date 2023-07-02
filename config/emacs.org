@@ -1112,6 +1112,16 @@ On Void Linux this is pretty finnicky since the default name of the console exec
   :config (setq j-console-cmd "jconsole"))
 #+end_src
 
+*** Zig
+Zig always indents by 4 spaces. Use =zls= as the language server.
+
+#+begin_src elisp
+(use-package zig-mode
+  :hook (zig-mode . eglot-ensure)
+  :commands zig-mode
+  :custom (zig-indent-offset 4))
+#+end_src
+
 *** &rest
 #+begin_src elisp
 (use-package     bnf-mode :commands bnf-mode)
@@ -1171,10 +1181,6 @@ On Void Linux this is pretty finnicky since the default name of the console exec
 (use-package python
   :elpaca nil
   :config (setq python-indent-offset 2))
-
-(use-package zig-mode
-  :commands zig-mode
-  :config (setq zig-indent-offset 2))
 
 (use-package rust-mode
   :commands rust-mode
