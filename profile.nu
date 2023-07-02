@@ -149,12 +149,12 @@ let python_version = (
   python --version
   | parse "Python {major}.{minor}.{patch}"
   | first
-  | $"($in.major).($in.minor)"
+  | $"python($in.major).($in.minor)"
 )
 
 let PYTHONPATH = ([
-  (echo /usr/lib | path join $"python($python_version)")
-  ($home | path join lib $"python($python_version)" site-packages)
+  (echo /usr/lib | path join $python_version)
+  ($home | path join lib $python_version site-packages)
 ] | str join ':')
 
 let PYTHONSTARTUP = "/etc/python/pythonrc"
