@@ -85,7 +85,8 @@ Disable some byte compiler warnings. A lot of old packages just piss of the comp
 #+begin_src elisp
 (setq warning-suppress-types '((comp))
       byte-compile-warnings
-      '(not obsolete interactive-only lexical docstrings))
+      '(not obsolete interactive-only lexical docstrings)
+      load-prefer-newer t)
 #+end_src
 
 ** startup statistics
