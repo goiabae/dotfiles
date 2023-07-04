@@ -9,7 +9,7 @@ video_player() {
 ytdl_pref="247"
 sub_link_count=1
 
-show_thumbnails=1
+show_thumbnails=0
 thumbnail_viewer="chafa"
 #async_thumbnails=1
 
