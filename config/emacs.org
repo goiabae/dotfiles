@@ -1127,7 +1127,8 @@ After having some issues with =eglot= wanting to call a function not in the buil
   (add-to-list 'eglot-server-programs '((c-mode c++-mode) . ("clangd" "--enable-config"))))
 
 ;; C/C++
-(setq compile-command "make")
+(setq compile-command "make"
+      compilation-scroll-output t)
 
 (use-package cmake-mode)
 
