@@ -50,7 +50,7 @@ let-env XDG_DATA_HOME   = ($home | path join var)
 let-env XDG_STATE_HOME  = (xdg data-home | path join state)
 let-env XDG_CACHE_HOME  = (xdg data-home | path join cache)
 
-let-env XDG_RUNTIME_DIR = (echo /run/user | path join $uid)
+let-env XDG_RUNTIME_DIR = ($env.XDG_RUNTIME_DIR? | default (echo /run/user | path join $uid))
 let XDG_CURRENT_DESKTOP = 'Unity'
 let XDG_DATA_DIRS = (stringy -s ':' [
   /usr/local/share
@@ -61,7 +61,7 @@ let XDG_DATA_DIRS = (stringy -s ':' [
   (xdg data-home)
 ])
 
-let XAUTHORITY = (xdg runtime-dir | path join Xauthority)
+let XAUTHORITY = ($env.XAUTHORITY? | default (xdg runtime-dir | path join Xauthority))
 #let QT_QPA_PLATFORM = 'wayland;xcb'
 let MOZ_ENABLE_WAYLAND = '1'
 
