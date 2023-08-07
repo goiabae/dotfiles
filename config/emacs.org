@@ -152,7 +152,7 @@ Use straight.el as the package manager.
 Testing usage of elpaca, in place of =straight.el=.
 
 #+begin_src elisp
-(defvar elpaca-installer-version 0.4)
+(defvar elpaca-installer-version 0.5)
 (defvar elpaca-directory (expand-file-name "emacs/elpaca" (xdg-data-home)))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
