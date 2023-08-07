@@ -1186,7 +1186,9 @@ Zig always indents by 4 spaces. Use =zls= as the language server.
 (use-package zig-mode
   :hook (zig-mode . eglot-ensure)
   :commands zig-mode
-  :custom (zig-indent-offset 4))
+  :custom
+  (zig-indent-offset 4)
+  (zig-format-on-save nil))
 #+end_src
 
 *** &rest
