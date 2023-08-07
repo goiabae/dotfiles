@@ -1073,6 +1073,10 @@ After having some issues with =eglot= wanting to call a function not in the buil
 
 *** LISPs
 #+begin_src elisp
+(defun yeet/lisp-prettify-symbols ()
+  (setq-local prettify-symbols-alist '(("lambda" . ?λ)))
+  (prettify-symbols-mode))
+
 (use-package rainbow-delimiters
   :hook ((lisp-data-mode clojure-mode) . rainbow-delimiters-mode))
 #+end_src
@@ -1093,14 +1097,16 @@ After having some issues with =eglot= wanting to call a function not in the buil
 (use-package elisp-mode
   :elpaca nil
   :hook ((emacs-lisp-mode . dash-fontify-mode)
-         (emacs-lisp-mode . yeet/disable-tabs)))
+         (emacs-lisp-mode . yeet/disable-tabs)
+         (emacs-lisp-mode . yeet/lisp-prettify-symbols)))
 #+end_src
 
 **** Common LISP
 #+begin_src elisp
 (use-package lisp-mode
   :elpaca nil
-  :hook (lisp-mode . yeet/disable-tabs))
+  :hook ((lisp-mode . yeet/disable-tabs)
+         (lisp-mode . yeet/lisp-prettify-symbols)))
 
 (use-package sly
   :after lisp-mode
