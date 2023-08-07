@@ -146,7 +146,7 @@ let CAML_LD_LIBRARY_PATH = ([
 let OCAML_TOPLEVEL_PATH = ($OPAM_SWITCH_PREFIX | path join lib toplevel)
 
 let python_version = (
-  python --version
+  python3 --version
   | parse "Python {major}.{minor}.{patch}"
   | first
   | $"python($in.major).($in.minor)"
