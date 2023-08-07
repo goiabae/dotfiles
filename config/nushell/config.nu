@@ -655,6 +655,18 @@ def next-ascension [--pretty (-p)] {
   }
 }
 
+def inv-instances [] {
+	let url = {
+		scheme: https
+		host: api.invidious.io
+		path: /instances.json
+	}
+	$url
+	| url join
+	| http get $in
+	| each { get 1 }
+}
+
 alias surch = xbps search
 alias wget = ^wget --hsts-file ($env.XDG_DATA_HOME | path join wget.hist)
 alias yt = sfeed view -p /bin/mpv youtube
