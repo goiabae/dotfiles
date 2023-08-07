@@ -65,27 +65,28 @@
       contrasts)
 
     (
+     ;; Basic faces
      (default             (:background bg :foreground fg))
      (button              (:underline t :weight 'bold :foreground yellow))
      (cursor              (:background fg))
      (mode-line           (:background neutral10 :foreground neutral2 :box (:line-width 1 :color neutral15 :style 'released-button)))
      (mode-line-inactive  (:inherit 'mode-line))
      (fringe              (:background bg))
-     (hl-line             (:background bg))
-     (region              (:background grey5)) ;;selection
+     (hl-line             (:background grey0))
+     (region              (:background grey5)) ;; selection
      (secondary-selection (:background grey6))
      (minibuffer-prompt   (:background bg :foreground high-green :bold t))
      (vertical-border     (:foreground grey7))
      (internal-border     (:background grey7))
      (window-divider      (:foreground grey8))
      (link                (:foreground high-yellow :underline t))
-     (link-visited (:foreground lighter-purple :inherit 'link))
+     (link-visited        (:foreground lighter-purple :inherit 'link))
      (shadow              (:foreground grey8))
 
-     ;; Basic faces
      (error               (:foreground red :bold t))
      (success             (:foreground high-olive :bold t))
      (warning             (:foreground high-yellow :bold t))
+
      (alert-low-face      (:foreground high-cyan))
      (trailing-whitespace (:background red))
      (escape-glyph        (:foreground cyan))
@@ -100,6 +101,10 @@
      (underline (:underline t))
 
      (yeet/mode-line-buffer-name (:background lighter-yellow))
+     (yeet/mode-line-readable-buffer   (:foreground darker-red :weight 'bold))
+     (yeet/mode-line-writeable-buffer  (:foreground darker-yellow :weight 'bold))
+     (yeet/mode-line-executable-buffer (:foreground darker-olive :weight 'bold))
+     (yeet/mode-line-shadow (:foreground neutral6))
 
      ;; Font lock (syntax highlighting)
      (font-lock-builtin-face        (:foreground high-cyan))
@@ -162,6 +167,7 @@
      (org-special-keyword       (:foreground grey8))
      (org-document-info         (:foreground orange))
      (org-meta-line             (:foreground grey8))
+
      (org-level-1  (:foreground high-orange))
      (org-level-2  (:foreground high-olive))
      (org-level-3  (:foreground high-red))
@@ -170,9 +176,10 @@
      (org-level-6  (:foreground high-purple))
      (org-level-7  (:foreground high-green))
      (org-level-8  (:foreground high-orange))
+
      (org-drawer   (:foreground grey7))
-     (org-tag      (:weight 'bold))
-     (org-link     (:underline (:style 'line :color grey9)))
+     (org-tag      (:inherit 'org-drawer))
+     (org-link     (:underline (:style 'line :color grey5)))
      (org-done     (:foreground grey6))
      (org-todo     (:foreground high-yellow))
      (org-table    (:foreground grey12))
@@ -255,12 +262,28 @@
      (org-roam-preview-heading-selection (:extend t :foreground light-orange :inherit 'org-roam-preview-heading-highlight))
      (org-roam-preview-region (:extend t :inherit 'bold))
      (org-roam-dim (:foreground neutral6))
+     (org-roam-dailies-calendar-note (:underline nil :inherit ('org-link)))
 
+     ;; jupyter-repl
      (jupyter-repl-input-prompt  (:foreground olive))
      (jupyter-repl-output-prompt (:foreground red))
 
+     ;; dashboard
      (dashboard-items-face  (:foreground grey13))
      (dashboard-main-button (:foreground grey13 :bold t))
+
+     ;; hi-lock
+     (hi-yellow (:foreground bg :background lighter-olive))
+     (hi-pink (:foreground bg :background lighter-purple))
+     (hi-green (:foreground bg :background lighter-green))
+     (hi-blue (:foreground bg :background neutral15))
+     (hi-salmon (:foreground bg :background lighter-orange))
+     (hi-aquamarine (:foreground bg :background lighter-green))
+     (hi-black-b (:weight 'bold))
+     (hi-blue-b (:weight 'bold :foreground neutral4))
+     (hi-green-b (:weight 'bold :foreground light-green))
+     (hi-red-b (:weight 'bold :foreground red))
+     (hi-black-hb (:height 1.67 :weight 'bold :inherit 'variable-pitch))
 
      ;; orderless
      (orderless-match-face-0 (:foreground high-cyan :bold t))
@@ -271,21 +294,21 @@
      ;; rainbow-delimiters
      (rainbow-delimiters-base-face nil)
      (rainbow-delimiters-base-error-face (:foreground darker-red :inherit 'rainbow-delimiters-base-face))
-     (rainbow-delimiters-mismatched-face (:inherit 'rainbow-delimiters-unmatched-face))
      (rainbow-delimiters-unmatched-face (:foreground high-red))
+     (rainbow-delimiters-mismatched-face (:inherit 'rainbow-delimiters-unmatched-face))
 
-     (rainbow-delimiters-depth-1-face   (:foreground cyan))
-     (rainbow-delimiters-depth-2-face   (:foreground purple))
-     (rainbow-delimiters-depth-3-face   (:foreground green))
-     (rainbow-delimiters-depth-4-face   (:foreground orange))
-     (rainbow-delimiters-depth-5-face   (:foreground cyan))
-     (rainbow-delimiters-depth-6-face   (:foreground purple))
-     (rainbow-delimiters-depth-7-face   (:foreground green))
-     (rainbow-delimiters-depth-8-face   (:foreground orange))
-     (rainbow-delimiters-depth-9-face   (:foreground cyan))
-     (rainbow-delimiters-depth-10-face  (:foreground purple))
-     (rainbow-delimiters-depth-11-face  (:foreground green))
-     (rainbow-delimiters-depth-12-face  (:foreground orange))
+     (rainbow-delimiters-depth-1-face   (:foreground higher-cyan))
+     (rainbow-delimiters-depth-2-face   (:foreground higher-purple))
+     (rainbow-delimiters-depth-3-face   (:foreground higher-green))
+     (rainbow-delimiters-depth-4-face   (:foreground higher-orange))
+     (rainbow-delimiters-depth-5-face   (:foreground higher-cyan))
+     (rainbow-delimiters-depth-6-face   (:foreground higher-purple))
+     (rainbow-delimiters-depth-7-face   (:foreground higher-green))
+     (rainbow-delimiters-depth-8-face   (:foreground higher-orange))
+     (rainbow-delimiters-depth-9-face   (:foreground higher-cyan))
+     (rainbow-delimiters-depth-10-face  (:foreground higher-purple))
+     (rainbow-delimiters-depth-11-face  (:foreground higher-green))
+     (rainbow-delimiters-depth-12-face  (:foreground higher-orange))
 
      ;; eshell
      (eshell-prompt        (:foreground cyan))
@@ -342,8 +365,19 @@
      (lsp-ui-sideline-symbol-info       (:foreground cyan))
 
      ;; flymake
+     (flymake-end-of-line-diagnostics-face (:height 0.85 :box (:line-width -1)))
+
      (flymake-error (:underline (:style 'wave :color high-red)))
+     (flymake-error-echo (:inherit 'compilation-error))
+     (flymake-error-echo-at-eol (:inherit ('flymake-end-of-line-diagnostics-face 'compilation-error)))
+
      (flymake-warning (:underline (:style 'wave :color high-cyan)))
+     (flymake-warning-echo (:inherit 'compilation-warning))
+     (flymake-warning-echo-at-eol (:inherit ('flymake-end-of-line-diagnostics-face 'compilation-warning)))
+
+     (flymake-note (:underline (:style 'wave :color high-olive)))
+     (flymake-note-echo (:inherit 'flymake-note))
+     (flymake-note-echo-at-eol (:inherit ('flymake-end-of-line-diagnostics-face 'flymake-note)))
 
      ;; flyspell
      (flyspell-incorrect (:underline (:style 'wave :color red)))
@@ -568,10 +602,20 @@
      (which-key-docstring-face (:inherit 'which-key-note-face))
 
      ;; elpaca
-     (elpaca-finished (:weight 'bold :foreground lighter-green))
-     (elpaca-busy (:weight 'bold :foreground lighter-orange))
-     (elpaca-blocked (:weight 'bold :foreground lighter-olive))
-     (elpaca-failed (:weight 'bold :foreground red))
+     (elpaca-finished (:weight 'bold :foreground green))
+     (elpaca-busy     (:weight 'bold :foreground yellow))
+     (elpaca-blocked  (:weight 'bold :foreground purple))
+     (elpaca-failed   (:weight 'bold :foreground red))
+
+     (elpaca-ui-marked-delete  (:weight 'bold :foreground red))
+     (elpaca-ui-marked-install (:weight 'bold :foreground neutral4))
+     (elpaca-ui-marked-rebuild (:weight 'bold :foreground dark-purple))
+     (elpaca-ui-marked-fetch   (:weight 'bold :foreground dark-red))
+     (elpaca-ui-marked-update  (:weight 'bold :foreground light-orange))
+
+     (elpaca-log-highlight (:inherit 'warning))
+     (elpaca-log-error     (:inherit 'error))
+     (elpaca-log-info      (:inherit 'shadow))
 
      ;; vertico
      (vertico-multiline (:inherit 'shadow))
@@ -590,7 +634,7 @@
      (compilation-column-number (:inherit 'font-lock-doc-face))
 
      ;; magit
-     (magit-section-highlight (:extend t :background neutral3))
+     (magit-section-highlight (:extend t :background grey1))
      (magit-section-heading (:weight 'bold :extend t :foreground lighter-yellow))
      (magit-section-secondary-heading (:weight 'bold :extend t))
      (magit-section-heading-selection (:extend t :foreground light-orange))
@@ -727,8 +771,8 @@
 
      ;; show-paren
      (show-paren-match-expression (:inherit 'show-paren-match))
-     (show-paren-mismatch (:foreground neutral15 :background dark-purple))
-     (show-paren-match    (:background cyan))
+     (show-paren-mismatch (:foreground bg :background high-purple))
+     (show-paren-match    (:background low-cyan))
 
      ;; completions
      (completions-group-title (:slant 'italic :inherit 'shadow))
@@ -776,7 +820,7 @@
      ;; widget
      (widget-documentation (:foreground light-green))
      (widget-button (:weight 'bold))
-     (widget-field (:extend t :background neutral6))
+     (widget-field (:extend t :background grey3))
      (widget-single-line-field (:background neutral6))
      (widget-inactive (:inherit 'shadow))
      (widget-button-pressed (:foreground red))
@@ -828,6 +872,74 @@
      ;; nushell
      (nushell-pay-attention-face (:inherit 'font-lock-builtin-face))
 
+     ;; focus
+     (focus-unfocused (:inherit 'shadow))
+     (focus-focused nil)
+
+     ;; term
+     (term (:inherit 'default))
+     (term-bold (:inherit 'ansi-color-bold))
+     (term-underline (:inherit 'ansi-color-underline))
+
+     (term-color-black   (:inherit 'ansi-color-black))
+     (term-color-red     (:inherit 'ansi-color-red))
+     (term-color-green   (:inherit 'ansi-color-green))
+     (term-color-yellow  (:inherit 'ansi-color-yellow))
+     (term-color-blue    (:inherit 'ansi-color-blue))
+     (term-color-magenta (:inherit 'ansi-color-magenta))
+     (term-color-cyan    (:inherit 'ansi-color-cyan))
+     (term-color-white   (:inherit 'ansi-color-white))
+
+     (term-color-bright-black   (:inherit 'ansi-color-bright-black))
+     (term-color-bright-red     (:inherit 'ansi-color-bright-red))
+     (term-color-bright-green   (:inherit 'ansi-color-bright-green))
+     (term-color-bright-yellow  (:inherit 'ansi-color-bright-yellow))
+     (term-color-bright-blue    (:inherit 'ansi-color-bright-blue))
+     (term-color-bright-magenta (:inherit 'ansi-color-bright-magenta))
+     (term-color-bright-cyan    (:inherit 'ansi-color-bright-cyan))
+     (term-color-bright-white   (:inherit 'ansi-color-bright-white))
+
+     ;; apropos
+     (apropos-symbol (:inherit 'bold))
+     (apropos-keybinding (:inherit 'underline))
+     (apropos-property (:inherit 'font-lock-builtin-face))
+     (apropos-button (:inherit ('font-lock-variable-name-face 'button)))
+     (apropos-function-button (:inherit ('font-lock-function-name-face 'button)))
+     (apropos-variable-button (:inherit ('font-lock-variable-name-face 'button)))
+     (apropos-user-option-button (:inherit ('font-lock-variable-name-face 'button)))
+     (apropos-misc-button (:inherit ('font-lock-constant-face 'button)))
+
+     ;; sly
+     (sly-action-face (:inherit 'warning))
+     (sly-part-button-face (:inherit 'font-lock-constant-face))
+     (sly-error-face (:underline light-red))
+     (sly-warning-face (:underline (:color high-orange)))
+     (sly-style-warning-face (:underline lighter-yellow))
+     (sly-note-face (:underline lighter-yellow))
+     (sly-db-topline-face nil)
+     (sly-db-condition-face (:inherit 'error))
+     (sly-db-section-face (:inherit 'header-line))
+     (sly-db-frame-label-face (:inherit 'shadow))
+     (sly-db-restart-face nil)
+     (sly-db-restart-number-face (:inherit 'shadow))
+     (sly-db-frame-line-face nil)
+     (sly-db-restartable-frame-line-face (:inherit 'font-lock-constant-face))
+     (sly-db-non-restartable-frame-line-face nil)
+     (sly-db-local-name-face nil)
+     (sly-db-catch-tag-face nil)
+     (sly-mode-line (:weight 'bold :inherit 'font-lock-constant-face))
+     (sly-apropos-symbol (:inherit 'sly-part-button-face))
+     (sly-apropos-label (:inherit 'italic))
+     (sly-mrepl-prompt-face (:inherit 'font-lock-builtin-face))
+     (sly-mrepl-note-face (:inherit 'font-lock-keyword-face))
+     (sly-mrepl-output-face (:foreground fg))
+     (sly-reader-conditional-face (:inherit 'font-lock-comment-face))
+     (sly-stickers-placed-face (:foreground bg :background neutral11))
+     (sly-stickers-armed-face (:strike-through nil :inherit 'hi-blue))
+     (sly-stickers-recordings-face (:strike-through nil :inherit 'hi-green))
+     (sly-stickers-empty-face (:strike-through nil :inherit 'hi-pink))
+     (sly-stickers-exited-non-locally-face (:strike-through t :inherit 'sly-stickers-empty-face))
+
      (buffer-menu-buffer (:weight 'bold))
      (border nil)
      (browse-url-button (:inherit 'link))
@@ -873,7 +985,6 @@
      (read-multiple-choice-face (:weight 'bold :inherit 'underline))
      (rmail-highlight (:inherit 'highlight))
      (rmail-header-name (:inherit 'font-lock-function-name-face))
-     (sly-warning-face (:underline (:color high-orange)))
      (scroll-bar (:foreground neutral15))
      (separator-line (:height 0.1 :background neutral5))
      (tab-line (:height 0.9 :foreground bg :background neutral15 :inherit 'variable-pitch))
