@@ -157,7 +157,7 @@ let PYTHONPATH = ([
   ($home | path join lib $python_version site-packages)
 ] | str join ':')
 
-let PYTHONSTARTUP = "/etc/python/pythonrc"
+let PYTHONSTARTUP = (xdg config-home | path join python conf.py)
 
 let PATH = (
   $env.PATH
