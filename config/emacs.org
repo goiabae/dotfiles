@@ -640,6 +640,22 @@ Show git status of lines on the left side of the windows. Change the default ugl
   `((t :inherit 'default))
   "Background color lightest yellow.")
 
+(defface yeet/mode-line-readable-buffer
+  `((t :inherit 'default))
+  "Background color lightest yellow.")
+
+(defface yeet/mode-line-writeable-buffer
+  `((t :inherit 'default))
+  "Background color lightest yellow.")
+
+(defface yeet/mode-line-executable-buffer
+  `((t :inherit 'default))
+  "Background color lightest yellow.")
+
+(defface yeet/mode-line-shadow
+  `((t :inherit 'default))
+  "Background color lightest yellow.")
+
 ;; include column number in mode-line coordinates
 (setq column-number-mode t)
 
@@ -647,26 +663,30 @@ Show git status of lines on the left side of the windows. Change the default ugl
   '((:eval (meow-indicator))
     (:eval
      (if (buffer-modified-p)
-       (propertize " %b " 'face 'yeet/mode-line-buffer-name
+       (propertize " %b:%l:%c " 'face 'yeet/mode-line-buffer-name
                    'help-echo (concat "Buffer " (buffer-file-name) " has been modified"))
-       (propertize " %b " 'help-echo (concat "Buffer " (buffer-file-name) " has been modified"))))
-    (:eval
-     (when buffer-read-only
-       (propertize " <ro>" 'help-echo "Buffer is marked as read-only")))
+       (propertize " %b:%l:%c " 'help-echo (concat "Buffer " (buffer-file-name) " has not been modified"))))
     " "
-    mode-line-position
+    "<"
+    mode-line-mule-info
+    (:eval (propertize "r" 'face 'yeet/mode-line-readable-buffer 'help-echo "Buffer is readable"))
+    (:eval
+     (if buffer-read-only
+       (propertize "-" 'help-echo "Buffer is read-only")
+       (propertize "w" 'face 'yeet/mode-line-writeable-buffer 'help-echo "Buffer is writeable")))
+    (:eval
+     (if (and (buffer-file-name) (file-executable-p (buffer-file-name)))
+         (propertize "x" 'face 'yeet/mode-line-executable-buffer 'help-echo "Buffer is executable")
+       (propertize "-" 'help-echo "Buffer is not executable")))
+    ">"
+    " "
+    "%p/%IB"
     " "
     mode-line-misc-info
     " "
-    (:eval
-     (propertize " " 'display
-           `((space
-              :align-to (-
-                         (+ right right-fringe right-margin)
-                         ,(+ 3 (string-width
-                                (if (listp mode-name)
-                                    (car mode-name)
-                                  mode-name))))))))))
+    mode-name
+    " "
+    (:propertize ("" "(" minor-mode-alist ")") face yeet/mode-line-shadow)))
 
 (use-package hide-mode-line
   :commands hide-mode-line-mode)
