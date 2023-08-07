@@ -469,7 +469,7 @@ This assumes that this version of Emacs has the `bind-key' included in the defau
  ("C-="       . text-scale-increase)
  ("C-c f d"   . delete-frame)
  ("C-c f m"   . make-frame)
- ("C-c i d"   . user-insert-date)
+ ("C-c i d"   . yeet/insert-date)
  ("C-c s"     . async-shell-command)
  ("C-c c"     . compile)
  ("C-c t t"   . toggle-truncate-lines)
@@ -541,6 +541,13 @@ When pressing chorded commands show a little banned on the modeline givin hints 
   :custom (whitespace-style '(face tabs tab-mark trailing))
   (whitespace-display-mappings
    '((tab-mark ?\t [?· ?\t] [?\\ ?\t]))))
+#+end_src
+
+** insertting current date
+#+begin_src elisp
+(defun yeet/insert-date ()
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d")))
 #+end_src
 
 ** load full.el
