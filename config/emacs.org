@@ -737,7 +737,13 @@ I don't know if this is the best way of doing this. I would want to do something
 (use-package dired
   :elpaca nil
   :hook ((dired-mode . auto-revert-mode)
-         (dired-mode . dired-hide-details-mode)))
+         (dired-mode . dired-hide-details-mode)
+         (dired-mode . dired-omit-mode))
+  :custom
+  ;; hide dotfiles
+  ;; match any word which begins with a dot and
+  ;; has three or more characters
+  (dired-omit-files (rx bol ?. (not (any ?.)))))
 #+end_src
 
 ** better menus
