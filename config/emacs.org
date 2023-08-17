@@ -1243,6 +1243,7 @@ Zig always indents by 4 spaces. Use =zls= as the language server.
   :commands nix-mode)
 
 (use-package nushell-mode
+  :disabled
   :elpaca (nushell-mode
              :type git
              :host github
@@ -1251,6 +1252,12 @@ Zig always indents by 4 spaces. Use =zls= as the language server.
   :commands nushell-mode
   :config
   (setq nushell-indent-offset 2))
+
+(use-package nushell-ts-mode
+  :elpaca (nushell-ts-mode
+           :type git
+           :host github
+           :repo "herbertjones/nushell-ts-mode"))
 
 (use-package prolog
   :elpaca nil
