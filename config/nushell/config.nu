@@ -596,7 +596,7 @@ def accountances [] {
 }
 
 def 'music' [] {
-  let file = '~/doc/table/music.3.csv'
+  let file = '~/doc/table/music.csv'
   open --raw $file | from csv --no-infer | into int score revisions
 }
 
