@@ -466,6 +466,7 @@ use ~/lib/nu/sfeed.nu
 use ~/lib/nu/unix.nu
 use ~/lib/nu/x11.nu *
 use ~/lib/nu/yt.nu
+use ~/lib/nu/xbps.nu
 
 register ~/bin/nu.d/nu_plugin_query
 register ~/bin/nu.d/nu_plugin_formats
