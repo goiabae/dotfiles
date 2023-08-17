@@ -120,18 +120,22 @@ Add some directories to better integrate with the system. Prevent packages from 
 *** elpaca
 #+begin_src elisp
 (defvar elpaca-installer-version 0.5)
-(defvar elpaca-directory (expand-file-name "emacs/elpaca" (xdg-data-home)))
+
+(defvar elpaca-directory (expand-file-name "emacs/elpaca/" (xdg-data-home)))
 (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
 (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+
 (defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
                               :ref nil
                               :files (:defaults (:exclude "extensions"))
                               :build (:not elpaca--activate-package)))
+
 (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
        (build (expand-file-name "elpaca/" elpaca-builds-directory))
        (order (cdr elpaca-order))
        (default-directory repo))
   (add-to-list 'load-path (if (file-exists-p build) build repo))
+  ;; clone elpaca and byte-compile it
   (unless (file-exists-p repo)
     (make-directory repo t)
     (when (< emacs-major-version 28) (require 'subr-x))
@@ -146,24 +150,25 @@ Add some directories to better integrate with the system. Prevent packages from 
                                        "--eval" "(byte-recompile-directory \".\" 0 'force)")))
                  ((require 'elpaca))
                  ((elpaca-generate-autoloads "elpaca" repo)))
-            (kill-buffer buffer)
+            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
           (error "%s" (with-current-buffer buffer (buffer-string))))
       ((error) (warn "%s" err) (delete-directory repo 'recursive))))
   (unless (require 'elpaca-autoloads nil t)
     (require 'elpaca)
     (elpaca-generate-autoloads "elpaca" repo)
     (load "./elpaca-autoloads")))
+#+end_src
+
+The reason why src_elisp{`elpaca-order'} is weirdly passed by splicing inside backquotes (that's really stupid) is because the first element of the order is used inside the src_elisp{`elpaca'} macro to make a new symbol at /compile time/, so you need to expand src_elisp{`elpaca-order'} before src_elisp{`elpaca'} gets called/executed. I don't like this at all.
+
+#+begin_src elisp
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
 
-;; Install use-package support
 (elpaca elpaca-use-package
-  ;; Enable :elpaca use-package keyword.
   (elpaca-use-package-mode)
-  ;; Assume :elpaca t unless otherwise specified.
   (setq elpaca-use-package-by-default t))
 
-;; Block until current queue processed.
 (elpaca-wait)
 #+end_src
 
