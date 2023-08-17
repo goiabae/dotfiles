@@ -453,6 +453,18 @@ This assumes that this version of Emacs has the `bind-key' included in the defau
  ("C-c ."     . find-file))
 #+end_src
 
+By default, Emacs kills the word with =C-<backspace>=, which copies to clipboard. This behaviour is really annoying when trying to change file or buffer with something already  on the clipboard.
+
+#+begin_src elisp
+(defun yeet/backward-delete-word (arg)
+  "Delete characters backward until encountering the beginning of a word.
+Do this ARG times."
+  (interactive "p")
+  (delete-region (point) (progn (backward-word arg) (point))))
+
+(bind-key "C-<backspace>" #'yeet/backward-delete-word 'minibuffer-local-map)
+#+end_src
+
 ** formatting and navigation
 Stop =electric= from indent things automatically. Highlight matching pairs of characters. Use tabs for indentation with 2 characters wide =TAB=.
 
