@@ -798,6 +798,8 @@ The =helpful= package puts *more information* into the =*Help*= buffers, making 
 #+end_src
 
 ** org
+Don't align block text with heading text. One space of additional indentation on each heading level. "/Fontify/" source block delimiters such that faces can be applied to them. Hide things like /italic/ and *bold* characters.
+
 #+begin_src elisp
 (use-package org
   :bind ("C-c o i" . org-id-get-create)
@@ -805,20 +807,20 @@ The =helpful= package puts *more information* into the =*Help*= buffers, making 
          (org-mode . visual-line-mode))
   :config
   (setq org-directory "~/doc/note"
+        org-tags-column -68
+
         org-adapt-indentation nil
         org-src-preserve-indentation t
-        ;; create new frame when editting source block
-        ; org-src-window-setup 'other-frame
-        org-startup-with-inline-images t
         org-indent-indentation-per-level 1
+
+        org-startup-with-inline-images t
         org-hide-emphasis-markers t
         org-fontify-whole-block-delimiter-line t
-        org-startup-folded t))
+        org-fontify-done-headline nil
+        org-fontify-todo-headline nil
+        org-startup-folded t)
 
-;; tempo block templates
-(use-package org-tempo
-  :elpaca nil
-  :after org)
+  (setq org-agenda-files (mapcan (lambda (dir) (directory-files-recursively (expand-file-name dir org-directory) "\.org$")) '("college"))))
 
 ;; has additional babel sub-packages
 (use-package org-contrib
@@ -830,54 +832,66 @@ The =helpful= package puts *more information* into the =*Help*= buffers, making 
   :bind ("C-c o l c" . org-cliplink))
 #+end_src
 
+*** block shortcuts
+This adds little shortcuts like <s TAB, which create a new source block under point. Saves a lot of time.
+
+#+begin_src elisp
+(use-package org-tempo
+  :elpaca nil
+  :after org)
+#+end_src
+
 *** "/relational"/ note taking
+We add a new entry to the src_elisp{`display-buffer-alist'} for =org-roam=, such that it's buffer is placed on the right side of the current buffer.
+
 #+begin_src elisp
 (use-package org-roam
   :requires org
   :bind (("C-c o r j" . org-roam-dailies-find-today)
          ("C-c o r f" . org-roam-node-find)
          ("C-c o r i" . org-roam-node-insert)
-         ("C-c o r w" . yeet/goto-notes-weekly))
+         ("C-c o r w" . yeet/goto-notes-weekly)
+         ("C-c o r b" . org-roam-buffer-toggle))
   :config
   (defun yeet/goto-notes-weekly ()
     "Opens current week's `org-roam' entry."
     (interactive)
     (org-roam-dailies-find-today "w"))
+  (setq display-buffer-alist
+    (map-insert display-buffer-alist "\\*org-roam\\*"
+      '((display-buffer-in-side-window)
+        (side . right)
+        (slot . 0)
+        (window-width . 0.33)
+        (window-parameters
+          . ((no-other-window . t)
+             (no-delete-other-windows . t))))))
   :custom
   (org-roam-directory org-directory)
   (org-roam-dailies-directory "journal/")
   (org-roam-file-exclude-regexp '("\\.stfolder" "\\.stignore" "\\.stversions" "data/"))
   (org-roam-capture-templates
    '(("r" "random" plain "%?"
-      :target (file+head "random/${slug}.org" "#+title: ${title}\n")
-      :unnarrowed t)
+      :target (file+head "random/${slug}.org" "#+title: ${title}\n"))
      ("p" "persona" plain "%?"
-      :target (file+head "persona/${slug}.org" "#+title: ${title}\n#+filetags: :persona:\n")
-      :unnarrowed t)
+      :target (file+head "persona/${slug}.org" "#+title: ${title}\n#+filetags: :persona:\n"))
      ("m" "music")
      ("ml" "list" plain "%?"
-      :target (file+head "music/list/${slug}.org" "#+title: ${title}\n#+filetags: :music:list:\n")
-      :unnarrowed t)
+      :target (file+head "music/list/${slug}.org" "#+title: ${title}\n#+filetags: :music:list:\n"))
      ("mt" "track" plain "%?"
-      :target (file+head "music/track/${slug}.org" "#+title: ${title}\n#+filetags: :music:track:\n")
-      :unnarrowed t)
+      :target (file+head "music/track/${slug}.org" "#+title: ${title}\n#+filetags: :music:track:\n"))
      ("f" "film")
      ("fa" "anime" plain "%?"
-      :target (file+head "film/anime/${slug}.org" "#+title: ${title}\n#+filetags: :film:anime:\n")
-      :unnarrowed t)
+      :target (file+head "film/anime/${slug}.org" "#+title: ${title}\n#+filetags: :film:anime:\n"))
      ("fc" "Cartoon" plain "%?"
-      :target (file+head "film/cartoon/${slug}.org" "#+title: ${title}\n#+filetags: :film:cartoon:\n")
-      :unnarrowed t)
+      :target (file+head "film/cartoon/${slug}.org" "#+title: ${title}\n#+filetags: :film:cartoon:\n"))
      ("fm" "movie" plain "%?"
-      :target (file+head "film/movie/${slug}.org" "#+title: ${title}\n#+filetags: :film:movie:\n")
-      :unnarrowed t)
+      :target (file+head "film/movie/${slug}.org" "#+title: ${title}\n#+filetags: :film:movie:\n"))
      ("l" "literature")
      ("lb" "book" plain "%?"
-      :target (file+head "literature/book/${slug}.org" "#+title: ${title}\n#+filetags: :literature:book:\n")
-      :unnarrowed t)
+      :target (file+head "literature/book/${slug}.org" "#+title: ${title}\n#+filetags: :literature:book:\n"))
      ("lm" "manga" plain "%?"
-      :target (file+head "literature/manga/${slug}.org" "#+title: ${title}\n#+filetags: :literature:manga:\n")
-      :unnarrowed t)))
+      :target (file+head "literature/manga/${slug}.org" "#+title: ${title}\n#+filetags: :literature:manga:\n"))))
   (org-roam-dailies-capture-templates
    '(("t" "Daily journal" entry "* %?"
       :target (file+head "%<%d-%m-%Y->.org" "#+title: %<%d-%m-%Y>\n#+filetags: :journal:\n"))
@@ -919,13 +933,16 @@ Have to find a better way to load src_elisp{`org-phscroll'}.
 
 #+begin_src elisp
 (use-package olivetti
-  :hook (org-mode . olivetti-mode))
+  :hook (org-mode . olivetti-mode)
+  :custom (olivetti-body-width
+           (+ 4 (- org-tags-column))))
 
 (use-package phscroll
   :elpaca (phscroll
            :type git
            :host github
            :repo "misohena/phscroll")
+	:after org
   :config (require 'org-phscroll))
 #+end_src
 
