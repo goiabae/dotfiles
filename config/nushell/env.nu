@@ -65,4 +65,6 @@ let-env NU_PLUGIN_DIRS = [
   ($nu.home-path | path join bin nu.d)
 ]
 
-nu ~/profile.nu | from json | load-env
+if $nu.is-login {
+	nu ~/profile.nu json | from json | load-env
+}

@@ -1,4 +1,5 @@
 export PATH=$HOME/bin:$PATH
-IFS=' '
-env="$(nu $HOME/profile.nu | jq -r '[ . | to_entries[] | "export " + .key + "=" + "\"" + .value + "\"" ] | @tsv' | sed 's/\t/\n/g')"
-eval "$env"
+
+case $0 in
+	-*) eval "$(nu ~/profile.nu shell)" ;;
+esac
