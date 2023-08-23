@@ -1370,6 +1370,7 @@ Open some file types using external programs.
   :commands himalaya
   :bind ("C-c e l" . himalaya))
 #+end_src
+
 ** side minimap
 #+begin_src elisp
 (use-package minimap
@@ -1383,3 +1384,15 @@ Open some file types using external programs.
 (use-package magit)
 #+end_src
 
+** rest
+#+begin_src elisp
+(defun yeet/open-music ()
+  (interactive) (find-file "~/doc/table/music.csv"))
+
+(defun yeet/open-config ()
+  (interactive) (find-file "~/config/emacs.org"))
+
+(bind-keys
+ ("C-c f m" . yeet/open-music)
+ ("C-c f c" . yeet/open-config))
+#+end_src
