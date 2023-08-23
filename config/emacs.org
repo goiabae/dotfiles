@@ -1153,7 +1153,16 @@ After having some issues with =eglot= wanting to call a function not in the buil
   :config
   (when (not (locate-file "clangd" exec-path))
     (warn "`clangd' not in `exec-path'. Emacs won't be able to connect to C/C++ LSP server."))
-  (add-to-list 'eglot-server-programs '((c-mode c++-mode) . ("clangd" "--enable-config"))))
+  (add-to-list 'eglot-server-programs
+               (cons '(c-mode c++-mode)
+                     (lambda (x)
+                       (list
+                        "clangd"
+                        "--enable-config"
+                        (concat "--compile-commands-dir="
+                                (f-join
+                                 (project-root (project-current t))
+                                 "build/")))))))
 
 ;; C/C++
 (setq compile-command "make"
@@ -1161,15 +1170,13 @@ After having some issues with =eglot= wanting to call a function not in the buil
 
 (use-package cmake-mode)
 
-(defun yeet/cmake-prepare (generate-compile-commands is-release)
+(defun yeet/cmake-prepare (is-release)
   (interactive
-   (list (yes-or-no-p "Should generate compile_commands.json? ")
-         (yes-or-no-p "Set build type to Release (otherwise Debug)? ")))
+   (list (yes-or-no-p "Set build type to Release (otherwise Debug)? ")))
   (let ((default-directory (project-root (project-current t)))
         (compile-command
-         (concat "cmake -S . -B build"
-                 " -D CMAKE_BUILD_TYPE=" (if is-release "Release" "Debug")
-                 (if generate-compile-commands " -D CMAKE_EXPORT_COMPILE_COMMANDS=1" nil))))
+         (s-join " "
+                 (list "cmake" "-S" "." "-B" "build" "-Wdeprecated" "-D" (concat "CMAKE_BUILD_TYPE=" (if is-release "Release" "Debug")) "-D" "CMAKE_EXPORT_COMPILE_COMMANDS=1"))))
     (call-interactively 'compile)))
 
 (defun yeet/cmake-build ()
