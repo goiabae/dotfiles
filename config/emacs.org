@@ -652,6 +652,16 @@ Show git status of lines on the left side of the windows. Change the default ugl
 
 (use-package minions)
 
+(defun yeet/make-file-executable (file-path)
+  (set-file-modes file-path
+    (logior
+     (file-modes file-path)
+     (logand ?\111 (default-file-modes)))))
+
+(define-key global-map
+ [menu-bar file make-executable]
+ '("Make File Executable" . yeet/make-file-executable))
+
 (setq-default mode-line-format
   '((:eval (meow-indicator))
     (:eval
