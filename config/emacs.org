@@ -1370,3 +1370,11 @@ Open some file types using external programs.
   :commands himalaya
   :bind ("C-c e l" . himalaya))
 #+end_src
+** side minimap
+#+begin_src elisp
+(use-package minimap
+  :custom
+  (minimap-window-location 'right)
+  (minimap-update-delay 0.5))
+#+end_src
+
