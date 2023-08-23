@@ -1378,3 +1378,8 @@ Open some file types using external programs.
   (minimap-update-delay 0.5))
 #+end_src
 
+** git interface
+#+begin_src elisp
+(use-package magit)
+#+end_src
+
