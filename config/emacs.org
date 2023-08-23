@@ -650,6 +650,8 @@ Show git status of lines on the left side of the windows. Change the default ugl
 ;; include column number in mode-line coordinates
 (setq column-number-mode t)
 
+(use-package minions)
+
 (setq-default mode-line-format
   '((:eval (meow-indicator))
     (:eval
@@ -663,21 +665,24 @@ Show git status of lines on the left side of the windows. Change the default ugl
     (:eval (propertize "r" 'face 'yeet/mode-line-readable-buffer 'help-echo "Buffer is readable"))
     (:eval
      (if buffer-read-only
-       (propertize "-" 'help-echo "Buffer is read-only")
-       (propertize "w" 'face 'yeet/mode-line-writeable-buffer 'help-echo "Buffer is writeable")))
+       (propertize "-" 'help-echo "Buffer is read-only\nmouse-1: make buffer writeable" 'mouse-face 'mode-line-highlight 'local-map (make-mode-line-mouse-map 'mouse-1 #'mode-line-toggle-read-only))
+       (propertize "w" 'face 'yeet/mode-line-writeable-buffer 'help-echo "Buffer is writeable\nmouse-1: make buffer read-only" 'mouse-face 'mode-line-highlight 'local-map (make-mode-line-mouse-map 'mouse-1 #'mode-line-toggle-read-only))))
     (:eval
      (if (and (buffer-file-name) (file-executable-p (buffer-file-name)))
          (propertize "x" 'face 'yeet/mode-line-executable-buffer 'help-echo "Buffer is executable")
-       (propertize "-" 'help-echo "Buffer is not executable")))
+       (propertize "-"
+         'help-echo "Buffer is not executable\nmouse-1: make buffer file executable"
+         'mouse-face 'mode-line-highlight
+         'local-map (make-mode-line-mouse-map 'mouse-1
+                      (lambda () (interactive)
+                        (yeet/make-file-executable (buffer-file-name)))))))
     ">"
     " "
     "%p/%IB"
     " "
     mode-line-misc-info
     " "
-    mode-name
-    " "
-    (:propertize ("" "(" minor-mode-alist ")") face yeet/mode-line-shadow)))
+    minions-mode-line-modes))
 
 (use-package hide-mode-line
   :commands hide-mode-line-mode)
