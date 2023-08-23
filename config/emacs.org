@@ -702,22 +702,22 @@ Show git status of lines on the left side of the windows. Change the default ugl
 I don't know if this is the best way of doing this. I would want to do something more declarative, rather.
 
 #+begin_src elisp
+;; nil means all frames
 (set-face-attribute 'default nil
- :family "SauceCodePro Nerd Font Mono" :height 100 :inherit 'default)
+ :family "SauceCodePro Nerd Font Mono" :height 100)
 
-(set-face-attribute 'fixed-pitch nil
- :family "SauceCodePro Nerd Font Mono" :height 100 :inherit 'default)
+(set-face-attribute 'fixed-pitch nil :inherit 'default)
 
 (set-face-attribute 'variable-pitch nil
  :family "NotoSans Display Nerd Font" :height 105)
 
 ;; set font for character sets from languages of East Asia
-(set-fontset-font t 'emoji       "FontAwesome")
-(set-fontset-font t 'unicode-bmp "FontAwesome")
-(set-fontset-font t 'han      "Noto Sans Mono CJK SC")
-(set-fontset-font t 'kana     "Noto Sans Mono CJK JP")
-(set-fontset-font t 'hangul   "Noto Sans Mono CJK KR")
-(set-fontset-font t 'cjk-misc "Noto Sans Mono CJK KR")
+;; t to use the default fontset
+(set-fontset-font t 'unicode  (font-spec :family "Noto Color Emoji"))
+(set-fontset-font t 'han      (font-spec :family "Noto Sans Mono CJK SC"))
+(set-fontset-font t 'kana     (font-spec :family "Noto Sans Mono CJK JP"))
+(set-fontset-font t 'hangul   (font-spec :family "Noto Sans Mono CJK KR"))
+(set-fontset-font t 'cjk-misc (font-spec :family "Noto Sans Mono CJK KR"))
 #+end_src
 
 *** line numbers
