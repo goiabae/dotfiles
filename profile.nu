@@ -105,10 +105,12 @@ let python_version = (
   | $"python($in.major).($in.minor)"
 )
 
-$a.PYTHONPATH = ([
-  (echo /usr/lib | path join $python_version)
-  ($home | path join lib $python_version site-packages)
-] | str join ':')
+# $a.PYTHONPATH = (
+#   ls /usr/lib/python3.*
+#   | get name
+#   | append ($nu.home-path | path join lib $python_version site-packages)
+#   | str join (char env_sep)
+# )
 
 $a.IPFS_PATH = ($nu.home-path | path join app ipfs)
 $a.WWW_HOME = ($a.XDG_DATA_HOME | path join w3m)
