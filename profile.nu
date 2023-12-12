@@ -1,5 +1,4 @@
 use ~/lib/nu/unix.nu
-use ~/lib/nu/xdg.nu
 
 def 'stringy' [
   --assignment(-a): string
@@ -58,6 +57,8 @@ $a.HISTFILE = ($a.XDG_DATA_HOME | path join bash.hist)
 $a.HISTCONTROL = "ignoreboth"
 $a.HISTSIZE = 100 # max lines on memory
 $a.HISTFILESIZE = 2000 # max lines on disk
+$a.GDBHISTFILE = ($a.XDG_CONFIG_HOME | path join gdb .gdb_history)
+$a.RLWRAP_HOME = ($a.XDG_DATA_HOME | path join rlwrap)
 
 $a.INPUTRC = ($a.XDG_CONFIG_HOME | path join readline/inputrc)
 
@@ -65,8 +66,8 @@ $a.CARGO_HOME = ($nu.home-path | path join app cargo)
 $a.RUSTUP_HOME = ($nu.home-path | path join app rustup)
 $a.GOPATH = ($nu.home-path | path join app go)
 $a.NPM_CONFIG_USERCONFIG = ($a.XDG_CONFIG_HOME | path join npm/npmrc)
-$a.GNUPGHOME = ($a.XDG_DATA_HOME | path join gnupg)
 $a.ROSWELL_HOME = ($nu.home-path | path join app roswell)
+$a.R_HOME = ($nu.home-path | path join app 'R')
 
 $a.JULIA_DEPOT_PATH = (
 	$env.JULIA_DEPOT_PATH?
@@ -76,18 +77,12 @@ $a.JULIA_DEPOT_PATH = (
 )
 
 $a.OPAMROOT = ($a.XDG_DATA_HOME | path join opam)
+$a.NUGET_PACKAGES = ($a.XDG_CACHE_HOME | path join nuget packages)
 
-# Both configuration and state data are stored in OPAMROOT,
-# so this solution is not fully compliant.
 $a.OPAM_SWITCH_PREFIX = ($a.OPAMROOT | path join default)
 
 $a.PYTHONSTARTUP = ($a.XDG_CONFIG_HOME | path join python conf.py)
 $a.GRADLE_USER_HOME = ($a.XDG_DATA_HOME | path join gradle)
-$a.W3M_DIR = ($a.XDG_DATA_HOME | path join w3m)
-$a.ANDROID_HOME = ($a.XDG_DATA_HOME | path join android)
-
-# this is causing problems, specially with Qt shared objects, indicating `undefined symbol`s
-# export LD_LIBRARY_PATH=/usr/lib:/usr/lib32:/usr/local/lib:$HOME/lib/c
 
 $a.CAML_LD_LIBRARY_PATH = ([
   ($nu.home-path | path join lib/ocaml/stublibs/)
@@ -97,6 +92,17 @@ $a.CAML_LD_LIBRARY_PATH = ([
 ] | str join (char env_sep))
 
 $a.OCAML_TOPLEVEL_PATH = ($a.OPAM_SWITCH_PREFIX | path join lib toplevel)
+
+$a.GNUPGHOME = ($a.XDG_DATA_HOME | path join gnupg)
+
+$a.W3M_DIR = ($a.XDG_DATA_HOME | path join w3m)
+$a.ANDROID_HOME = ($a.XDG_DATA_HOME | path join android)
+$a.DOTNET_ROOT = ($nu.home-path | path join app dotnet latest)
+$a.MINETEST_USER_PATH = ($a.XDG_DATA_HOME | path join minetest)
+$a.OMNISHARPHOME = ($a.XDG_CONFIG_HOME | path join omnisharp)
+$a._JAVA_OPTIONS = $"-Djava.util.prefs.userRoot=($a.XDG_CONFIG_HOME | path join java)"
+$a.ERRFILE = ($a.XDG_CACHE_HOME | path join X11 xsession-errors)
+$a.LEIN_HOME = ($a.XDG_DATA_HOME | path join lein)
 
 let python_version = (
   python3 --version
@@ -115,7 +121,6 @@ let python_version = (
 $a.IPFS_PATH = ($nu.home-path | path join app ipfs)
 $a.WWW_HOME = ($a.XDG_DATA_HOME | path join w3m)
 $a.SSB_HOME = ($a.XDG_DATA_HOME | path join zoom)
-$a.YTFZF_SYSTEM_ADDON_DIR = ($home | path join lib sh ytfzf addons)
 
 $a.EDITOR = "editor"
 $a.VISUAL = "editor"
@@ -134,11 +139,11 @@ $a.DOT_SAGE = ($a.XDG_CONFIG_HOME | path join sage)
 $a.GPG_TTY = (unix tty)
 #$a.QT_QPA_PLATFORM = 'wayland;xcb'
 $a.MOZ_ENABLE_WAYLAND = '1'
-$a.YTFZF_PREFIX = "bestvideo[height<=720]+bestaudio/best[height<=720]"
 $a.SYS_LOG_FILE = ($nu.home-path | path join data/msg.txt)
 $a.GRIM_DEFAULT_DIR = ($nu.home-path | path join img/screenshot)
 $a.QT_STYLE_OVERRIDE = "kvantum"
 $a.TERMINFO = ($a.XDG_DATA_HOME | path join terminfo)
+$a.DOTNET_CLI_TELEMETRY_OPTOUT = '1'
 $a.WINEPREFIX = ($a.XDG_DATA_HOME | path join wineprefixes/default)
 $a.TERMINFO_DIRS = ([
   ($a.XDG_DATA_HOME | path join terminfo)
@@ -190,12 +195,21 @@ $a.PATH = (
 		/opt/texlive/2023/bin/x86_64-linux
 		($a.OPAM_SWITCH_PREFIX | path join bin)
 		($nu.home-path | path join $a.ROSWELL_HOME bin)
+		($nu.home-path | path join .dotnet tools)
 	]
 	| str join (char env_sep)
 )
 
 # SECRETS
 $a.DZR_CBC = (open ~/doc/secrets/dzr-cbc.txt | str trim -r)
+
+$a.GTK_IM_MODULE = "ibus"
+$a.QT_IM_MODULE = "ibus"
+$a.XMODIFIERS = "@im=ibus"
+
+$a.XBPS_DISTDIR = "/store/source/void-packages"
+
+$a.SFEED_AUTOCMD = "to"
 
 let e = $a
 
