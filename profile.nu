@@ -198,14 +198,16 @@ $a.DZR_CBC = "g4el58wc0zvf9na1"
 
 let e = $a
 
-def main [type: string] {
-	match $type {
-		"json" => { $e | to json },
-		"shell" => {
-			$e
-			| transpose
-			| each { |it| $'export ($it.column0)="($it.column1)"' }
-			| str join (char newline)
-		}
-	}
+def main [] {}
+
+def "main json" [] {
+	print ($e | to json)
+}
+
+def "main shell" [] {
+	$e
+	| transpose
+	| each { |it| $'export ($it.column0)="($it.column1)"' }
+	| str join (char newline)
+	| print $in
 }
