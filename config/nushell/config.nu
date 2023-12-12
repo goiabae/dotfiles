@@ -211,7 +211,7 @@ $env.config = {
     max_size: 10000
     sync_on_enter: false
     file_format: "plaintext"
-    history_isolation: true
+    isolation: false
   }
 
   completions: {
