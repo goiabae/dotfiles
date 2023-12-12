@@ -195,7 +195,7 @@ $a.PATH = (
 )
 
 # SECRETS
-$a.DZR_CBC = "g4el58wc0zvf9na1"
+$a.DZR_CBC = (open ~/doc/secrets/dzr-cbc.txt | str trim -r)
 
 let e = $a
 
