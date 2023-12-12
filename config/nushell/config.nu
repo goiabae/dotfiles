@@ -511,7 +511,11 @@ def 'mal anime season' [year: string, season: string] {
             title: ($anime | query web --query '.title-text' | str trim | first)
             score: ($anime | query web --query '.information .score' | str trim | first)
           members: ($anime | query web --query '.information .member' | str trim | first)
-            cover: ($anime | query web --query 'img' --attribute 'src' | first)
+            cover: (do {
+              let src = ($anime | query web --query 'img' --attribute 'src')
+              let data_src = ($anime | query web --query 'img' --attribute 'data-src')
+              $src | append $data_src | where $it != '' | first
+            })
          synopsis: ($anime | query web --query '.synopsis p' | first | str replace '\n\(Source: .*\)' '')
           # studio, source themes -> .synopsis .properties |> each :key [0] :value [1]
         }
