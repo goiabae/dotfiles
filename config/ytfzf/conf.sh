@@ -6,7 +6,7 @@ video_player() {
 	mpv --ao=pulse "$@"
 }
 
-ytdl_pref="247"
+ytdl_pref="bestvideo[height<=720]+bestaudio/best[height<=720]"
 sub_link_count=1
 
 show_thumbnails=0
