@@ -34,13 +34,13 @@ def create_right_prompt [] {
 }
 
 # Closures that generate prompt strings
-let-env PROMPT_COMMAND = { create_left_prompt }
-let-env PROMPT_COMMAND_RIGHT = { create_right_prompt }
+$env.PROMPT_COMMAND = { create_left_prompt }
+$env.PROMPT_COMMAND_RIGHT = { create_right_prompt }
 
-let-env PROMPT_INDICATOR = $"(ansi yb)|> (ansi reset)"
-let-env PROMPT_INDICATOR_VI_INSERT = ": "
-let-env PROMPT_INDICATOR_VI_NORMAL = "|> "
-let-env PROMPT_MULTILINE_INDICATOR = "::: "
+$env.PROMPT_INDICATOR = $"(ansi yb)|> (ansi reset)"
+$env.PROMPT_INDICATOR_VI_INSERT = ": "
+$env.PROMPT_INDICATOR_VI_NORMAL = "|> "
+$env.PROMPT_MULTILINE_INDICATOR = "::: "
 
 let comma_sep = {
   from_string: { |s| $s | split row (char esep) }
@@ -48,19 +48,19 @@ let comma_sep = {
 }
 
 # Note: The conversions happen *after* config.nu is loaded
-let-env ENV_CONVERSIONS = {
+$env.ENV_CONVERSIONS = {
   "PATH": $comma_sep
   "Path": $comma_sep
 }
 
 # Directories to search for scripts when calling source or use
-let-env NU_LIB_DIRS = [
+$env.NU_LIB_DIRS = [
   ($nu.config-path | path dirname | path join 'scripts')
   ($nu.home-path | path join lib nu)
 ]
 
 # Directories to search for plugin binaries when calling register
-let-env NU_PLUGIN_DIRS = [
+$env.NU_PLUGIN_DIRS = [
   ($nu.config-path | path dirname | path join 'plugins')
   ($nu.home-path | path join bin nu.d)
 ]
