@@ -544,15 +544,26 @@ def fc-list [] {
   ^fc-list | lines | parse '{path}: {name}:style={style}'
 }
 
-def 'firefox tabs' [] {
-  cd ~/.mozilla/firefox
-  let default_profile = (open installs.ini | rotate | first | get column0.Default)
-  let info = (lz4jsoncat  $'($default_profile)/sessionstore-backups/recovery.jsonlz4' | from json)
-  $info.windows | each { |window|
-    $window.tabs.entries | flatten | select url title
+module firefox {
+  export def tabs [] {
+    cd ~/.mozilla/firefox
+    let default_profile = (open installs.ini | jc --ini | from json | values | get default.0)
+    let info = (lz4jsoncat  $'($default_profile)/sessionstore-backups/recovery.jsonlz4' | from json)
+		$info.windows
+    | reduce -f [] { |w, acc|
+      $w.tabs
+      | each { |tab|
+        $tab
+        | get entries
+        | select url title
+        | last
+			}
+      | append $acc
+	  }
   }
-  | first
 }
+
+use firefox
 
 def "emacs eval" [exp: string, --server_socket (-s): path]  {
   let socket = (
