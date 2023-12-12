@@ -735,4 +735,10 @@ def pomo [--work(-w): duration, --break(-b): duration] {
 		mpv $audio
 	}
 }
+
+def "from xbps-repodata" [] {
+	zstdcat '-'
+	| tar --extract --to-stdout --file '-' index.plist
+	| jc --plist
+	| from json
 }
