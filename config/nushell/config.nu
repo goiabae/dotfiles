@@ -709,4 +709,30 @@ def tv [] {
 
 # a bug prevents this from being an alias
 def yt [] { sfeed view -p /bin/mpv youtube }
+
+def pomo [--work(-w): duration, --break(-b): duration] {
+	const audio = `/home/goiabae/audio/Gnome sound effect [j3hOd7u35no].opus`
+	let work = ($work | default 25min)
+	let break = ($break | default 15min)
+	let langs = (espeak --voices | detect columns | get language)
+	mut left = 1hr
+
+	loop {
+		let lang = ($langs | get random)
+
+		termdown -c 10 -v $lang ($work | into string)
+		notify-send "pomo: work done. go relax" $"($work | format duration min) have passed"
+		mpv $audio
+
+		$left = ($left - $work)
+		if ($left <= 0sec) {
+			notify-send "pomo: session completed" $"A total of (1hr | format duration min) of work has passed"
+			break
+		}
+
+		termdown -c 10 -v $lang ($break | into string)
+		notify-send "pomo: break's up" $"($break | format duration min) have passed"
+		mpv $audio
+	}
+}
 }
