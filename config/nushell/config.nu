@@ -112,7 +112,7 @@ let light_theme = {
 
 # The default config record. This is where much of your global
 # configuration is setup.
-let-env config = {
+$env.config = {
   color_config: $dark_theme
   bracketed_paste: true
   buffer_editor: "emacs"
