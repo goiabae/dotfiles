@@ -15,12 +15,11 @@ def 'stringy' [
 }
 
 let uid = (unix user | first | get uid | into string)
-let home = $nu.home-path
 
 mut a  = {}
 
-$a.XDG_CONFIG_HOME = ($home | path join config)
-$a.XDG_DATA_HOME   = ($home | path join var)
+$a.XDG_CONFIG_HOME = ($nu.home-path | path join config)
+$a.XDG_DATA_HOME   = ($nu.home-path | path join var)
 $a.XDG_STATE_HOME  = ($a.XDG_DATA_HOME | path join state)
 $a.XDG_CACHE_HOME  = ($a.XDG_DATA_HOME | path join cache)
 
@@ -62,12 +61,12 @@ $a.HISTFILESIZE = 2000 # max lines on disk
 
 $a.INPUTRC = ($a.XDG_CONFIG_HOME | path join readline/inputrc)
 
-$a.CARGO_HOME = ($home | path join app cargo)
-$a.RUSTUP_HOME = ($home | path join app rustup)
-$a.GOPATH = ($home | path join app go)
+$a.CARGO_HOME = ($nu.home-path | path join app cargo)
+$a.RUSTUP_HOME = ($nu.home-path | path join app rustup)
+$a.GOPATH = ($nu.home-path | path join app go)
 $a.NPM_CONFIG_USERCONFIG = ($a.XDG_CONFIG_HOME | path join npm/npmrc)
 $a.GNUPGHOME = ($a.XDG_DATA_HOME | path join gnupg)
-$a.ROSWELL_HOME = ($home | path join app roswell)
+$a.ROSWELL_HOME = ($nu.home-path | path join app roswell)
 
 $a.JULIA_DEPOT_PATH = (
 	$env.JULIA_DEPOT_PATH?
@@ -91,7 +90,7 @@ $a.ANDROID_HOME = ($a.XDG_DATA_HOME | path join android)
 # export LD_LIBRARY_PATH=/usr/lib:/usr/lib32:/usr/local/lib:$HOME/lib/c
 
 $a.CAML_LD_LIBRARY_PATH = ([
-  ($home | path join lib/ocaml/stublibs/)
+  ($nu.home-path | path join lib/ocaml/stublibs/)
   ($a.OPAM_SWITCH_PREFIX | path join lib/stublibs)
   /usr/lib/ocaml/stublibs
   /usr/lib/ocaml
@@ -111,7 +110,7 @@ $a.PYTHONPATH = ([
   ($home | path join lib $python_version site-packages)
 ] | str join ':')
 
-$a.IPFS_PATH = ($home | path join app ipfs)
+$a.IPFS_PATH = ($nu.home-path | path join app ipfs)
 $a.WWW_HOME = ($a.XDG_DATA_HOME | path join w3m)
 $a.SSB_HOME = ($a.XDG_DATA_HOME | path join zoom)
 $a.YTFZF_SYSTEM_ADDON_DIR = ($home | path join lib sh ytfzf addons)
@@ -133,9 +132,9 @@ $a.DOT_SAGE = ($a.XDG_CONFIG_HOME | path join sage)
 $a.GPG_TTY = (unix tty)
 #$a.QT_QPA_PLATFORM = 'wayland;xcb'
 $a.MOZ_ENABLE_WAYLAND = '1'
-$a.SYS_LOG_FILE = ($home | path join data/msg.txt)
 $a.YTFZF_PREFIX = "bestvideo[height<=720]+bestaudio/best[height<=720]"
-$a.GRIM_DEFAULT_DIR = ($home | path join img/screenshot)
+$a.SYS_LOG_FILE = ($nu.home-path | path join data/msg.txt)
+$a.GRIM_DEFAULT_DIR = ($nu.home-path | path join img/screenshot)
 $a.QT_STYLE_OVERRIDE = "kvantum"
 $a.TERMINFO = ($a.XDG_DATA_HOME | path join terminfo)
 $a.WINEPREFIX = ($a.XDG_DATA_HOME | path join wineprefixes/default)
@@ -175,7 +174,7 @@ $a.MANPATH = (do {
 
 	$default
 	| append [
-		($home | path join doc/man)
+		($nu.home-path | path join doc/man)
 		($opam_switch_prefix | path join man)
 		/opt/texlive/2023/texmf-dist/doc/man
 	]
@@ -188,7 +187,7 @@ $a.PATH = (
 		($a.CARGO_HOME | path join bin)
 		/opt/texlive/2023/bin/x86_64-linux
 		($a.OPAM_SWITCH_PREFIX | path join bin)
-		($home | path join $a.ROSWELL_HOME bin)
+		($nu.home-path | path join $a.ROSWELL_HOME bin)
 	]
 	| str join ':'
 )
