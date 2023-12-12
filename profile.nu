@@ -29,20 +29,20 @@ $a.XDG_CURRENT_DESKTOP = 'Unity'
 $a.XDG_DATA_DIRS = (
 	$env.XDG_DATA_DIRS?
 	| default "/usr/local/share:/usr/share"
-	| split row ':'
+	| split row (char env_sep)
 	| append [
 		/var/lib/flatpak/exports/share
 		($a.XDG_DATA_HOME | path join flatpak/exports/share)
 		($a.XDG_DATA_HOME)
 	]
-	| str join ':'
+	| str join (char env_sep)
 )
 
 def ansi-color [color] {
   ansi $color | split chars | skip 2 | drop | str join
 }
 
-$a.GCC_COLORS = (stringy -a '=' -s ':' {
+$a.GCC_COLORS = (stringy -a '=' -s (char env_sep) {
   error:   (ansi-color red_bold)
   warning: (ansi-color magenta_bold)
   note:    (ansi-color cyan_bold)
@@ -70,9 +70,9 @@ $a.ROSWELL_HOME = ($nu.home-path | path join app roswell)
 
 $a.JULIA_DEPOT_PATH = (
 	$env.JULIA_DEPOT_PATH?
-	| if $in != null { split row ':' }
+	| if $in != null { split row (char env_sep) }
 	| append ($a.XDG_DATA_HOME | path join julia)
-	| str join ':'
+	| str join (char env_sep)
 )
 
 $a.OPAMROOT = ($a.XDG_DATA_HOME | path join opam)
@@ -94,7 +94,7 @@ $a.CAML_LD_LIBRARY_PATH = ([
   ($a.OPAM_SWITCH_PREFIX | path join lib/stublibs)
   /usr/lib/ocaml/stublibs
   /usr/lib/ocaml
-] | str join ':')
+] | str join (char env_sep))
 
 $a.OCAML_TOPLEVEL_PATH = ($a.OPAM_SWITCH_PREFIX | path join lib toplevel)
 
@@ -141,21 +141,21 @@ $a.WINEPREFIX = ($a.XDG_DATA_HOME | path join wineprefixes/default)
 $a.TERMINFO_DIRS = ([
   ($a.XDG_DATA_HOME | path join terminfo)
   /usr/share/terminfo
-] | str join ':')
+] | str join (char env_sep))
 $a.PASSWORD_STORE_DIR = ($a.XDG_DATA_HOME | path join pass)
 
 # See Xcursor(3) of libXcursor for default value
 $a.XCURSOR_PATH = ([
   /usr/share/icons
   ($a.XDG_DATA_HOME | path join icons)
-] | str join ':')
+] | str join (char env_sep))
 
 $a.ICEAUTHORITY = ($a.XDG_CACHE_HOME | path join ICEauthority)
 
 $a.XAUTHORITY = ($env.XAUTHORITY? | default ($a.XDG_RUNTIME_DIR | path join Xauthority))
 
 $a.XKB_DEFAULT_LAYOUT = "us(intl)" # ,br(abnt2)
-$a.XKB_DEFAULT_OPTIONS = (stringy -a ':' -s ',' {
+$a.XKB_DEFAULT_OPTIONS = (stringy -a (char env_sep) -s ',' {
   grp: shifts_toggle
   caps: swapescape
   compose: ralt
@@ -178,7 +178,7 @@ $a.MANPATH = (do {
 		($opam_switch_prefix | path join man)
 		/opt/texlive/2023/texmf-dist/doc/man
 	]
-	| str join ':'
+	| str join (char env_sep)
 })
 
 $a.PATH = (
@@ -189,7 +189,7 @@ $a.PATH = (
 		($a.OPAM_SWITCH_PREFIX | path join bin)
 		($nu.home-path | path join $a.ROSWELL_HOME bin)
 	]
-	| str join ':'
+	| str join (char env_sep)
 )
 
 # SECRETS
