@@ -685,7 +685,6 @@ def inv-instances [] {
 
 alias surch = xbps search
 alias wget = ^wget --hsts-file ($env.XDG_DATA_HOME | path join wget.hist)
-alias yt = sfeed view -p /bin/mpv youtube
 def s [] { ls | grid --color }
 
 use ~/lib/nu/iptv.nu
@@ -697,4 +696,6 @@ def tv [] {
 	| input list -f
 	| iptv m3u-url $user.name $user.passwd $in.stream_id
 	| mpv $in
+# a bug prevents this from being an alias
+def yt [] { sfeed view -p /bin/mpv youtube }
 }
