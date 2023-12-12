@@ -51,6 +51,10 @@ let comma_sep = {
 $env.ENV_CONVERSIONS = {
   "PATH": $comma_sep
   "Path": $comma_sep
+  "LS_COLORS": {
+    from_string: { |s| $s | split row ':' | split column '=' regex seq | drop }
+    to_string: { |v| $v | each { |it| $it.regex + '=' + $it.seq } | str join (char esep) }
+  }
 }
 
 # Directories to search for scripts when calling source or use
