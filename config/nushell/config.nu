@@ -308,8 +308,8 @@ $env.config = {
       }
       source: { |buffer, position|
         $nu.scope.commands
-        | where command =~ $buffer
-        | each { |it| {value: $it.command description: $it.usage} }
+        | where name =~ $buffer
+        | each { |it| {value: $it.name description: $it.usage} }
       }
     }
     {
@@ -351,8 +351,8 @@ $env.config = {
       }
       source: { |buffer, position|
         $nu.scope.commands
-        | where command =~ $buffer
-        | each { |it| {value: $it.command description: $it.usage} }
+        | where name =~ $buffer
+        | each { |it| {value: $it.name description: $it.usage} }
       }
     }
   ]
