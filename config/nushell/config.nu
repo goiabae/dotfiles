@@ -691,11 +691,22 @@ use ~/lib/nu/iptv.nu
 
 def tv [] {
 	let user = (iptv default-user)
-	iptv get-live-streams $user.name $user.passwd
-	| select stream_id name
-	| input list -f
+	let file = (xdg cache-home | path join iptv.json)
+
+	if not ($file | path exists) {
+		iptv get-live-streams $user.name $user.passwd
+		| to json
+		| save $file
+	}
+
+	let streams = (open $file | select stream_id name)
+	let sel = (try { $streams | input list -f } catch { return })
+
+	$sel
 	| iptv m3u-url $user.name $user.passwd $in.stream_id
-	| mpv $in
+	# | mpv $in
+}
+
 # a bug prevents this from being an alias
 def yt [] { sfeed view -p /bin/mpv youtube }
 }
