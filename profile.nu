@@ -201,7 +201,7 @@ $a.PATH = (
 )
 
 # SECRETS
-$a.DZR_CBC = (open ~/doc/secrets/dzr-cbc.txt | str trim -r)
+$a.DZR_CBC = (secret token dzr | str trim -r)
 
 $a.GTK_IM_MODULE = "ibus"
 $a.QT_IM_MODULE = "ibus"
