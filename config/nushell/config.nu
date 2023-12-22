@@ -1,5 +1,5 @@
-# for more information on themes see
-# https://www.nushell.sh/book/coloring_and_theming.html
+# made for nushell version 0.87.1
+
 let dark_theme = {
     separator: white
     leading_trailing_space_bg: { attr: n }
@@ -110,8 +110,6 @@ let light_theme = {
     shape_matching_brackets: { attr: n }
 }
 
-# The default config record. This is where much of your global
-# configuration is setup.
 $env.config = {
   color_config: $dark_theme
   bracketed_paste: true
@@ -138,10 +136,6 @@ $env.config = {
 
   rm: {
     always_trash: true
-  }
-
-  cd: {
-    abbreviations: true
   }
 
   table: {
@@ -468,9 +462,6 @@ use ~/lib/nu/x11.nu *
 use ~/lib/nu/yt.nu
 use ~/lib/nu/xbps.nu
 
-register ~/bin/nu.d/nu_plugin_query
-register ~/bin/nu.d/nu_plugin_formats
-
 def weather [--city (-c): string] {
   let tab = [
     [name           id     ];
@@ -478,14 +469,14 @@ def weather [--city (-c): string] {
     ["Sao Paulo"    3448439]
     ["Paranapanema" 3455061]
   ]
-  let i = (if $city == $nothing { "Toledo" } else { $city })
+  let i = (if $city == null { "Toledo" } else { $city })
   let id = ($tab | where name == $i | first | get id)
   let appid = "5f3a866fcadbf0e0615e100650378d72"
   http get $"http://api.openweathermap.org/data/2.5/weather?id=($id)&units=metric&appid=($appid)"
 }
 
 def "get random" [] {
-  $in | get (random integer 0..(($in | length) - 1))
+  $in | get (random int 0..(($in | length) - 1))
 }
 
 def www [...query] {
@@ -620,7 +611,7 @@ def 'music add' [] {
     author: (input 'Enter author (+ separated list): ')
     title: (input 'Enter title: ')
     type: ([track list] | input list 'Select type: ')
-    score: (input 'Enter score (0-10 nat): ' | into decimal)
+    score: (input 'Enter score (0-10 nat): ' | into float)
     revisions: 0
     added: (date now | date format '%Y-%m-%d')
     modified: (date now | date format '%Y-%m-%d')
@@ -665,7 +656,7 @@ def next-ascension [--pretty (-p)] {
   | split column ' ' chips cookies
   | first
   | if not $pretty {
-    into int chips | into decimal cookies
+    into int chips | into float cookies
   } else {
     $in
   }

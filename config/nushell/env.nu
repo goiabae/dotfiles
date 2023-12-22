@@ -57,17 +57,8 @@ $env.ENV_CONVERSIONS = {
   }
 }
 
-# Directories to search for scripts when calling source or use
-$env.NU_LIB_DIRS = [
-  ($nu.config-path | path dirname | path join 'scripts')
-  ($nu.home-path | path join lib nu)
-]
-
-# Directories to search for plugin binaries when calling register
-$env.NU_PLUGIN_DIRS = [
-  ($nu.config-path | path dirname | path join 'plugins')
-  ($nu.home-path | path join bin nu.d)
-]
+$env.NU_LIB_DIRS    = [($nu.home-path | path join lib nu)]
+$env.NU_PLUGIN_DIRS = [($nu.home-path | path join bin nu.d)]
 
 if $nu.is-login {
 	nu ~/profile.nu json | from json | load-env
