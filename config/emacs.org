@@ -3069,7 +3069,7 @@ Open some file types using external programs.
 #+end_src
 
 * light variant
-#+begin_src elisp :tangle ~/config/emacs/themes/battery-dark-theme.el
+#+begin_src elisp :tangle ~/config/emacs/themes/battery-light-theme.el
 ;;; battery-light-theme.el --- Warm, dark and vibrant color scheme for Emacs -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2022 Guilherme Machado
