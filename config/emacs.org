@@ -598,8 +598,10 @@ The reason why src_elisp{`elpaca-order'} is weirdly passed by splicing inside ba
 (defun meow-setup ()
     (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
     (meow-motion-overwrite-define-key
+     '("h" . meow-left)
      '("j" . meow-next)
      '("k" . meow-prev)
+     '("l" . meow-right)
      '("<escape>" . ignore))
     (meow-leader-define-key
      '("h" . "C-h")
