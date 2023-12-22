@@ -2530,6 +2530,25 @@ Open some file types using external programs.
 (provide 'full)
 #+end_src
 
+** dashboard
+#+begin_src elisp
+(use-package dashboard
+  :elpaca t
+  :custom
+  (initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+  (dashboard-startup-banner nil)
+  (dashboard-projects-backend 'project-el)
+  (dashboard-items
+   '((recents  . 5)
+     (projects . 3)))
+  :config
+  (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
+  (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
+  (dashboard-setup-startup-hook))
+#+end_src
+
+*** TODO add module/package loading buttons
+
 * battery postamble
 
 #+begin_src elisp :tangle ~/config/emacs/themes/battery.el
