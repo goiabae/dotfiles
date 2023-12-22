@@ -1625,7 +1625,7 @@ We add a new entry to the src_elisp{`display-buffer-alist'} for =org-roam=, such
   (org-roam-dailies-directory "journal/")
   (org-roam-file-exclude-regexp '("\\.stfolder" "\\.stignore" "\\.stversions" "data/"))
   (org-roam-capture-templates
-   '(("r" "random"  entry "* ${title}%?" :target (file "random.org"))
+   '(("r" "random"  plain "%?" :target (file+head "random/${slug}.org" "#+title: ${title}\n"))
      ("p" "persona" plain "%?"
       :target (file+head "persona/${slug}.org" "#+title: ${title}\n#+filetags: :persona:\n"))
      ("m" "music")
