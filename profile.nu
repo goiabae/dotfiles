@@ -197,6 +197,7 @@ $a.PATH = (
 		($nu.home-path | path join $a.ROSWELL_HOME bin)
 		($nu.home-path | path join .dotnet tools)
 	]
+	| append (luarocks-5.1 path --lr-bin | split row (char env_sep))
 	| str join (char env_sep)
 )
 
@@ -210,6 +211,9 @@ $a.XMODIFIERS = "@im=ibus"
 $a.XBPS_DISTDIR = "/store/source/void-packages"
 
 $a.SFEED_AUTOCMD = "to"
+
+$a.LUA_PATH = (luarocks-5.1 path --lr-path | str trim -r)
+$a.LUA_CPATH = (luarocks-5.1 path --lr-cpath | str trim -r)
 
 let e = $a
 
