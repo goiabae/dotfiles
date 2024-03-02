@@ -733,3 +733,12 @@ def "from xbps-repodata" [] {
 	| jc --plist
 	| from json
 }
+
+use mbz.nu
+def album-tracks [] {
+  let author = input 'artist name: '
+  let as = mbz search artist $author
+  let rgs = mbz artist release-groups ($as | input list 'select artist' | get id)
+  let rs = mbz release-group releases ($rgs | input list 'select release-group' | get id)
+  mbz release recordings ($rs | input list 'select release' | get id)
+}
