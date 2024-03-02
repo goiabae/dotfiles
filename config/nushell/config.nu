@@ -684,10 +684,10 @@ def tv [] {
 	let user = (iptv default-user)
 	let file = (xdg cache-home | path join iptv.json)
 
-	if not ($file | path exists) {
+	if not ($file | path exists) or (ls -l $file | get modified | first | (date now) - $in | $in > 4wk) {
 		iptv get-live-streams $user.name $user.passwd
 		| to json
-		| save $file
+		| save --force $file
 	}
 
 	let streams = (open $file | select stream_id name)
@@ -695,7 +695,7 @@ def tv [] {
 
 	$sel
 	| iptv m3u-url $user.name $user.passwd $in.stream_id
-	# | mpv $in
+	| mpv '--user-agent=TiviMate/4.7.0 (Rockchip RPCplus; Android 7.1.2)' $in
 }
 
 # a bug prevents this from being an alias
