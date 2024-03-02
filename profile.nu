@@ -196,6 +196,7 @@ $a.PATH = (
 		($a.OPAM_SWITCH_PREFIX | path join bin)
 		($nu.home-path | path join $a.ROSWELL_HOME bin)
 		($nu.home-path | path join .dotnet tools)
+		($a.XDG_DATA_HOME | path join npm bin)
 	]
 	| append (luarocks-5.1 path --lr-bin | split row (char env_sep))
 	| str join (char env_sep)
