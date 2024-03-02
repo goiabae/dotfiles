@@ -1,373 +1,47 @@
 #+title: Emacs configuration
-
-* battery preamble
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
-;;; battery.el --- Warm and vibrant color scheme for Emacs -*- lexical-binding: t; -*-
-;;
-;; Copyright (C) 2022 Guilherme Machado
-;;
-;; Author: Guilherme Machado <https://github.com/goiabae>
-;; Maintainer: Guilherme Machado <TODO>
-;; Created: fevereiro 02, 2022
-;; Version: 0.0.1
-;; Keywords: convenience extensions faces files frames outlines
-;; Homepage: https://github.com/goiabae/battery-theme
-;; Package-Requires: ((autothemer "0.2"))
-;;
-;; This file is not part of GNU Emacs.
-;;
-;;; Commentary:
-
-;;  Template for a warm and vibrant color scheme inspired by the famous
-;;  Gruvbox, from Vim.
-
-;;; Code:
-
-(require 'autothemer)
-(require 'dash)
-
-(defmacro battery-deftheme (name description is-light)
-  `(autothemer-deftheme
-    ,name
-    ,description
-    ,(append
-      '((((class color)
-          (min-colors #xFFFFFF)))
-
-        (neutral0  "#101010")
-        (neutral1  "#191919")
-        (neutral2  "#262524")
-        (neutral3  "#353231")
-        (neutral4  "#403c3a")
-        (neutral5  "#504845")
-        (neutral6  "#635852")
-        (neutral7  "#7b6c61")
-        (neutral8  "#958172")
-        (neutral9  "#a89984")
-        (neutral10 "#bdae93")
-        (neutral11 "#d2c3a5")
-        (neutral12 "#e7d8b3")
-        (neutral13 "#f2e4ba")
-        (neutral14 "#faedc9")
-        (neutral15 "#fef5d8"))
-
-      (let ((symbols
-             (mapcar
-              (lambda (n)
-                (mapcar
-                 (lambda (i) (intern (concat n (number-to-string i))))
-                 (-iota 16)))
-              (list "grey" "neutral"))))
-        (-zip-with #'list
-                   (car symbols)
-                   (if is-light (reverse (cadr symbols)) (cadr symbols))))
-
-      '((bg grey1)
-        (fg grey13)
-
-        (darker-red      "#67191b")
-        (darker-orange   "#572e1a")
-        (darker-yellow   "#423818")
-        (darker-olive    "#302f16")
-        (darker-green    "#183815")
-        (darker-cyan     "#1a2d1e")
-        (darker-purple   "#462929")
-
-        (dark-red        "#be241e")
-        (dark-orange     "#ac4003")
-        (dark-yellow     "#a57109")
-        (dark-olive      "#746f06")
-        (dark-green      "#24601c")
-        (dark-cyan       "#2b5434")
-        (dark-purple     "#a63445")
-
-        (red             "#e83437")
-        (orange          "#d6580e")
-        (yellow          "#d09420")
-        (olive           "#98952a")
-        (green           "#3f9f32")
-        (cyan            "#689e69")
-        (purple          "#b16262")
-
-        (light-red       "#fc5356")
-        (light-orange    "#fc823c")
-        (light-yellow    "#fac240")
-        (light-olive     "#b5ba25")
-        (light-green     "#5ac04e")
-        (light-cyan      "#8ec07c")
-        (light-purple    "#ed8585")
-
-        (lighter-red     "#fca39c")
-        (lighter-orange  "#fca765")
-        (lighter-yellow  "#edd76d")
-        (lighter-olive   "#dfe26c")
-        (lighter-green   "#a2ea98")
-        (lighter-cyan    "#aed8a0")
-        (lighter-purple  "#f7b4b4"))
-
-      (let ((colors '(red orange yellow olive green cyan purple))
-            (abs-shades '(darker dark light lighter))
-            (rel-shades '(lower low high higher)))
-        (let ((rel-colors
-               (mapcar (lambda (x) (mapcar (lambda (y) (intern (concat (symbol-name x) "-" (symbol-name y)))) colors)) rel-shades))
-              (abs-colors
-               (mapcar (lambda (x) (mapcar (lambda (y) (intern (concat (symbol-name x) "-" (symbol-name y)))) colors)) abs-shades)))
-          (-zip-with #'list
-            (-flatten rel-colors)
-            (-flatten
-              (if is-light (reverse abs-colors) abs-colors))))))
-
-    (
-#+end_src
-
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
-;; Basic faces
-(default (:background bg :foreground fg))
-(button (:underline t :weight 'bold :foreground yellow))
-(cursor (:background fg))
-(mode-line (:background neutral10 :foreground neutral2 :box (:line-width 1 :color neutral15 :style 'released-button)))
-(mode-line-active (:inherit 'mode-line))
-(mode-line-inactive (:inherit 'mode-line))
-(fringe (:background bg))
-(hl-line (:background grey0))
-(region (:background grey5)) ;; selection
-(secondary-selection (:background grey6))
-(minibuffer-prompt (:background bg :foreground high-green :bold t))
-(vertical-border (:foreground grey7))
-(internal-border (:background grey7))
-(window-divider (:foreground grey8))
-(link (:foreground high-yellow :underline t))
-(link-visited (:foreground lighter-purple :inherit 'link))
-(shadow (:foreground grey8))
-
-(error (:foreground red :bold t))
-(success (:foreground high-olive :bold t))
-(warning (:foreground high-yellow :bold t))
-
-(alert-low-face (:foreground high-cyan))
-(trailing-whitespace (:background red))
-(escape-glyph (:foreground cyan))
-(header-line (:background grey5 :foreground grey13 :box nil :inherit nil))
-(highlight (:background grey4 :foreground fg))
-(homoglyph (:foreground yellow))
-(match (:foreground grey0 :background cyan))
-
-(bold (:weight 'bold))
-(italic (:slant 'italic))
-(bold-italic (:weight 'bold :slant 'italic))
-(underline (:underline t))
-
-;; Font lock (syntax highlighting)
-(font-lock-builtin-face (:foreground high-cyan))
-(font-lock-constant-face (:foreground high-purple :bold nil))
-(font-lock-comment-face (:foreground grey8))
-(font-lock-function-name-face (:foreground high-yellow :bold nil))
-(font-lock-keyword-face (:foreground high-red))
-(font-lock-string-face (:foreground high-olive))
-(font-lock-variable-name-face (:foreground high-yellow))
-(font-lock-type-face (:foreground high-orange))
-(font-lock-warning-face (:foreground high-red :bold t))
-(font-lock-preprocessor-face (:foreground high-cyan))
-(font-lock-negation-char-face (:foreground high-red))
-(font-lock-comment-delimiter-face (:inherit 'font-lock-comment-face))
-(font-lock-doc-face (:inherit 'font-lock-string-face))
-(font-lock-doc-markup-face (:inherit 'font-lock-constant-face))
-(font-lock-regexp-grouping-backslash (:inherit 'bold))
-(font-lock-regexp-grouping-construct (:inherit 'bold))
-(font-lock-misc-punctuation-face (:inherit 'font-lock-punctuation-face))
-(font-lock-delimiter-face (:inherit 'font-lock-punctuation-face))
-(font-lock-bracket-face (:inherit 'font-lock-punctuation-face))
-(font-lock-punctuation-face nil)
-(font-lock-property-use-face (:inherit 'font-lock-property-name-face))
-(font-lock-property-name-face (:inherit 'font-lock-variable-name-face))
-(font-lock-operator-face (:inherit 'font-lock-builtin-face))
-(font-lock-number-face (:inherit 'font-lock-constant-face))
-(font-lock-escape-face (:inherit 'font-lock-regexp-grouping-backslash))
-(font-lock-regexp-face (:inherit 'font-lock-string-face))
-(font-lock-variable-use-face (:inherit 'font-lock-variable-name-face))
-(font-lock-function-call-face (:inherit 'font-lock-function-name-face))
-
-;; tree-sitter
-(treesit-explorer-field-name nil)
-(treesit-explorer-anonymous-node (:inherit 'shadow))
-
-;; jupyter-repl
-(jupyter-repl-input-prompt (:foreground olive))
-(jupyter-repl-output-prompt (:foreground red))
-
-;; dashboard
-(dashboard-items-face (:foreground grey13))
-(dashboard-main-button (:foreground grey13 :bold t))
-
-;; hi-lock
-(hi-yellow (:foreground bg :background lighter-olive))
-(hi-pink (:foreground bg :background lighter-purple))
-(hi-green (:foreground bg :background lighter-green))
-(hi-blue (:foreground bg :background neutral15))
-(hi-salmon (:foreground bg :background lighter-orange))
-(hi-aquamarine (:foreground bg :background lighter-green))
-(hi-black-b (:weight 'bold))
-(hi-blue-b (:weight 'bold :foreground neutral4))
-(hi-green-b (:weight 'bold :foreground light-green))
-(hi-red-b (:weight 'bold :foreground red))
-(hi-black-hb (:height 1.67 :weight 'bold :inherit 'variable-pitch))
-
-;; lsp
-(lsp-face-highlight-textual (:background grey6))
-(lsp-face-highlight-read (:background grey6))
-(lsp-face-highlight-write (:background grey6))
-(lsp-face-semhl-constant (:foreground cyan))
-(lsp-face-semhl-deprecated (:foreground cyan))
-(lsp-face-semhl-enummember (:foreground cyan))
-(lsp-face-semhl-field (:foreground cyan))
-(lsp-face-semhl-field-static (:foreground cyan))
-(lsp-face-semhl-function (:foreground cyan))
-(lsp-face-semhl-method (:foreground cyan))
-(lsp-face-semhl-namespace (:foreground cyan))
-(lsp-face-semhl-preprocessor (:foreground cyan))
-(lsp-face-semhl-static-method (:foreground cyan))
-(lsp-face-semhl-type-class (:foreground cyan))
-(lsp-face-semhl-type-enum (:foreground cyan))
-(lsp-face-semhl-type-primitive (:foreground cyan))
-(lsp-face-semhl-type-template (:foreground cyan))
-(lsp-face-semhl-type-typedef (:foreground cyan))
-(lsp-face-semhl-variable (:foreground cyan))
-(lsp-face-semhl-variable-local (:foreground cyan))
-(lsp-face-semhl-variable-parameter (:foreground cyan))
-(lsp-lens-face (:foreground cyan))
-(lsp-lens-mouse-face (:foreground cyan))
-(lsp-ui-doc-background (:foreground cyan))
-(lsp-ui-doc-header (:foreground cyan))
-(lsp-ui-doc-url (:foreground cyan))
-(lsp-ui-peek-filename (:foreground cyan))
-(lsp-ui-peek-footer (:foreground cyan))
-(lsp-ui-peek-header (:foreground cyan))
-(lsp-ui-peek-highlight (:foreground cyan))
-(lsp-ui-peek-line-number (:foreground cyan))
-(lsp-ui-peek-list (:foreground cyan))
-(lsp-ui-peek-peek (:foreground cyan))
-(lsp-ui-peek-selection (:foreground cyan))
-(lsp-ui-sideline-code-action (:foreground cyan))
-(lsp-ui-sideline-current-symbol (:foreground cyan))
-(lsp-ui-sideline-symbol (:foreground cyan))
-(lsp-ui-sideline-symbol-info (:foreground cyan))
-
-;; flymake
-(flymake-end-of-line-diagnostics-face (:height 0.85 :box (:line-width -1)))
-
-(flymake-error (:underline (:style 'wave :color high-red)))
-(flymake-error-echo (:inherit 'compilation-error))
-(flymake-error-echo-at-eol (:inherit ('flymake-end-of-line-diagnostics-face 'compilation-error)))
-
-(flymake-warning (:underline (:style 'wave :color high-cyan)))
-(flymake-warning-echo (:inherit 'compilation-warning))
-(flymake-warning-echo-at-eol (:inherit ('flymake-end-of-line-diagnostics-face 'compilation-warning)))
-
-(flymake-note (:underline (:style 'wave :color high-olive)))
-(flymake-note-echo (:inherit 'flymake-note))
-(flymake-note-echo-at-eol (:inherit ('flymake-end-of-line-diagnostics-face 'flymake-note)))
-
-;; flyspell
-(flyspell-incorrect (:underline (:style 'wave :color red)))
-#+end_src
-
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
-;; diff
-(diff-header (:extend t :background grey3))
-(diff-hunk-header (:inherit 'diff-header))
-(diff-file-header (:weight 'bold :extend t :background grey4))
-(diff-changed nil)
-(diff-removed (:extend t :background lower-red   :inherit 'diff-changed))
-(diff-added (:extend t :background lower-green :inherit 'diff-changed))
-(diff-refine-changed nil)
-(diff-refine-removed (:background low-red   :inherit 'diff-refine-changed))
-(diff-refine-added (:background low-green :inherit 'diff-refine-changed))
-
-(diff-index (:inherit 'diff-file-header))
-(diff-changed-unspecified (:extend t :background neutral3 :inherit 'diff-changed))
-(diff-indicator-removed (:foreground dark-red :inherit 'diff-removed))
-(diff-indicator-added (:foreground green :inherit 'diff-added))
-(diff-indicator-changed (:foreground light-olive :inherit 'diff-changed))
-(diff-function (:inherit 'diff-header))
-(diff-context (:extend t))
-(diff-nonexistent (:inherit 'diff-file-header))
-(diff-error (:weight 'bold :foreground red :background bg))
-
-;; mini-modeline
-(mini-modeline-mode-line (:background low-olive :height 0.14 :box nil))
-
-;; isearch
-(isearch (:foreground grey13 :background lower-purple))
-(isearch-fail (:foreground grey13 :background lower-red))
-(isearch-group-1 (:foreground high-red :background low-purple))
-(isearch-group-2 (:foreground high-red :background low-purple))
-(lazy-highlight (:background grey4))
-
-(query-replace (:inherit 'isearch))
-#+end_src
-
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
-(debugger-running (:weight 'bold :foreground high-green))
-(debugger-not-running (:inherit 'font-lock-warning-face))
-
-;; ansi-color
-(ansi-color-black (:foreground bg :background bg))
-(ansi-color-red (:foreground red    :background red))
-(ansi-color-green (:foreground olive  :background olive))
-(ansi-color-yellow (:foreground yellow :background yellow))
-(ansi-color-blue (:foreground orange :background orange))
-(ansi-color-magenta (:foreground purple :background purple))
-(ansi-color-cyan (:foreground cyan   :background cyan))
-(ansi-color-white (:foreground neutral15 :background neutral15))
-
-(ansi-color-bright-black (:foreground grey10 :background neutral5))
-(ansi-color-bright-red (:foreground light-red    :background light-red))
-(ansi-color-bright-green (:foreground light-olive  :background light-olive))
-(ansi-color-bright-yellow (:foreground light-yellow :background light-yellow))
-(ansi-color-bright-blue (:foreground light-orange :background light-orange))
-(ansi-color-bright-magenta (:foreground light-purple :background light-purple))
-(ansi-color-bright-cyan (:foreground light-cyan   :background light-cyan))
-(ansi-color-bright-white (:foreground neutral15 :background neutral15))
-
-(ansi-color-bold (:inherit ('quote 'bold)))
-(ansi-color-faint (:weight 'light))
-(ansi-color-italic (:inherit ('quote 'italic)))
-(ansi-color-underline (:inherit ('quote 'underline)))
-(ansi-color-slow-blink (:box (:line-width -1)))
-(ansi-color-fast-blink (:box (:line-width -1)))
-(ansi-color-inverse (:inverse-video t))
-
-;; message
-(message-header-other (:foreground orange))
-(message-header-to (:weight 'bold :foreground fg))
-(message-header-subject (:foreground fg))
-(message-header-name (:foreground light-yellow))
-
-;; sh
-(sh-heredoc (:foreground high-olive))
-(sh-quoted-exec (:foreground high-purple))
-(sh-escaped-newline (:inherit 'font-lock-string-face))
-#+end_src
+#+author: Guilherme Machado
 
 * early init
-:PROPERTIES:
-:header-args: :tangle emacs/early-init.el :lexical t
-:END:
-** lexical binding
-Always use lexical binding. *ALWAYS*.
-#+begin_src elisp
+ [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html][This]] file is loaded *before* package.el and the GUI are initialized. Always use lexical binding. *ALWAYS*.
+
+#+begin_src elisp :tangle (locate-user-emacs-file "early-init.el") :noweb yes
 ;; -*- lexical-binding: t -*-
+
+<<startup-statistics>>
+<<disable-gc-while-init>>
+<<no-package-el>>
+<<no-default-site-start>>
+<<no-splash-screen>>
+<<no-frame-resize>>
+
+(provide 'early-init)
 #+end_src
 
-** =package.el=
+** startup statistics message
+Display a message after initialization showing startup time and garbage collections.
+
+#+name: startup-statistics
+#+begin_src elisp
+(add-hook 'emacs-startup-hook
+    (lambda ()
+      (message "Emacs loaded in %s with %d garbage collections."
+         (format "%.2f seconds"
+           (float-time
+            (time-subtract after-init-time before-init-time)))
+         gcs-done)))
+#+end_src
+
+** no =package.el=
 Disable usage of =package.el=.
 
+#+name: no-package-el
 #+begin_src elisp
 (setq package-enable-at-startup nil
       package-archives nil)
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-package
+#+begin_src elisp
 (package-status-avail-obso (:inherit 'package-status-incompat))
 (package-status-incompat (:inherit 'error))
 (package-status-unsigned (:inherit 'font-lock-warning-face))
@@ -385,196 +59,64 @@ Disable usage of =package.el=.
 (package-help-section-name (:inherit ('bold 'font-lock-function-name-face)))
 #+end_src
 
-** garbage collector
+** disable garbage collector while initializing
 Pratically disable the garbage collector during initialization. When fully initialized, revert back.
 
+#+name: disable-gc-while-init
 #+begin_src elisp
 (let ((tresh gc-cons-threshold)
       (percent gc-cons-percentage))
   (setq gc-cons-threshold most-positive-fixnum
-        gc-cons-percentage 0.6)
+        gc-cons-percentage 0.9)
   (add-hook 'emacs-startup-hook
     (lambda ()
       (setq gc-cons-threshold tresh
             gc-cons-percentage percent))))
 #+end_src
 
-** =default.el= and =site-start.el=
+** don't load =default.el= and =site-start.el=
 Disable loading those files.
 
+#+name: no-default-site-start
 #+begin_src elisp
 (setq site-run-file nil
       inhibit-default-init t)
 #+end_src
 
-** splash screen
-Disable displaying splash screen on start.
-
-#+begin_src elisp
-(setq inhibit-startup-screen t
-      inhibit-startup-buffer-menu t)
-#+end_src
-
-** automatic resize
-Disable automatic resize without any confirmation.
-
-#+begin_src elisp
-(setq frame-inhibit-implied-resize t)
-#+end_src
-
 * init
-:PROPERTIES:
-:header-args: :tangle emacs/init.el :lexical t
-:END:
-** lexical binding
-Always use lexical binding. *ALWAYS*. Use the XDG Base Directory spec and include some handy utilities to work on =alist.=
-#+begin_src elisp
+Don't load =full.el= when running on terminal. For example when invoked by the =VISUAL= or =EDITOR= variables by a terminal program (e.g. git or editor).
+
+#+begin_src elisp :tangle (locate-user-emacs-file "init.el") :noweb yes
 ;; -*- lexical-binding: t -*-
 
-(require 'xdg)
-(require 'map)
+<<xdg-base-directories>>
+<<compilation>>
+<<package-manager>>
+
+<<key-bindings>>
+<<init-text-editting>>
+<<init-visuals>>
+<<init-rest>>
+
+(when (or (display-graphic-p) (daemonp))
+    (require 'full))
+
+(provide 'init)
 #+end_src
 
-** function aliases
-#+begin_src elisp
-(defalias 'head 'car)
-(defalias 'tail 'cdr)
+** text editting
+
+#+name: init-text-editting
+#+begin_src elisp :noweb yes
+<<text-encoding>>
+<<modal-editting>>
+<<text-indent-navigation>>
+<<phrase-case-conversions>>
 #+end_src
 
-** compilation
-*** "native"
-Set native compilation cache path to xdg cache. Also, don't compile when the editor is running, which could cause freezes. Only works after 29.0 and when native-comp is activated on the distribution. I believe Void Linux disables it by default.
-#+begin_src elisp
-(when (fboundp 'native-compile-async)
-  (setq native-comp-deferred-compilation nil
-        comp-deferred-compilation nil)
-  (push
-   (expand-file-name "emacs/native-lisp" (xdg-cache-home))
-   native-comp-eln-load-path))
-#+end_src
+*** text encoding
 
-*** bytecode
-Disable some byte compiler warnings. A lot of old packages just piss of the compiler. Maybe there's a more considerate way of doing this.
-#+begin_src elisp
-(setq warning-suppress-types '((comp))
-      byte-compile-warnings
-      '(not obsolete interactive-only lexical docstrings)
-      load-prefer-newer t)
-#+end_src
-
-** startup statistics
-Display a message after initialization showing startup time and garbage collections.
-#+begin_src elisp
-(add-hook 'emacs-startup-hook
-    (lambda ()
-      (message "Emacs loaded in %s with %d garbage collections."
-         (format "%.2f seconds"
-           (float-time
-            (time-subtract after-init-time before-init-time)))
-         gcs-done)))
-#+end_src
-
-** standard directories
-Add some directories to better integrate with the system. Prevent packages from littering =user-emacs-directory= and any other directories.
-
-#+begin_src elisp
-(setq user-emacs-directory (expand-file-name "emacs" (xdg-config-home)))
-
-(push user-emacs-directory load-path)
-(push (expand-file-name "~/lib/elisp") load-path)
-
-(setq temporary-file-directory
-      (expand-file-name "emacs/" (xdg-runtime-dir)))
-
-(unless (file-exists-p temporary-file-directory)
-  (make-directory temporary-file-directory))
-#+end_src
-
-** package manager
-*** elpaca
-#+begin_src elisp
-(defvar elpaca-installer-version 0.5)
-
-(defvar elpaca-directory (expand-file-name "emacs/elpaca/" (xdg-data-home)))
-(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
-
-(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-                              :ref nil
-                              :files (:defaults (:exclude "extensions"))
-                              :build (:not elpaca--activate-package)))
-
-(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
-       (build (expand-file-name "elpaca/" elpaca-builds-directory))
-       (order (cdr elpaca-order))
-       (default-directory repo))
-  (add-to-list 'load-path (if (file-exists-p build) build repo))
-  ;; clone elpaca and byte-compile it
-  (unless (file-exists-p repo)
-    (make-directory repo t)
-    (when (< emacs-major-version 28) (require 'subr-x))
-    (condition-case-unless-debug err
-        (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                 ((zerop (call-process "git" nil buffer t "clone"
-                                       (plist-get order :repo) repo)))
-                 ((zerop (call-process "git" nil buffer t "checkout"
-                                       (or (plist-get order :ref) "--"))))
-                 (emacs (concat invocation-directory invocation-name))
-                 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                                       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                 ((require 'elpaca))
-                 ((elpaca-generate-autoloads "elpaca" repo)))
-            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
-          (error "%s" (with-current-buffer buffer (buffer-string))))
-      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
-  (unless (require 'elpaca-autoloads nil t)
-    (require 'elpaca)
-    (elpaca-generate-autoloads "elpaca" repo)
-    (load "./elpaca-autoloads")))
-#+end_src
-
-The reason why src_elisp{`elpaca-order'} is weirdly passed by splicing inside backquotes (that's really stupid) is because the first element of the order is used inside the src_elisp{`elpaca'} macro to make a new symbol at /compile time/, so you need to expand src_elisp{`elpaca-order'} before src_elisp{`elpaca'} gets called/executed. I don't like this at all.
-
-#+begin_src elisp
-(add-hook 'after-init-hook #'elpaca-process-queues)
-(elpaca `(,@elpaca-order))
-
-(elpaca elpaca-use-package
-  (elpaca-use-package-mode)
-  (setq elpaca-use-package-by-default t))
-
-(elpaca-wait)
-#+end_src
-
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
-(elpaca-finished (:weight 'bold :foreground green))
-(elpaca-busy     (:weight 'bold :foreground yellow))
-(elpaca-blocked  (:weight 'bold :foreground purple))
-(elpaca-failed   (:weight 'bold :foreground red))
-
-(elpaca-ui-marked-delete  (:weight 'bold :foreground red))
-(elpaca-ui-marked-install (:weight 'bold :foreground neutral4))
-(elpaca-ui-marked-rebuild (:weight 'bold :foreground dark-purple))
-(elpaca-ui-marked-fetch   (:weight 'bold :foreground dark-red))
-(elpaca-ui-marked-update  (:weight 'bold :foreground light-orange))
-
-(elpaca-log-highlight (:inherit 'warning))
-(elpaca-log-error     (:inherit 'error))
-(elpaca-log-info      (:inherit 'shadow))
-
-(elpaca-info-section (:weight 'bold))
-(elpaca-info-package (:height 2.0))
-#+end_src
-
-** littering
-#+begin_src elisp
-(use-package no-littering
-  :custom
-  (no-littering-etc-directory (expand-file-name "etc/" user-emacs-directory))
-  (no-littering-var-directory (expand-file-name "emacs/" (xdg-data-home))))
-#+end_src
-
-** text encoding
+#+name: text-encoding
 #+begin_src elisp
 (when (eq system-type 'windows-nt)
   (setq locale-coding-system 'utf-8))
@@ -593,7 +135,9 @@ The reason why src_elisp{`elpaca-order'} is weirdly passed by splicing inside ba
   (set-language-environment "UTF-8"))
 #+end_src
 
-** modal editting
+*** modal editting
+
+#+name: modal-editting
 #+begin_src elisp
 (defun meow-setup ()
     (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
@@ -733,7 +277,8 @@ The reason why src_elisp{`elpaca-order'} is weirdly passed by splicing inside ba
   (add-to-list 'meow-mode-state-list '(comint-mode . normal)))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-meow
+#+begin_src elisp :tangle nil
 (meow-normal-indicator (:foreground darker-olive))
 (meow-insert-indicator (:foreground darker-red))
 (meow-beacon-indicator (:foreground darker-cyan))
@@ -772,8 +317,325 @@ The reason why src_elisp{`elpaca-order'} is weirdly passed by splicing inside ba
 (meow-cheatsheet-highlight (:foreground neutral15 :inherit 'meow-cheatsheet-command))
 #+end_src
 
-** better defaults?
+*** auto indentation and textual navigation
+Stop =electric= from indent things automatically. Highlight matching pairs of characters. Use tabs for indentation with 2 characters wide =TAB=.
+
+#+name: text-indent-navigation
+#+begin_src elisp
+(use-package electric
+  :elpaca nil
+  :custom (electric-indent-inhibit t)
+  ;; disable auto-identation
+  :config (electric-indent-mode nil))
+
+(use-package elec-pair
+  :elpaca nil
+  :after electric
+  :custom (electric-pair-skip-self t)
+          (electric-pair-pairs
+           '((?\{ . ?\})
+             (?\( . ?\))
+             (?\[ . ?\])))
+  ;; TODO refactor to use hooks instead
+  :config (electric-pair-mode t))
+
+(setq-default indent-tabs-mode t
+              fill-column 70
+              truncate-lines nil)
+#+end_src
+
+*** phrase case conversions
+Don't ask for confirmation when changing region case.
+
+#+name: phrase-case-conversions
+#+begin_src elisp
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region   'disabled nil)
+
+(use-package titlecase
+  :commands titlecase-region)
+
+(use-package change-case
+  :elpaca (change-case
+           :type git
+           :host github
+           :repo "TakesxiSximada/change-case.el"))
+#+end_src
+
+** visuals
+Highlight matching parenthesis. Tab character width is 2.
+
+#+name: init-visuals
+#+begin_src elisp :noweb yes
+<<cursor-appearance>>
+<<highlight-whitespace>>
+
+(show-paren-mode 1)
+(setq-default tab-width 2)
+#+end_src
+
+*** cursor appearance
+When running on a non-graphic display (terminal, for example), by default Emacs does some trickery to make the cursor stand out. Disable that.
+
+#+name: cursor-appearance
+#+begin_src elisp
+(blink-cursor-mode -1)
+(setq visible-cursor nil)
+#+end_src
+
+*** highlight whitespace
+
+#+name: highlight-whitespace
+#+begin_src elisp
+(use-package whitespace
+  :elpaca nil
+  :hook ((prog-mode text-mode) . whitespace-mode)
+  :custom (whitespace-style '(face tabs tab-mark trailing))
+  (whitespace-display-mappings
+   '((tab-mark ?\t [?· ?\t] [?\\ ?\t]))))
+#+end_src
+
+#+name: faces-whitespace
+#+begin_src elisp :tangle nil
+(whitespace-tab             (:background bg :foreground grey6))
+(whitespace-space           (:background bg :foreground grey6))
+(whitespace-hspace          (:background bg :foreground grey6))
+(whitespace-newline         (:background bg :foreground grey6))
+(whitespace-line            (:background bg :foreground grey6))
+(whitespace-empty           (:background bg :foreground grey6))
+(whitespace-indentation     (:background bg :foreground grey6))
+(whitespace-big-indent      (:background bg :foreground grey6))
+(whitespace-space-after-tab (:background bg :foreground grey6))
+
+(whitespace-space-before-tab       (:background high-red))
+(whitespace-missing-newline-at-eof (:background high-red))
+(whitespace-trailing               (:background high-red))
+#+end_src
+
+** xdg base directories
+Add some directories to better integrate with the system. Prevent packages from littering =user-emacs-directory= and any other directories.
+
+#+name: xdg-base-directories
+#+begin_src elisp
+(require 'xdg)
+
+(setq user-emacs-directory (expand-file-name "emacs" (xdg-config-home)))
+
+(push user-emacs-directory load-path)
+(push (expand-file-name "~/lib/elisp") load-path)
+
+(setq temporary-file-directory
+      (expand-file-name "emacs/" (xdg-runtime-dir)))
+
+(unless (file-exists-p temporary-file-directory)
+  (make-directory temporary-file-directory))
+
+#+end_src
+
+** compilation
+
+#+name: compilation
+#+begin_src elisp :noweb yes
+<<bytecode-compilation>>
+<<native-compilation>>
+#+end_src
+
+*** bytecode
+Disable some byte compiler warnings. A lot of old packages just piss of the compiler. Maybe there's a more considerate way of doing this.
+
+#+name: bytecode-compilation
+#+begin_src elisp
+(setq warning-suppress-types '((comp))
+      byte-compile-warnings
+      '(not obsolete interactive-only lexical docstrings)
+      load-prefer-newer t)
+#+end_src
+
+*** "native"
+Set native compilation cache path to xdg cache. Also, don't compile when the editor is running, which could cause freezes. Only works after 29.0 and when native-comp is activated on the distribution. I believe Void Linux disables it by default.
+
+#+name: native-compilation
+#+begin_src elisp
+(when (fboundp 'native-compile-async)
+  (setq native-comp-deferred-compilation nil
+        comp-deferred-compilation nil)
+  (push
+   (expand-file-name "emacs/native-lisp" (xdg-cache-home))
+   native-comp-eln-load-path))
+#+end_src
+
+** package manager
+
+#+name: package-manager
+#+begin_src elisp
+(defvar elpaca-installer-version 0.5)
+
+(defvar elpaca-directory (expand-file-name "emacs/elpaca/" (xdg-data-home)))
+(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+
+(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+                              :ref nil
+                              :files (:defaults (:exclude "extensions"))
+                              :build (:not elpaca--activate-package)))
+
+(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+       (build (expand-file-name "elpaca/" elpaca-builds-directory))
+       (order (cdr elpaca-order))
+       (default-directory repo))
+  (add-to-list 'load-path (if (file-exists-p build) build repo))
+  ;; clone elpaca and byte-compile it
+  (unless (file-exists-p repo)
+    (make-directory repo t)
+    (when (< emacs-major-version 28) (require 'subr-x))
+    (condition-case-unless-debug err
+        (if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                 ((zerop (call-process "git" nil buffer t "clone"
+                                       (plist-get order :repo) repo)))
+                 ((zerop (call-process "git" nil buffer t "checkout"
+                                       (or (plist-get order :ref) "--"))))
+                 (emacs (concat invocation-directory invocation-name))
+                 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                                       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                 ((require 'elpaca))
+                 ((elpaca-generate-autoloads "elpaca" repo)))
+            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+          (error "%s" (with-current-buffer buffer (buffer-string))))
+      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+  (unless (require 'elpaca-autoloads nil t)
+    (require 'elpaca)
+    (elpaca-generate-autoloads "elpaca" repo)
+    (load "./elpaca-autoloads")))
+
+(add-hook 'after-init-hook #'elpaca-process-queues)
+(elpaca `(,@elpaca-order))
+
+(elpaca elpaca-use-package
+  (elpaca-use-package-mode)
+  (setq elpaca-use-package-by-default t))
+
+(elpaca-wait)
+#+end_src
+
+#+name: faces-elpaca
+#+begin_src elisp :tangle nil
+(elpaca-finished (:weight 'bold :foreground green))
+(elpaca-busy     (:weight 'bold :foreground yellow))
+(elpaca-blocked  (:weight 'bold :foreground purple))
+(elpaca-failed   (:weight 'bold :foreground red))
+
+(elpaca-ui-marked-delete  (:weight 'bold :foreground red))
+(elpaca-ui-marked-install (:weight 'bold :foreground neutral4))
+(elpaca-ui-marked-rebuild (:weight 'bold :foreground dark-purple))
+(elpaca-ui-marked-fetch   (:weight 'bold :foreground dark-red))
+(elpaca-ui-marked-update  (:weight 'bold :foreground light-orange))
+
+(elpaca-log-highlight (:inherit 'warning))
+(elpaca-log-error     (:inherit 'error))
+(elpaca-log-info      (:inherit 'shadow))
+
+(elpaca-info-section (:weight 'bold))
+(elpaca-info-package (:height 2.0))
+#+end_src
+
+** key bindings
+This assumes that this version of Emacs has the `bind-key' included in the default distribution.
+
+#+name: key-bindings
+#+begin_src elisp :noweb yes
+(require 'bind-key)
+
+(bind-keys
+ ("C--"       . text-scale-decrease)
+ ("C-="       . text-scale-increase)
+ ("C-c ,"     . switch-to-buffer)
+ ("C-c ."     . find-file)
+ ("C-c b i"   . ibuffer)
+ ("C-c c"     . compile)
+ ("C-c f d"   . delete-frame)
+ ("C-c f m"   . make-frame)
+ ("C-c p i"   . elpaca-info)
+ ("C-c p m"   . elpaca-manager)
+ ("C-c p r"   . elpaca-recipe)
+ ("C-c p u"   . elpaca-try)
+ ("C-c p v"   . elpaca-visit)
+ ("C-c q"     . comment-or-uncomment-region)
+ ("C-c s"     . async-shell-command)
+ ("C-c t t"   . toggle-truncate-lines)
+ ("C-c w d"   . delete-window)
+ ("C-c w h"   . windmove-left)
+ ("C-c w j"   . windmove-down)
+ ("C-c w k"   . windmove-up)
+ ("C-c w l"   . windmove-right)
+ ("C-c w s b" . split-window-below)
+ ("C-c w s r" . split-window-right)
+ ("C-h F"     . describe-face)
+ ("DEL" . backward-delete-char)
+)
+
+<<ctrl-backspace-delete>>
+<<keybinding-hints>>
+#+end_src
+
+*** minibuffer ctrl backspace delete
+By default, Emacs kills the word with =C-<backspace>=, which copies to clipboard. This behaviour is really annoying when trying to change file or buffer with something already  on the clipboard.
+
+#+name: ctrl-backspace-delete
+#+begin_src elisp
+(defun yeet/backward-delete-word (arg)
+  "Delete characters backward until encountering the beginning of a word.
+Do this ARG times."
+  (interactive "p")
+  (delete-region (point) (progn (backward-word arg) (point))))
+
+(bind-key "C-<backspace>" #'yeet/backward-delete-word 'minibuffer-local-map)
+#+end_src
+
+*** keyboard shortcut hints
+When pressing chorded commands show a little banned on the modeline givin hints to prefixes and the associated commands.
+
+#+name: keybinding-hints
+#+begin_src elisp
+(use-package which-key
+  :config (which-key-mode))
+#+end_src
+
+#+name: faces-which-key
+#+begin_src elisp :tangle nil
+(which-key-key-face                   (:inherit 'font-lock-constant-face))
+(which-key-separator-face             (:inherit 'font-lock-comment-face))
+(which-key-note-face                  (:inherit 'which-key-separator-face))
+(which-key-command-description-face   (:inherit 'font-lock-function-name-face))
+(which-key-local-map-description-face (:inherit 'which-key-command-description-face))
+(which-key-highlighted-command-face   (:underline t :inherit 'which-key-command-description-face))
+(which-key-group-description-face     (:inherit 'font-lock-keyword-face))
+(which-key-special-key-face           (:weight 'bold :inverse-video t :inherit 'which-key-key-face))
+(which-key-docstring-face             (:inherit 'which-key-note-face))
+#+end_src
+
+** &rest
+
+#+name: better-defaults
+#+begin_src elisp :noweb yes
+<<auto-save-files>>
+<<lock-files>>
+<<backup-files>>
+<<custom-el-file>>
+<<interactive-commands>>
+<<no-remember-point-unreadable>>
+<<scratch-contents>>
+<<save-format-whitespace>>
+<<delete-to-trash>>
+<<message-buffer-length>>
+<<no-splash-screen>>
+<<no-frame-resize>>
+<<quickly-insert-date>>
+<<fs-str-libs>>
+#+end_src
+
 *** auto save
+
+#+name: auto-save-files
 #+begin_src elisp
 (setq delete-auto-save-files t
       auto-save-list-file-prefix
@@ -786,11 +648,15 @@ The reason why src_elisp{`elpaca-order'} is weirdly passed by splicing inside ba
 #+end_src
 
 *** lock files
+
+#+name: lock-files
 #+begin_src elisp
 (setq create-lockfiles nil)
 #+end_src
 
 *** backup files
+
+#+name: backup-files
 #+begin_src elisp
 (setq backup-directory-alist
       `(("." . ,(expand-file-name "backup" temporary-file-directory))
@@ -801,6 +667,7 @@ The reason why src_elisp{`elpaca-order'} is weirdly passed by splicing inside ba
 *** =custom.el=
 Keep custom from writting to src_elisp{`user-init-file'}.
 
+#+name: custom-el-file
 #+begin_src elisp
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
@@ -808,7 +675,8 @@ Keep custom from writting to src_elisp{`user-init-file'}.
   (load custom-file 'noerror))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-custom
+#+begin_src elisp :tangle nil
 (custom-invalid  (:foreground lighter-olive :background red))
 (custom-rogue    (:foreground lighter-purple :background neutral0))
 (custom-modified (:foreground neutral15 :background neutral4))
@@ -840,9 +708,10 @@ Keep custom from writting to src_elisp{`user-init-file'}.
 (custom-group-subtitle (:weight 'bold))
 #+end_src
 
-*** interactive
+*** interactive commands
 Always confirm before killing an external process. Use short answers for boolean interactive forms. "y" or "n", instead of "yes" or "no".
 
+#+name: interactive-commands
 #+begin_src elisp
 (setq confirm-kill-processes t)
 
@@ -854,6 +723,7 @@ Always confirm before killing an external process. Use short answers for boolean
 *** remembering point
 It makes no sense to record the POINT of last access to a file if you can't even read it. Just disable it.
 
+#+name: no-remember-point-unreadable
 #+begin_src elisp
 (setq-default save-place-forget-unreadable-files t)
 #+end_src
@@ -861,13 +731,15 @@ It makes no sense to record the POINT of last access to a file if you can't even
 *** scratch buffer
 Don't append anything at the beggining of the scratch buffer on creation. By default a comment is inserted explaining the behaviour of src_elisp{`lisp-interaction-mode'}.
 
+#+name: scratch-contents
 #+begin_src elisp
 (setq initial-scratch-message nil)
 #+end_src
 
-*** whitespace
+*** format whitespace on save
 Don't add newlines when scrolling to bottom. Put a newline at the end of all files. Remove useless whitespace on save.
 
+#+name: save-format-whitespace
 #+begin_src elisp
 (setq next-line-add-newlines nil
       require-final-newline t)
@@ -875,216 +747,91 @@ Don't add newlines when scrolling to bottom. Put a newline at the end of all fil
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+end_src
 
-*** filesystem operations
+*** deleting file moves to trash
 Instead of deleting nodes, move them to trash.
 
+#+name: delete-to-trash
 #+begin_src elisp
 (setq-default delete-by-moving-to-trash t)
 #+end_src
 
-*** message buffer
+*** Messages buffer length
 On a long running session, such as using the daemon and only suspending the machine, the src_elisp{`*Messages*'} buffer could get quite large. Let's prevent this by truncating the buffer when it gets to a certain line count.
 
+#+name: message-buffer-length
 #+begin_src elisp
 (setq-default message-log-max 1000)
 #+end_src
 
-** key bindings
-This assumes that this version of Emacs has the `bind-key' included in the default distribution.
+*** no splash screen
+Disable displaying splash screen on start.
 
+#+name: no-splash-screen
 #+begin_src elisp
-(require 'bind-key)
-
-(bind-keys
- ("C--"       . text-scale-decrease)
- ("C-="       . text-scale-increase)
- ("C-c ,"     . switch-to-buffer)
- ("C-c ."     . find-file)
- ("C-c b i"   . ibuffer)
- ("C-c c"     . compile)
- ("C-c f d"   . delete-frame)
- ("C-c f m"   . make-frame)
- ("C-c i d"   . yeet/insert-date)
- ("C-c p i"   . elpaca-info)
- ("C-c p m"   . elpaca-manager)
- ("C-c p r"   . elpaca-recipe)
- ("C-c p u"   . elpaca-try)
- ("C-c p v"   . elpaca-visit)
- ("C-c q"     . comment-or-uncomment-region)
- ("C-c s"     . async-shell-command)
- ("C-c t t"   . toggle-truncate-lines)
- ("C-c w d"   . delete-window)
- ("C-c w h"   . windmove-left)
- ("C-c w j"   . windmove-down)
- ("C-c w k"   . windmove-up)
- ("C-c w l"   . windmove-right)
- ("C-c w s b" . split-window-below)
- ("C-c w s r" . split-window-right)
- ("C-h F"     . describe-face)
- ("DEL" . backward-delete-char)
-)
+(setq inhibit-startup-screen t
+      inhibit-startup-buffer-menu t)
 #+end_src
 
-By default, Emacs kills the word with =C-<backspace>=, which copies to clipboard. This behaviour is really annoying when trying to change file or buffer with something already  on the clipboard.
+*** no automatic resize frame
+Disable automatic resize without any confirmation.
 
+#+name: no-frame-resize
 #+begin_src elisp
-(defun yeet/backward-delete-word (arg)
-  "Delete characters backward until encountering the beginning of a word.
-Do this ARG times."
-  (interactive "p")
-  (delete-region (point) (progn (backward-word arg) (point))))
-
-(bind-key "C-<backspace>" #'yeet/backward-delete-word 'minibuffer-local-map)
+(setq frame-inhibit-implied-resize t)
 #+end_src
 
-** formatting and navigation
-Stop =electric= from indent things automatically. Highlight matching pairs of characters. Use tabs for indentation with 2 characters wide =TAB=.
+*** insertting current date
 
-#+begin_src elisp
-(use-package electric
-  :elpaca nil
-  :custom (electric-indent-inhibit t)
-  ;; disable auto-identation
-  :config (electric-indent-mode nil))
-
-(use-package elec-pair
-  :elpaca nil
-  :after electric
-  :custom (electric-pair-skip-self t)
-          (electric-pair-pairs
-           '((?\{ . ?\})
-             (?\( . ?\))
-             (?\[ . ?\])))
-  ;; TODO refactor to use hooks instead
-  :config (electric-pair-mode t))
-
-(show-paren-mode 1)
-
-(setq-default tab-width 2
-              indent-tabs-mode t
-              fill-column 70
-              truncate-lines nil)
-#+end_src
-
-** visuals
-When running on a non-graphic display (terminal, for example), by default Emacs does some trickery to make the cursor stand out. Disable that.
-
-#+begin_src elisp
-(blink-cursor-mode -1)
-(setq visible-cursor nil)
-#+end_src
-
-** case conversions
-#+begin_src elisp
-;; don't ask for confirmation when changing region case
-(put 'downcase-region 'disabled nil)
-(put 'upcase-region   'disabled nil)
-
-(use-package titlecase
-  :commands titlecase-region)
-#+end_src
-
-** keyboard shortcut hints
-When pressing chorded commands show a little banned on the modeline givin hints to prefixes and the associated commands.
-
-#+begin_src elisp
-(use-package which-key
-  :config (which-key-mode))
-#+end_src
-
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
-(which-key-key-face                   (:inherit 'font-lock-constant-face))
-(which-key-separator-face             (:inherit 'font-lock-comment-face))
-(which-key-note-face                  (:inherit 'which-key-separator-face))
-(which-key-command-description-face   (:inherit 'font-lock-function-name-face))
-(which-key-local-map-description-face (:inherit 'which-key-command-description-face))
-(which-key-highlighted-command-face   (:underline t :inherit 'which-key-command-description-face))
-(which-key-group-description-face     (:inherit 'font-lock-keyword-face))
-(which-key-special-key-face           (:weight 'bold :inverse-video t :inherit 'which-key-key-face))
-(which-key-docstring-face             (:inherit 'which-key-note-face))
-#+end_src
-
-** highlight bad whitespace
-#+begin_src elisp
-(use-package whitespace
-  :elpaca nil
-  :hook ((prog-mode text-mode) . whitespace-mode)
-  :custom (whitespace-style '(face tabs tab-mark trailing))
-  (whitespace-display-mappings
-   '((tab-mark ?\t [?· ?\t] [?\\ ?\t]))))
-#+end_src
-
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
-(whitespace-tab             (:background bg :foreground grey6))
-(whitespace-space           (:background bg :foreground grey6))
-(whitespace-hspace          (:background bg :foreground grey6))
-(whitespace-newline         (:background bg :foreground grey6))
-(whitespace-line            (:background bg :foreground grey6))
-(whitespace-empty           (:background bg :foreground grey6))
-(whitespace-indentation     (:background bg :foreground grey6))
-(whitespace-big-indent      (:background bg :foreground grey6))
-(whitespace-space-after-tab (:background bg :foreground grey6))
-
-(whitespace-space-before-tab       (:background high-red))
-(whitespace-missing-newline-at-eof (:background high-red))
-(whitespace-trailing               (:background high-red))
-#+end_src
-
-** insertting current date
+#+name: quickly-insert-date
 #+begin_src elisp
 (defun yeet/insert-date ()
   (interactive)
   (insert (format-time-string "%Y-%m-%d")))
+
+(bind-key "C-c i d" 'yeet/insert-date)
 #+end_src
 
-** nicer fs path and string utility functions
+*** nicer fs path and string utility functions
+
+#+name: fs-str-libs
 #+begin_src elisp
 (use-package f
-  :elpaca (f
-           :protocol https
-           :inherit t
-           :depth 1
-           :host github
-           :repo "rejeep/f.el"))
+  :elpaca
+  (f :protocol https
+     :inherit t
+     :depth 1
+     :host github
+     :repo "rejeep/f.el"))
 
 (use-package s
-  :elpaca (s
-           :protocol https
-           :inherit t
-           :depth 1
-           :host github
-           :repo "magnars/s.el"))
-#+end_src
-
-** load full.el
-Don't load =full.el= when running on terminal. For example when invoked by the =VISUAL= or =EDITOR= variables by a terminal program (e.g. git or editor).
-
-#+begin_src elisp
-(when (or (display-graphic-p) (daemonp))
-    (require 'full))
-#+end_src
-
-** post amble
-#+begin_src elisp
-(provide 'init)
+  :elpaca
+  (s :protocol https
+     :inherit t
+     :depth 1
+     :host github
+     :repo "magnars/s.el"))
 #+end_src
 
 * full
 :PROPERTIES:
-:header-args: :tangle emacs/full.el
+:header-args: :tangle (locate-user-emacs-file "full.el")
 :END:
-** lexical binding
 Always use lexical binding. *ALWAYS*.
+
 #+begin_src elisp
 ;; -*- lexical-binding: t -*-
+
+(require 'map)
 #+end_src
 
 ** visuals
-*** toolbar
-Don't show toolbar.
+Disable toolbar. When changing window hovered, focus on the new one. Unprettify symbols when "inside"" it.
 
 #+begin_src elisp
 (tool-bar-mode -1)
+
+(setq prettify-symbols-unprettify-at-point 'right-edge)
+(setq mouse-autoselect-window t)
 #+end_src
 
 *** theme
@@ -1104,8 +851,8 @@ The advice ensures that the color palette is available to the user as global var
   (define-advice autothemer-deftheme
       (:before (_ _ palette &rest _) defcolors)
     (mapcar (lambda (e)
-              (setf (symbol-value (head e)) (nth 2 e)))
-            (tail palette))))
+              (setf (symbol-value (car e)) (nth 2 e)))
+            (cdr palette))))
 
 (cl-defun yeet/get-geolocation ()
   (with-temp-buffer
@@ -1133,27 +880,29 @@ Set the window of graphical frames. Frames should be resized pixel-by-pixel, rat
 (map-put default-frame-alist 'height 22)
 #+end_src
 
-*** git status
+*** git status of line on left margin
 Show git status of lines on the left side of the windows. Change the default ugly signs to ASCII ones. This should be enabled for all modes derived from src_elisp{`prog-mode'}.
 
 #+begin_src elisp
 (use-package git-gutter
   :hook (prog-mode . git-gutter-mode)
   :config
-  (setq git-gutter:added-sign "+"
+  (setq git-gutter:added-sign    "+"
         git-gutter:modified-sign "~"
-        git-gutter:deleted-sign "-"
+        git-gutter:deleted-sign  "-"
         git-gutter:update-interval 0.02))
 
 (use-package git-gutter-fringe
   :defer t
   :config
+  ;; FIXME what is this?
   (define-fringe-bitmap 'git-gutter-fr:added    [224] nil nil '(center repeated))
   (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
   (define-fringe-bitmap 'git-gutter-fr:deleted  [128 192 224 240] nil nil 'bottom))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-git-gutter
+#+begin_src elisp :tangle nil
 (git-gutter:added     (:foreground higher-green :weight 'bold))
 (git-gutter:modified  (:foreground higher-purple :weight 'bold))
 (git-gutter:deleted   (:foreground higher-red :weight 'bold))
@@ -1184,7 +933,8 @@ Show git status of lines on the left side of the windows. Change the default ugl
   "Background color lightest yellow.")
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-yeet-mode-line
+#+begin_src elisp :tangle nil
 (yeet/mode-line-buffer-name       (:background lighter-yellow))
 (yeet/mode-line-readable-buffer   (:foreground darker-red :weight 'bold))
 (yeet/mode-line-writeable-buffer  (:foreground darker-yellow :weight 'bold))
@@ -1193,10 +943,7 @@ Show git status of lines on the left side of the windows. Change the default ugl
 #+end_src
 
 #+begin_src elisp
-;; include column number in mode-line coordinates
-(setq column-number-mode t)
-
-(use-package minions)
+(setq column-number-mode t) ;; include column number in mode-line coordinates
 
 (defun yeet/make-file-executable (file-path)
   (set-file-modes file-path
@@ -1204,28 +951,44 @@ Show git status of lines on the left side of the windows. Change the default ugl
      (file-modes file-path)
      (logand ?\111 (default-file-modes)))))
 
+;; add entry in menu bar to make file executable
 (define-key global-map
  [menu-bar file make-executable]
  '("Make File Executable" . yeet/make-file-executable))
 
 (setq-default mode-line-format
   '((:eval (meow-indicator))
+    ;; buffer-name, line and column. colored yellow if changed and has associated file
     (:eval
-     (if (buffer-modified-p)
-       (propertize " %b:%l:%c " 'face 'yeet/mode-line-buffer-name
-                   'help-echo (concat "Buffer " (buffer-file-name) " has been modified"))
-       (propertize " %b:%l:%c " 'help-echo (concat "Buffer " (buffer-file-name) " has not been modified"))))
+      (let ((text " %b:%l:%C "))
+        (if (and (buffer-modified-p) (buffer-file-name))
+          (propertize text
+            'face 'yeet/mode-line-buffer-name
+            'help-echo (concat "Buffer " (buffer-file-name) " has been modified"))
+          (propertize text
+            'help-echo (concat "Buffer " (buffer-file-name) " has not been modified")))))
     " "
     "<"
     mode-line-mule-info
+    ;; read, write and execute properties
     (:eval (propertize "r" 'face 'yeet/mode-line-readable-buffer 'help-echo "Buffer is readable"))
     (:eval
      (if buffer-read-only
-       (propertize "-" 'help-echo "Buffer is read-only\nmouse-1: make buffer writeable" 'mouse-face 'mode-line-highlight 'local-map (make-mode-line-mouse-map 'mouse-1 #'mode-line-toggle-read-only))
-       (propertize "w" 'face 'yeet/mode-line-writeable-buffer 'help-echo "Buffer is writeable\nmouse-1: make buffer read-only" 'mouse-face 'mode-line-highlight 'local-map (make-mode-line-mouse-map 'mouse-1 #'mode-line-toggle-read-only))))
+       (propertize "-"
+         'help-echo "Buffer is read-only\nmouse-1: make buffer writeable"
+         'mouse-face 'mode-line-highlight
+         'local-map (make-mode-line-mouse-map 'mouse-1 #'mode-line-toggle-read-only))
+       (propertize "w"
+         'face 'yeet/mode-line-writeable-buffer
+         'help-echo "Buffer is writeable\nmouse-1: make buffer read-only"
+         'mouse-face 'mode-line-highlight
+         'local-map (make-mode-line-mouse-map 'mouse-1 #'mode-line-toggle-read-only))))
+    ;; add a button to make the file executable
     (:eval
      (if (and (buffer-file-name) (file-executable-p (buffer-file-name)))
-         (propertize "x" 'face 'yeet/mode-line-executable-buffer 'help-echo "Buffer is executable")
+       (propertize "x"
+         'face 'yeet/mode-line-executable-buffer
+         'help-echo "Buffer is executable")
        (propertize "-"
          'help-echo "Buffer is not executable\nmouse-1: make buffer file executable"
          'mouse-face 'mode-line-highlight
@@ -1234,11 +997,12 @@ Show git status of lines on the left side of the windows. Change the default ugl
                         (yeet/make-file-executable (buffer-file-name)))))))
     ">"
     " "
-    "%p/%IB"
+    "%IB" ;; total size of file
     " "
-    mode-line-misc-info
+    mode-line-misc-info ;; a lot of minor modes use this
     " "
-    minions-mode-line-modes))
+    mode-name
+    ))
 
 (use-package hide-mode-line
   :commands hide-mode-line-mode)
@@ -1250,12 +1014,15 @@ I don't know if this is the best way of doing this. I would want to do something
 #+begin_src elisp
 ;; nil means all frames
 (set-face-attribute 'default nil
- :family "SauceCodePro Nerd Font Mono" :height 100)
+  :family "SauceCodePro Nerd Font Mono"
+  :height 100)
 
-(set-face-attribute 'fixed-pitch nil :inherit 'default)
+(set-face-attribute 'fixed-pitch nil
+  :inherit 'default)
 
 (set-face-attribute 'variable-pitch nil
- :family "NotoSans Display Nerd Font" :height 105)
+  :family "NotoSans Display Nerd Font"
+  :height 105)
 
 ;; set font for character sets from languages of East Asia
 ;; t to use the default fontset
@@ -1275,12 +1042,13 @@ I don't know if this is the best way of doing this. I would want to do something
   :config (setq-default display-line-numbers-width 2))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-line-number
+#+begin_src elisp :tangle nil
 (line-number              (:foreground grey10 :background bg))
 (line-number-current-line (:foreground high-orange :background grey3))
 #+end_src
 
-*** scrolling
+*** better scrolling
 #+begin_src elisp
 (setq scroll-step 1
       scroll-preserve-screen-position t
@@ -1295,15 +1063,33 @@ I don't know if this is the best way of doing this. I would want to do something
       auto-window-vscroll nil)
 #+end_src
 
-*** &rest
-#+begin_src elisp
-(setq prettify-symbols-unprettify-at-point 'right-edge)
+*** visual bell
+The src_elisp{`ring-bell'} function flashes the mode-line in inverted colors. This is triggered by events such as trying to src_elisp{`delete-backward-char'} on empty modeline buffer.
 
-(setq mouse-autoselect-window t)
+#+begin_src elisp
+(setq visible-bell nil
+      ring-bell-function
+      #'(lambda ()
+          (invert-face 'mode-line)
+          (run-with-timer 0.1 nil #'invert-face 'mode-line)))
 #+end_src
 
-** directory navigation
-=dired-omit-files= matches entries to be hidden. I use this to hide dotfiles by default.
+*** highlight comment keywords
+Highlight things like TODO, FIXME and NOTE on comments and =org-mode= headings.
+
+#+begin_src elisp
+(use-package hl-todo
+  :hook (prog-mode . hl-todo-mode)
+  :config
+  (setq hl-todo-keyword-faces
+        '(("TODO"  . success)
+          ("FIXME" . error)
+          ("NOTE"  . warning)
+          ("WARN"  . warning))))
+#+end_src
+
+** file manager
+=dired-omit-files= is used to hide dotfiles by default.
 
 #+begin_src elisp
 (use-package dired
@@ -1314,7 +1100,8 @@ I don't know if this is the best way of doing this. I would want to do something
   :custom (dired-omit-files (rx bol ?. (not (any ?.)))))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-dired
+#+begin_src elisp :tangle nil
 (dired-broken-symlink (:foreground grey1 :background red :bold t))
 (dired-symlink        (:foreground cyan))
 (dired-directory      (:foreground orange))
@@ -1329,8 +1116,7 @@ I don't know if this is the best way of doing this. I would want to do something
 (dired-ignored        (:inherit 'shadow))
 #+end_src
 
-** better menus
-*** mini buffer selection
+** mini buffer selection menu
 The =vertico= package replaces the default minibuffer input area with a *vertical list of items* (a grid is also available). In general, this makes it easier to find things.
 
 #+begin_src elisp
@@ -1348,14 +1134,15 @@ The =vertico= package replaces the default minibuffer input area with a *vertica
   (vertico-preselect 'prompt))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-vertico
+#+begin_src elisp :tangle nil
 (vertico-multiline       (:inherit 'shadow))
 (vertico-group-title     (:slant 'italic :inherit 'shadow))
 (vertico-group-separator (:strike-through t :inherit 'shadow))
 (vertico-current         (:extend t :inherit 'highlight))
 #+end_src
 
-*** better help
+** help and discoverability
 The =helpful= package puts *more information* into the =*Help*= buffers, making the more useful.
 
 #+begin_src elisp
@@ -1370,11 +1157,18 @@ The =helpful= package puts *more information* into the =*Help*= buffers, making 
          ("C-h x" . helpful-command)))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-helpful
+#+begin_src elisp :tangle nil
 (helpful-heading (:weight 'bold))
 #+end_src
 
-** completions
+=apropos= searches for symbols matching a pattern and displays info about them. Good for search things when you don't know their name. =apropos-command= only searches commands (and/or functions).
+
+#+begin_src elisp
+(setq-default apropos-do-all t)
+#+end_src
+
+** auto-completion
 #+begin_src elisp
 (use-package company
   :hook prog-mode
@@ -1391,7 +1185,8 @@ The =helpful= package puts *more information* into the =*Help*= buffers, making 
    '((file (styles partial-completion)))))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-company
+#+begin_src elisp :tangle nil
 (company-scrollbar-bg                   (:background grey5))
 (company-scrollbar-fg                   (:background bg))
 (company-tooltip                        (:background bg))
@@ -1416,7 +1211,8 @@ The =helpful= package puts *more information* into the =*Help*= buffers, making 
 (company-echo nil)
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-orderless
+#+begin_src elisp :tangle nil
 (orderless-match-face-0 (:foreground high-cyan :bold t))
 (orderless-match-face-1 (:foreground high-olive :bold t))
 (orderless-match-face-2 (:foreground high-orange :bold t))
@@ -1428,7 +1224,8 @@ Don't align block text with heading text. One space of additional indentation on
 
 #+begin_src elisp
 (use-package org
-  :bind ("C-c o i" . org-id-get-create)
+  :bind (("C-c o i" . org-id-get-create)
+         ("C-c o a" . org-agenda))
   :hook ((org-mode . org-indent-mode)
          (org-mode . visual-line-mode)
          (org-after-todo-statistics . yeet/org-collect-children-todo)
@@ -1449,7 +1246,10 @@ Don't align block text with heading text. One space of additional indentation on
   (org-use-tag-inheritance nil)
   (org-agenda-start-on-weekday nil)
   (org-agenda-span 30)
-  (org-agenda-files (list (expand-file-name "todo.org" org-directory)))
+  (org-agenda-files
+    (list
+      (expand-file-name "todo.org" org-directory)
+      (expand-file-name "task.org" org-directory)))
   (org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
   (org-todo-keyword-faces '(("DOING" . org-doing)))
   :config
@@ -1481,13 +1281,14 @@ Don't align block text with heading text. One space of additional indentation on
   :bind ("C-c o l c" . org-cliplink))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-org
+#+begin_src elisp :tangle nil
 (org-latex-and-related (:foreground lower-yellow))
 (org-document-title    (:foreground high-purple))
 (org-block-begin-line  (:foreground grey6 :background grey0))
 (org-block-end-line    (:foreground grey6 :background grey0))
 (org-special-keyword   (:foreground grey8))
-(org-document-info     (:foreground orange))
+(org-document-info     (:foreground high-orange))
 (org-meta-line         (:foreground grey8))
 
 (org-level-1 (:foreground high-orange))
@@ -1657,7 +1458,8 @@ We add a new entry to the src_elisp{`display-buffer-alist'} for =org-roam=, such
   :custom (org-roam-ui-sync-theme t))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-org-roam
+#+begin_src elisp :tangle nil
 (org-roam-shielded                  (:inherit ('warning)))
 (org-roam-header-line               (:weight 'bold :extend t :foreground higher-yellow))
 (org-roam-title                     (:weight 'bold))
@@ -1710,7 +1512,8 @@ Have to find a better way to load src_elisp{`org-phscroll'}.
   :config (require 'org-phscroll))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-olivetti
+#+begin_src elisp :tangle nil
 (olivetti-fringe (:inherit 'fringe))
 #+end_src
 
@@ -1787,27 +1590,21 @@ line are justified."
   :hook (org-mode . org-fragtog-mode))
 #+end_src
 
-*** FIXME spell checker
-For some reason, it can't detect the =pt_BR= dictionary, which makes this useless for me.
+*** spell checker
 
 #+begin_src elisp :tangle no
 (use-package ispell
-  :disabled
   :elpaca nil
   :hook (org-mode . flyspell-mode)
   :config
   ;; csv of dictionaries
-  (setq ispell-dictionary
-        (c-concat-separated
-         '("en_US"
-           ; "pt_BR"
-           )
-         ","))
+  (setq ispell-dictionary (c-concat-separated '("en_US" "pt_BR") ","))
   (ispell-set-spellchecker-params)
   (ispell-hunspell-add-multi-dic ispell-dictionary))
 #+end_src
 
-** eshell
+** terminal and shell
+
 #+begin_src elisp
 (use-package esh-mode
   :elpaca nil
@@ -1815,7 +1612,8 @@ For some reason, it can't detect the =pt_BR= dictionary, which makes this useles
                 (expand-file-name "emacs/eshell/" (xdg-data-home))))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-eshell
+#+begin_src elisp :tangle nil
 (eshell-prompt        (:foreground cyan))
 (eshell-ls-archive    (:foreground grey7))
 (eshell-ls-backup     (:foreground grey7))
@@ -1830,18 +1628,23 @@ For some reason, it can't detect the =pt_BR= dictionary, which makes this useles
 (eshell-ls-unreadable (:foreground high-red :bold t))
 #+end_src
 
-** highlight comment keywords
-Highlight things like TODO, FIXME and NOTE on comments and =org-mode= headings.
-
 #+begin_src elisp
-(use-package hl-todo
-  :hook (prog-mode . hl-todo-mode)
-  :config
-  (setq hl-todo-keyword-faces
-        '(("TODO"  . success)
-          ("FIXME" . error)
-          ("NOTE"  . warning)
-          ("WARN"  . warning))))
+(use-package vterm)
+#+end_src
+
+#+name: faces-vterm
+#+begin_src elisp :tangle nil
+(vterm-color-cyan    (:foreground cyan))
+(vterm-color-green   (:foreground olive))
+(vterm-color-black   (:foreground grey2))
+(vterm-color-blue    (:foreground orange))
+(vterm-color-red     (:foreground red))
+(vterm-color-yellow  (:foreground yellow))
+(vterm-color-white   (:foreground grey11))
+(vterm-color-magenta (:foreground purple))
+
+(vterm-color-inverse-video (:inherit 'default))
+(vterm-color-underline     (:inherit 'default))
 #+end_src
 
 ** project management
@@ -1851,20 +1654,23 @@ After having some issues with =eglot= wanting to call a function not in the buil
 (use-package project :demand t)
 #+end_src
 
-** languages
-*** helper functions
+** programming languages
+
 #+begin_src elisp
 (defun yeet/disable-tabs () (setq indent-tabs-mode nil))
 (defun yeet/enable-tabs  () (setq indent-tabs-mode t  ))
 #+end_src
 
 *** LSP client
-#+begin_src elisp
+#+begin_src elisp :noweb yes
 (use-package eglot
-  :after project)
+  :after project
+  :config
+  <<eglot-disable-server-formatting>>)
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-eglot
+#+begin_src elisp :tangle nil
 (eglot-highlight-symbol-face           (:inherit 'bold))
 (eglot-mode-line                       (:foreground dark-purple :weight 'bold :inherit 'font-lock-constant-face))
 (eglot-diagnostic-tag-unnecessary-face (:inherit 'shadow))
@@ -1874,7 +1680,56 @@ After having some issues with =eglot= wanting to call a function not in the buil
 (eglot-parameter-hint-face             (:inherit 'eglot-inlay-hint-face))
 #+end_src
 
+**** TODO fix very annoying formatter
+For now, I just disable the =onTypeFormatting= LSP message altogether.
+
+#+name: eglot-disable-server-formatting
+#+begin_src elisp
+(setopt eglot-ignored-server-capabilities
+  '(:documentOnTypeFormattingProvider
+    :documentFormattingProvider
+    :documentRangeFormattingProvider))
+#+end_src
+
+*** DAP client
+
+#+begin_src elisp
+(use-package dape
+  :elpaca
+  (dape
+    :type git
+    :host github
+    :repo "svaante/dape")
+  :custom (dape-buffer-window-arrangement 'right))
+#+end_src
+
+#+name: faces-dape
+#+begin_src elisp :tangle nil
+(dape-repl-exit-code-fail (:extend t :inherit 'compilation-mode-line-fail))
+(dape-repl-exit-code-exit (:extend t :inherit 'compilation-mode-line-exit))
+(dape-stack-trace-pointer (:extend t :inherit ('bold 'default)))
+(dape-stack-trace (:extend t))
+(dape-breakpoint-face (:inherit ('font-lock-keyword-face)))
+(dape-exception-description-face (:height 0.85 :box (:line-width -1) :inherit ('warning)))
+(dape-expression-face (:height 0.85 :box (:line-width -1) :inherit ('font-lock-warning-face)))
+(dape-log-face (:height 0.85 :box (:line-width -1) :inherit ('font-lock-doc-face)))
+#+end_src
+
+*** Tree Sitter
+
+#+begin_src elisp
+(use-package treesit :elpaca nil
+  :custom (treesit-language-source-alist '()))
+#+end_src
+
+#+name: faces-treesit
+#+begin_src elisp :tangle nil
+(treesit-explorer-field-name nil)
+(treesit-explorer-anonymous-node (:inherit 'shadow))
+#+end_src
+
 *** LISPs
+
 #+begin_src elisp
 (defun yeet/lisp-prettify-symbols ()
   (setq-local prettify-symbols-alist '(("lambda" . ?λ)))
@@ -1884,7 +1739,8 @@ After having some issues with =eglot= wanting to call a function not in the buil
   :hook ((lisp-data-mode clojure-mode) . rainbow-delimiters-mode))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-rainbow-delimiters
+#+begin_src elisp :tangle nil
 (rainbow-delimiters-base-face nil)
 (rainbow-delimiters-base-error-face (:foreground darker-red :inherit 'rainbow-delimiters-base-face))
 (rainbow-delimiters-unmatched-face  (:foreground high-red))
@@ -1929,7 +1785,11 @@ After having some issues with =eglot= wanting to call a function not in the buil
 (use-package lisp-mode
   :elpaca nil
   :hook ((lisp-mode . yeet/disable-tabs)
-         (lisp-mode . yeet/lisp-prettify-symbols)))
+         (lisp-mode . yeet/lisp-prettify-symbols)
+         (lisp-mode .
+           (lambda ()
+             (setq-local lisp-indent-function 'common-lisp-indent-function))))
+  :custom (lisp-indent-offset 2))
 
 (use-package sly
   :after lisp-mode
@@ -1937,7 +1797,8 @@ After having some issues with =eglot= wanting to call a function not in the buil
   :config (setq inferior-lisp-program "/bin/sbcl"))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-sly
+#+begin_src elisp :tangle nil
 (sly-action-face                      (:inherit 'warning))
 (sly-part-button-face                 (:inherit 'font-lock-constant-face))
 (sly-error-face                       (:underline light-red))
@@ -1970,18 +1831,8 @@ After having some issues with =eglot= wanting to call a function not in the buil
 (sly-db-topline-face nil)
 #+end_src
 
-*** C/C++
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
-(compilation-error          (:inherit 'error))
-(compilation-warning        (:inherit 'warning))
-(compilation-info           (:inherit 'success))
-(compilation-mode-line-fail (:weight 'bold :foreground red :inherit 'compilation-error))
-(compilation-mode-line-run  (:inherit 'compilation-warning))
-(compilation-mode-line-exit (:weight 'bold :foreground green :inherit 'compilation-info))
-(compilation-line-number    (:inherit 'font-lock-keyword-face))
-(compilation-column-number  (:inherit 'font-lock-doc-face))
-(c-nonbreakable-space-face (:background dark-red))
-#+end_src
+*** C and C++
+Disable =clang-format= of =clangd= when it can't find a =.clang-format= file.
 
 #+begin_src elisp
 (use-package cc-mode
@@ -1993,20 +1844,35 @@ After having some issues with =eglot= wanting to call a function not in the buil
   (when (not (locate-file "clangd" exec-path))
     (warn "`clangd' not in `exec-path'. Emacs won't be able to connect to C/C++ LSP server."))
   (add-to-list 'eglot-server-programs
-               (cons '(c-mode c++-mode)
-                     (lambda ()
-                       (list
-                        "clangd"
-                        "--enable-config"
-                        (concat "--compile-commands-dir="
-                                (f-join
-                                 (project-root (project-current t))
-                                 "build/")))))))
+    (cons '(c-mode c++-mode)
+      (lambda ()
+        (list
+          "clangd"
+          "--fallback-style=none"
+          "--enable-config"
+          (concat
+            "--compile-commands-dir="
+            (f-join
+              (project-root (project-current t))
+              "build/")))))))
 
-;; C/C++
-(setq compile-command "make"
-      compilation-scroll-output t)
+(use-package clang-format
+  :hook ((c-mode c++-mode) . (lambda () (add-hook 'before-save-hook 'clang-format-buffer nil t)))
+  :config
+  (setq clang-format-style "file"
+        ;; if no `.clang-format' is found, don't do anything
+        clang-format-fallback-style "none"))
+#+end_src
 
+#+name: faces-cc
+#+begin_src elisp :tangle nil
+(c-nonbreakable-space-face (:background dark-red))
+#+end_src
+
+**** cmake
+Have not found a good solution with working with CMake in Emacs yet. This will have to do.
+
+#+begin_src elisp
 (use-package cmake-mode)
 
 (defun yeet/cmake-prepare (is-release)
@@ -2023,20 +1889,17 @@ After having some issues with =eglot= wanting to call a function not in the buil
   (let ((default-directory (project-root (project-current t)))
         (compile-command "cmake --build build"))
     (call-interactively 'compile)))
+#+end_src
 
-(use-package clang-format
-  :hook ((c-mode c++-mode) . (lambda () (add-hook 'before-save-hook 'clang-format-buffer nil t)))
-  :config
-  (setq clang-format-style "file"
-        ;; if no `.clang-format' is found, don't do anything
-        clang-format-fallback-style "none"))
-
-;; debugger
+**** debugger
+#+begin_src elisp
 (use-package realgud
+  :disabled
   :bind ("C-c d" . realgud:gdb))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-realgud
+#+begin_src elisp :tangle nil
 (realgud-debugger-running      (:weight 'bold :foreground high-green))
 (realgud-debugger-not-running  (:inherit 'font-lock-warning-face))
 (realgud-overlay-arrow1        (:inherit 'realgud-debugger-running))
@@ -2051,16 +1914,43 @@ After having some issues with =eglot= wanting to call a function not in the buil
 (realgud-backtrace-number      (:weight 'bold :foreground bg))
 #+end_src
 
+**** disassembler
 #+begin_src elisp
-;; disassembler
-(use-package rmsbolt
-  :commands rmsbolt)
+(use-package rmsbolt :commands rmsbolt)
+#+end_src
 
+**** snippet inserting/autocomplete
+Does things like insert if statements and other boring repetitive stuff.
+
+#+begin_src elisp
 (use-package yasnippet-snippets)
 (use-package yasnippet
   :after yasnippet-snippets
   :hook ((c-mode c++-mode) . yas-minor-mode)
   :config (yas-reload-all))
+#+end_src
+
+#+name: faces-yas
+#+begin_src elisp :tangle nil
+(yas-field-highlight-face (:inherit 'region))
+(yas--field-debug-face nil)
+#+end_src
+
+**** compilation
+#+begin_src elisp
+(setq compilation-scroll-output nil)
+#+end_src
+
+#+name: faces-compilation
+#+begin_src elisp :tangle nil
+(compilation-error          (:inherit 'error))
+(compilation-warning        (:inherit 'warning))
+(compilation-info           (:inherit 'success))
+(compilation-mode-line-fail (:weight 'bold :foreground red :inherit 'compilation-error))
+(compilation-mode-line-run  (:inherit 'compilation-warning))
+(compilation-mode-line-exit (:weight 'bold :foreground green :inherit 'compilation-info))
+(compilation-line-number    (:inherit 'font-lock-keyword-face))
+(compilation-column-number  (:inherit 'font-lock-doc-face))
 #+end_src
 
 *** J
@@ -2077,7 +1967,8 @@ On Void Linux this is pretty finnicky since the default name of the console exec
   :config (add-to-list 'org-babel-load-languages '(J . t)))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-j
+#+begin_src elisp :tangle nil
 (j-verb-face        (:inherit 'font-lock-builtin-face))
 (j-adverb-face      (:inherit 'font-lock-builtin-face))
 (j-conjunction-face (:inherit 'font-lock-builtin-face))
@@ -2093,32 +1984,24 @@ Zig always indents by 4 spaces. Use =zls= as the language server.
   :commands zig-mode
   :custom
   (zig-indent-offset 4)
-  (zig-format-on-save nil))
+  (zig-format-on-save nil)
+  :config
+  (when (not (locate-file "zls" exec-path))
+    (warn "`zls' not in `exec-path'. Emacs won't be able to connect to Zig LSP server.")))
 #+end_src
 
 *** Lua
 
-#+begin_src elisp :noweb yes
+#+begin_src elisp
 (use-package lua-mode
   :commands lua-mode
-  :requires f eglot
+  :requires (f eglot)
   :config
   (setq lua-indent-level 2)
   (add-to-list 'eglot-server-programs
-               (cons 'lua-mode
-                     (eglot-alternatives
-                      (list
-                       (list "lua-language-server" "--config-path" (f-join (xdg-config-home) "lua-language-server" "config.lua"))
-                       "lua-lsp"))))
-  <<disable-formatter>>)
-#+end_src
-
-**** TODO fix very annoying formatter
-For now, I just disable the =onTypeFormatting= LSP message altogether.
-
-#+name: disable-formatter
-#+begin_src elisp :tangle nil
-(add-to-list 'eglot-ignored-server-capabilities :documentOnTypeFormattingProvider)
+    (cons 'lua-mode
+      (eglot-alternatives
+        `(("lua-language-server" "--config-path" ,(f-join (xdg-config-home) "lua-language-server" "config.lua")))))))
 #+end_src
 
 *** Python
@@ -2158,7 +2041,8 @@ When using python on [[id:2929ef7d-0e55-4c9e-8f08-b120d9997f10][Org Mode]] src b
   :init (setq markdown-command "multimarkdown"))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-markdown
+#+begin_src elisp :tangle nil
 (markdown-header-face-6 (:height 1.0 :inherit 'markdown-header-face))
 (markdown-header-face-5 (:height 1.0 :inherit 'markdown-header-face))
 (markdown-header-face-4 (:height 1.0 :inherit 'markdown-header-face))
@@ -2218,7 +2102,8 @@ When using python on [[id:2929ef7d-0e55-4c9e-8f08-b120d9997f10][Org Mode]] src b
   :commands tuareg-mode)
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-tuareg
+#+begin_src elisp :tangle nil
 (tuareg-font-lock-interactive-directive-face (:foreground high-cyan))
 (tuareg-font-lock-operator-face              (:foreground grey11))
 (tuareg-font-lock-governing-face             (:foreground high-red))
@@ -2226,32 +2111,32 @@ When using python on [[id:2929ef7d-0e55-4c9e-8f08-b120d9997f10][Org Mode]] src b
 (tuareg-font-lock-module-face                (:foreground high-yellow))
 #+end_src
 
-*** &rest
+*** TeX
+Turn some mathematical TeX macros into their correspondent unicode symbols. See [[https://www.gnu.org/software/auctex/manual/auctex/Prettifying.html][this]].
+
 #+begin_src elisp
-(use-package     bnf-mode :commands bnf-mode)
-(use-package     csv-mode :commands csv-mode)
-(use-package haskell-mode :commands haskell-mode)
-(use-package    yaml-mode :commands yaml-mode)
+(use-package tex
+  :elpaca
+  (auctex
+    :files ("*.el" "*.info" "dir" "doc" "etc" "images" "latex" "style")
+    :pre-build
+    (("./autogen.sh")
+     ("./configure")
+     ("make")
+     ("make" "install")))
+  :mode ("\\.tex\\'" . LaTeX-mode)
+  :hook ((LaTeX-mode . prettify-symbols-mode)
+         (LaTeX-mode . tex-fold-mode)))
 
-(use-package web-mode
-  :hook
-  (web-mode . (lambda ()
-                (add-to-list 'electric-pair-pairs '(?\< . ?\>))))
-  :commands web-mode)
+(use-package xenops
+  :after tex
+  :hook (LaTeX-mode . xenops-mode))
+#+end_src
 
-(use-package js
-  :elpaca nil
-  :config (setq js-indent-level 2))
+*** Nushell
+The nushell treesitter parser is not good at all and the LSP barely does anything beyond syntax checking. In addition to all that, nushell updates frequently, which makes maintaining all those packages difficult. Gonna have to wait, I guess.
 
-(use-package julia-mode
-  :commands julia-mode
-  :custom (julia-indent-offset 2)
-  :config (add-to-list 'org-babel-load-languages '(julia . t)))
-
-(use-package nix-mode
-  :mode "\\.nix\\'"
-  :commands nix-mode)
-
+#+begin_src elisp
 (use-package nushell-mode
   :disabled
   :elpaca (nushell-mode
@@ -2268,10 +2153,45 @@ When using python on [[id:2929ef7d-0e55-4c9e-8f08-b120d9997f10][Org Mode]] src b
            :type git
            :host github
            :repo "herbertjones/nushell-ts-mode")
-  :after org
+  :hook (nushell-ts-mode . eglot-ensure)
+  :after (org treesit eglot)
   :config
-  ; (require 'nushell-ts-babel)
-  (add-to-list 'org-babel-load-languages '(nushell-ts . t)))
+  (map-put! 'org-babel-load-languages 'nushell-ts t)
+  (map-put! 'treesit-language-source-alist 'nu '("https://github.com/nushell/tree-sitter-nu"))
+  (add-to-list 'eglot-server-programs
+    (cons '(nushell-ts-mode nushell-mode) '("nu" "--lsp")))
+  :commands nushell-ts-mode)
+#+end_src
+
+#+name: faces-nushell
+#+begin_src elisp :tangle nil
+(nushell-pay-attention-face (:inherit 'font-lock-builtin-face))
+#+end_src
+
+*** &rest
+
+#+begin_src elisp
+(use-package     bnf-mode :commands bnf-mode)
+(use-package     csv-mode :commands csv-mode)
+(use-package haskell-mode :commands haskell-mode)
+(use-package    yaml-mode :commands yaml-mode)
+
+(use-package web-mode
+  :hook (web-mode . (lambda () (add-to-list 'electric-pair-pairs '(?\< . ?\>))))
+  :commands web-mode)
+
+(use-package js
+  :elpaca nil
+  :config (setq js-indent-level 2))
+
+(use-package julia-mode
+  :commands julia-mode
+  :custom (julia-indent-offset 2)
+  :config (add-to-list 'org-babel-load-languages '(julia . t)))
+
+(use-package nix-mode
+  :mode "\\.nix\\'"
+  :commands nix-mode)
 
 (use-package prolog
   :elpaca nil
@@ -2286,6 +2206,17 @@ When using python on [[id:2929ef7d-0e55-4c9e-8f08-b120d9997f10][Org Mode]] src b
   :disabled
   :after rust-mode
   :config (setq rustic-lsp-client nil))
+
+(use-package kotlin-mode
+  :commands kotlin-mode)
+#+end_src
+
+#+name: faces-sieve
+#+begin_src elisp :tangle nil
+(sieve-tagged-arguments (:inherit 'font-lock-operator-face))
+(sieve-test-commands    (:inherit 'font-lock-builtin-face))
+(sieve-action-commands  (:inherit 'font-lock-keyword-face))
+(sieve-control-commands (:inherit 'font-lock-keyword-face))
 #+end_src
 
 ** clipboard
@@ -2304,33 +2235,15 @@ Wether or not popups should create new frames instead of splitting windows. May 
               pop-up-windows t)
 #+end_src
 
-** TODO bell
-Variable src_elisp{`visible-bell'} doesn't seem to have any effect. Maybe my theme does not respond well? Will have to test this with Adwaita. The src_elisp{`ring-bell'} function flashes the mode-line in inverted colors.
-
-This is triggered by events such as trying to src_elisp{`delete-backward-char'} on empty modeline buffer.
-
-#+begin_src elisp
-(setq visible-bell nil
-      ring-bell-function
-      #'(lambda ()
-          (invert-face 'mode-line)
-          (run-with-timer 0.1 nil #'invert-face 'mode-line)))
-#+end_src
-
-** apropos
-#+begin_src elisp
-(setq-default apropos-do-all t)
-#+end_src
-
 ** disable startup message
 Stop Emacs' default startup message from appearing in the src_elisp{`*Messages'} buffer.
 
-#+begin_src elisp
+#+begin_src elisp :tangle nil
 (unless (daemonp)
   (advice-add #'display-startup-echo-area-message :override #'ignore))
 #+end_src
 
-** external programs
+** open in external program
 Open some file types using external programs.
 
 #+begin_src elisp
@@ -2363,7 +2276,8 @@ Open some file types using external programs.
   (minimap-update-delay 0.5))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-minimap
+#+begin_src elisp :tangle nil
 (minimap-semantic-type-face       (:height 2.75 :box (:line-width 1 :color grey15) :background grey0 :inherit ('font-lock-function-name-face 'minimap-font-face)))
 (minimap-semantic-variable-face   (:height 2.75 :box (:line-width 1 :color grey15) :background grey0 :inherit ('font-lock-function-name-face 'minimap-font-face)))
 (minimap-semantic-function-face   (:height 2.75 :box (:line-width 1 :color grey15) :background grey0 :inherit ('font-lock-function-name-face 'minimap-font-face)))
@@ -2378,7 +2292,8 @@ Open some file types using external programs.
 (use-package magit)
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+#+name: faces-magit
+#+begin_src elisp :tangle nil
 (magit-section-highlight         (:extend t :background grey1))
 (magit-section-heading           (:weight 'bold :extend t :foreground higher-yellow))
 (magit-section-secondary-heading (:weight 'bold :extend t))
@@ -2489,23 +2404,40 @@ Open some file types using external programs.
 (magit-diff-file-heading               (:weight 'bold :extend t))
 #+end_src
 
-** vterm
+** dashboard
+After the =elpaca= queue has being emptied, load the dashboard. Whenever creating a new frame, open the dashboard by default.
+
 #+begin_src elisp
-(use-package vterm)
+(use-package dashboard
+  :elpaca t
+  :hook ((elpaca-after-init . dashboard-insert-startupify-lists)
+         (elpaca-after-init . dashboard-initialize))
+  :custom
+  (initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+  (dashboard-startup-banner nil)
+  (dashboard-projects-backend 'project-el)
+  (dashboard-items
+   '((recents  . 5)
+     (projects . 3)
+     (agenda   . 10)))
+  :config
+  (dashboard-setup-startup-hook))
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
-(vterm-color-cyan    (:foreground cyan))
-(vterm-color-green   (:foreground olive))
-(vterm-color-black   (:foreground grey2))
-(vterm-color-blue    (:foreground orange))
-(vterm-color-red     (:foreground red))
-(vterm-color-yellow  (:foreground yellow))
-(vterm-color-white   (:foreground grey11))
-(vterm-color-magenta (:foreground purple))
+#+name: faces-dashboard
+#+begin_src elisp :tangle nil
+(dashboard-items-face  (:foreground grey13))
+(dashboard-main-button (:foreground grey13 :bold t))
+(dashboard-footer-icon-face (:inherit 'dashboard-footer-face))
+(dashboard-footer-face (:inherit 'font-lock-doc-face))
+(dashboard-no-items-face (:inherit 'widget-button))
+(dashboard-heading (:inherit 'font-lock-keyword-face))
+(dashboard-navigator (:inherit 'font-lock-keyword-face))
+(dashboard-banner-logo-title (:inherit 'default))
+(dashboard-text-banner (:inherit 'font-lock-keyword-face))
 #+end_src
 
-** rest
+** &rest
 #+begin_src elisp
 (defun yeet/open-music ()
   (interactive) (find-file "~/doc/table/music.csv"))
@@ -2514,7 +2446,6 @@ Open some file types using external programs.
   (interactive) (find-file "~/config/emacs.org"))
 
 (bind-keys
- ;; a for "access"?
  ("C-c a m" . yeet/open-music)
  ("C-c a c" . yeet/open-config))
 
@@ -2523,379 +2454,377 @@ Open some file types using external programs.
            :type git
            :host github
            :repo "Kungsgeten/hypothesis")
-  :config
-  (setq hypothesis-username "marcofrango"
-        hypothesis-token (shell-command-to-string "secret token hypothesis")))
+  :custom (hypothesis-username "marcofrango")
+          (hypothesis-token (shell-command-to-string "secret token hypothesis")))
 
+(use-package ripgrep
+  :commands ripgrep-regexp
+  :bind ("C-c g"   . ripgrep-regexp))
+
+(use-package gnuplot)
+#+end_src
+
+#+name: faces-gnuplot
+#+begin_src elisp :tangle nil
+(gnuplot-prompt-face (:inherit 'comint-highlight-prompt))
+#+end_src
+
+** provide feature
+#+begin_src elisp
 (provide 'full)
 #+end_src
 
-** dashboard
-#+begin_src elisp
-(use-package dashboard
-  :elpaca t
-  :custom
-  (initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-  (dashboard-startup-banner nil)
-  (dashboard-projects-backend 'project-el)
-  (dashboard-items
-   '((recents  . 5)
-     (projects . 3)))
-  :config
-  (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
-  (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
-  (dashboard-setup-startup-hook))
+* theme
+
+#+begin_src elisp :tangle ~/config/emacs/themes/battery.el :noweb yes
+;;; battery.el --- Warm and vibrant color scheme for Emacs -*- lexical-binding: t; -*-
+;;
+;; Copyright (C) 2022 Guilherme Machado
+;;
+;; Author: Guilherme Machado <https://github.com/goiabae>
+;; Maintainer: Guilherme Machado <goiabae@protonmail.com>
+;; Created: 02 Feb 2022
+;; Version: 0.0.2
+;; Keywords: convenience extensions faces files frames outlines
+;; Homepage: https://github.com/goiabae/battery-theme
+;; Package-Requires: ((autothemer "0.2") (dash))
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; Commentary:
+
+;;  Template for a warm and vibrant color scheme inspired by the famous
+;;  Gruvbox, from Vim.
+
+;;; Code:
+
+(defmacro battery-deftheme (name description is-light)
+  `(autothemer-deftheme
+    ,name
+    ,description
+    ,(append
+      '((((class color)
+          (min-colors #xFFFFFF)))
+
+        (neutral0  "#101010")
+        (neutral1  "#191919")
+        (neutral2  "#262524")
+        (neutral3  "#353231")
+        (neutral4  "#403c3a")
+        (neutral5  "#504845")
+        (neutral6  "#635852")
+        (neutral7  "#7b6c61")
+        (neutral8  "#958172")
+        (neutral9  "#a89984")
+        (neutral10 "#bdae93")
+        (neutral11 "#d2c3a5")
+        (neutral12 "#e7d8b3")
+        (neutral13 "#f2e4ba")
+        (neutral14 "#faedc9")
+        (neutral15 "#fef5d8"))
+
+      (let ((symbols
+             (mapcar
+              (lambda (n)
+                (mapcar
+                 (lambda (i) (intern (concat n (number-to-string i))))
+                 (-iota 16)))
+              (list "grey" "neutral"))))
+        (-zip-with #'list
+                   (car symbols)
+                   (if is-light (reverse (cadr symbols)) (cadr symbols))))
+
+      '((bg grey1)
+        (fg grey13)
+
+        (darker-red      "#67191b")
+        (darker-orange   "#572e1a")
+        (darker-yellow   "#423818")
+        (darker-olive    "#302f16")
+        (darker-green    "#183815")
+        (darker-cyan     "#1a2d1e")
+        (darker-purple   "#462929")
+
+        (dark-red        "#be241e")
+        (dark-orange     "#ac4003")
+        (dark-yellow     "#a57109")
+        (dark-olive      "#746f06")
+        (dark-green      "#24601c")
+        (dark-cyan       "#2b5434")
+        (dark-purple     "#a63445")
+
+        (red             "#e83437")
+        (orange          "#d6580e")
+        (yellow          "#d09420")
+        (olive           "#98952a")
+        (green           "#3f9f32")
+        (cyan            "#689e69")
+        (purple          "#b16262")
+
+        (light-red       "#fc5356")
+        (light-orange    "#fc823c")
+        (light-yellow    "#fac240")
+        (light-olive     "#b5ba25")
+        (light-green     "#5ac04e")
+        (light-cyan      "#8ec07c")
+        (light-purple    "#ed8585")
+
+        (lighter-red     "#fca39c")
+        (lighter-orange  "#fca765")
+        (lighter-yellow  "#edd76d")
+        (lighter-olive   "#dfe26c")
+        (lighter-green   "#a2ea98")
+        (lighter-cyan    "#aed8a0")
+        (lighter-purple  "#f7b4b4"))
+
+      (let ((colors '(red orange yellow olive green cyan purple))
+            (abs-shades '(darker dark light lighter))
+            (rel-shades '(lower low high higher)))
+        (let ((rel-colors
+               (mapcar (lambda (x) (mapcar (lambda (y) (intern (concat (symbol-name x) "-" (symbol-name y)))) colors)) rel-shades))
+              (abs-colors
+               (mapcar (lambda (x) (mapcar (lambda (y) (intern (concat (symbol-name x) "-" (symbol-name y)))) colors)) abs-shades)))
+          (-zip-with #'list
+            (-flatten rel-colors)
+            (-flatten
+              (if is-light (reverse abs-colors) abs-colors))))))
+
+    (
+      <<faces>>
+     )
+    (custom-theme-set-variables
+     (quote ,name)
+     `(ansi-color-names-vector
+       [,red
+        ,olive
+        ,orange
+        ,purple
+        ,yellow
+        ,green
+        ,cyan]))))
+
+(provide 'battery)
+;;; battery.el ends here
 #+end_src
 
-*** TODO add module/package loading buttons
+** faces
 
-* battery postamble
+#+name: faces
+#+begin_src elisp :noweb yes
+;; Basic faces
+(default (:background bg :foreground fg))
+(button (:underline t :weight 'bold :foreground yellow))
+(cursor (:background fg))
+(mode-line (:background neutral10 :foreground neutral2 :box (:line-width 1 :color neutral15 :style 'released-button)))
+(mode-line-active (:inherit 'mode-line))
+(mode-line-inactive (:inherit 'mode-line))
+(fringe (:background bg))
+(hl-line (:background grey0))
+(region (:background grey5)) ;; selection
+(secondary-selection (:background grey6))
+(minibuffer-prompt (:background bg :foreground high-green :bold t))
+(vertical-border (:foreground grey7))
+(internal-border (:background grey7))
+(window-divider (:foreground grey8))
+(link (:foreground high-yellow :underline t))
+(link-visited (:foreground lighter-purple :inherit 'link))
+(shadow (:foreground grey8))
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
+(error (:foreground red :bold t))
+(success (:foreground high-olive :bold t))
+(warning (:foreground high-yellow :bold t))
+
+(alert-low-face (:foreground high-cyan))
+(trailing-whitespace (:background red))
+(escape-glyph (:foreground cyan))
+(header-line (:background grey5 :foreground grey13 :box nil :inherit nil))
+(highlight (:background grey4 :foreground fg))
+(homoglyph (:foreground yellow))
+(match (:foreground grey0 :background cyan))
+
+(bold (:weight 'bold))
+(italic (:slant 'italic))
+(bold-italic (:weight 'bold :slant 'italic))
+(underline (:underline t))
+
+;; Font lock (syntax highlighting)
+(font-lock-builtin-face (:foreground high-cyan))
+(font-lock-constant-face (:foreground high-purple :bold nil))
+(font-lock-comment-face (:foreground grey8))
+(font-lock-function-name-face (:foreground high-yellow :bold nil))
+(font-lock-keyword-face (:foreground high-red))
+(font-lock-string-face (:foreground high-olive))
+(font-lock-variable-name-face (:foreground high-yellow))
+(font-lock-type-face (:foreground high-orange))
+(font-lock-warning-face (:foreground high-red :bold t))
+(font-lock-preprocessor-face (:foreground high-cyan))
+(font-lock-negation-char-face (:foreground high-red))
+(font-lock-comment-delimiter-face (:inherit 'font-lock-comment-face))
+(font-lock-doc-face (:inherit 'font-lock-string-face))
+(font-lock-doc-markup-face (:inherit 'font-lock-constant-face))
+(font-lock-regexp-grouping-backslash (:inherit 'bold))
+(font-lock-regexp-grouping-construct (:inherit 'bold))
+(font-lock-misc-punctuation-face (:inherit 'font-lock-punctuation-face))
+(font-lock-delimiter-face (:inherit 'font-lock-punctuation-face))
+(font-lock-bracket-face (:inherit 'font-lock-punctuation-face))
+(font-lock-punctuation-face nil)
+(font-lock-property-use-face (:inherit 'font-lock-property-name-face))
+(font-lock-property-name-face (:inherit 'font-lock-variable-name-face))
+(font-lock-operator-face (:inherit 'font-lock-builtin-face))
+(font-lock-number-face (:inherit 'font-lock-constant-face))
+(font-lock-escape-face (:inherit 'font-lock-regexp-grouping-backslash))
+(font-lock-regexp-face (:inherit 'font-lock-string-face))
+(font-lock-variable-use-face (:inherit 'font-lock-variable-name-face))
+(font-lock-function-call-face (:inherit 'font-lock-function-name-face))
+
+;; jupyter-repl
+(jupyter-repl-input-prompt (:foreground olive))
+(jupyter-repl-output-prompt (:foreground red))
+
+;; hi-lock
+(hi-yellow (:foreground bg :background lighter-olive))
+(hi-pink (:foreground bg :background lighter-purple))
+(hi-green (:foreground bg :background lighter-green))
+(hi-blue (:foreground bg :background neutral15))
+(hi-salmon (:foreground bg :background lighter-orange))
+(hi-aquamarine (:foreground bg :background lighter-green))
+(hi-black-b (:weight 'bold))
+(hi-blue-b (:weight 'bold :foreground neutral4))
+(hi-green-b (:weight 'bold :foreground light-green))
+(hi-red-b (:weight 'bold :foreground red))
+(hi-black-hb (:height 1.67 :weight 'bold :inherit 'variable-pitch))
+
+;; lsp
+(lsp-face-highlight-textual (:background grey6))
+(lsp-face-highlight-read (:background grey6))
+(lsp-face-highlight-write (:background grey6))
+(lsp-face-semhl-constant (:foreground cyan))
+(lsp-face-semhl-deprecated (:foreground cyan))
+(lsp-face-semhl-enummember (:foreground cyan))
+(lsp-face-semhl-field (:foreground cyan))
+(lsp-face-semhl-field-static (:foreground cyan))
+(lsp-face-semhl-function (:foreground cyan))
+(lsp-face-semhl-method (:foreground cyan))
+(lsp-face-semhl-namespace (:foreground cyan))
+(lsp-face-semhl-preprocessor (:foreground cyan))
+(lsp-face-semhl-static-method (:foreground cyan))
+(lsp-face-semhl-type-class (:foreground cyan))
+(lsp-face-semhl-type-enum (:foreground cyan))
+(lsp-face-semhl-type-primitive (:foreground cyan))
+(lsp-face-semhl-type-template (:foreground cyan))
+(lsp-face-semhl-type-typedef (:foreground cyan))
+(lsp-face-semhl-variable (:foreground cyan))
+(lsp-face-semhl-variable-local (:foreground cyan))
+(lsp-face-semhl-variable-parameter (:foreground cyan))
+(lsp-lens-face (:foreground cyan))
+(lsp-lens-mouse-face (:foreground cyan))
+(lsp-ui-doc-background (:foreground cyan))
+(lsp-ui-doc-header (:foreground cyan))
+(lsp-ui-doc-url (:foreground cyan))
+(lsp-ui-peek-filename (:foreground cyan))
+(lsp-ui-peek-footer (:foreground cyan))
+(lsp-ui-peek-header (:foreground cyan))
+(lsp-ui-peek-highlight (:foreground cyan))
+(lsp-ui-peek-line-number (:foreground cyan))
+(lsp-ui-peek-list (:foreground cyan))
+(lsp-ui-peek-peek (:foreground cyan))
+(lsp-ui-peek-selection (:foreground cyan))
+(lsp-ui-sideline-code-action (:foreground cyan))
+(lsp-ui-sideline-current-symbol (:foreground cyan))
+(lsp-ui-sideline-symbol (:foreground cyan))
+(lsp-ui-sideline-symbol-info (:foreground cyan))
+
+;; flymake
+(flymake-end-of-line-diagnostics-face (:height 0.85 :box (:line-width -1)))
+
+(flymake-error (:underline (:style 'wave :color high-red)))
+(flymake-error-echo (:inherit 'compilation-error))
+(flymake-error-echo-at-eol (:inherit ('flymake-end-of-line-diagnostics-face 'compilation-error)))
+
+(flymake-warning (:underline (:style 'wave :color high-cyan)))
+(flymake-warning-echo (:inherit 'compilation-warning))
+(flymake-warning-echo-at-eol (:inherit ('flymake-end-of-line-diagnostics-face 'compilation-warning)))
+
+(flymake-note (:underline (:style 'wave :color high-olive)))
+(flymake-note-echo (:inherit 'flymake-note))
+(flymake-note-echo-at-eol (:inherit ('flymake-end-of-line-diagnostics-face 'flymake-note)))
+
+;; flyspell
+(flyspell-incorrect (:underline (:style 'wave :color red)))
+
+;; diff
+(diff-header (:extend t :background grey3))
+(diff-hunk-header (:inherit 'diff-header))
+(diff-file-header (:weight 'bold :extend t :background grey4))
+(diff-changed nil)
+(diff-removed (:extend t :background lower-red   :inherit 'diff-changed))
+(diff-added (:extend t :background lower-green :inherit 'diff-changed))
+(diff-refine-changed nil)
+(diff-refine-removed (:background low-red   :inherit 'diff-refine-changed))
+(diff-refine-added (:background low-green :inherit 'diff-refine-changed))
+
+(diff-index (:inherit 'diff-file-header))
+(diff-changed-unspecified (:extend t :background neutral3 :inherit 'diff-changed))
+(diff-indicator-removed (:foreground dark-red :inherit 'diff-removed))
+(diff-indicator-added (:foreground green :inherit 'diff-added))
+(diff-indicator-changed (:foreground light-olive :inherit 'diff-changed))
+(diff-function (:inherit 'diff-header))
+(diff-context (:extend t))
+(diff-nonexistent (:inherit 'diff-file-header))
+(diff-error (:weight 'bold :foreground red :background bg))
+
+;; mini-modeline
+(mini-modeline-mode-line (:background low-olive :height 0.14 :box nil))
+
+;; isearch
+(isearch (:foreground grey13 :background lower-purple))
+(isearch-fail (:foreground grey13 :background lower-red))
+(isearch-group-1 (:foreground high-red :background low-purple))
+(isearch-group-2 (:foreground high-red :background low-purple))
+(lazy-highlight (:background grey4))
+
+(query-replace (:inherit 'isearch))
+
+(debugger-running (:weight 'bold :foreground high-green))
+(debugger-not-running (:inherit 'font-lock-warning-face))
+
+;; ansi-color
+(ansi-color-black (:foreground bg :background bg))
+(ansi-color-red (:foreground red    :background red))
+(ansi-color-green (:foreground olive  :background olive))
+(ansi-color-yellow (:foreground yellow :background yellow))
+(ansi-color-blue (:foreground orange :background orange))
+(ansi-color-magenta (:foreground purple :background purple))
+(ansi-color-cyan (:foreground cyan   :background cyan))
+(ansi-color-white (:foreground neutral15 :background neutral15))
+
+(ansi-color-bright-black (:foreground grey10 :background neutral5))
+(ansi-color-bright-red (:foreground light-red    :background light-red))
+(ansi-color-bright-green (:foreground light-olive  :background light-olive))
+(ansi-color-bright-yellow (:foreground light-yellow :background light-yellow))
+(ansi-color-bright-blue (:foreground light-orange :background light-orange))
+(ansi-color-bright-magenta (:foreground light-purple :background light-purple))
+(ansi-color-bright-cyan (:foreground light-cyan   :background light-cyan))
+(ansi-color-bright-white (:foreground neutral15 :background neutral15))
+
+(ansi-color-bold (:inherit ('quote 'bold)))
+(ansi-color-faint (:weight 'light))
+(ansi-color-italic (:inherit ('quote 'italic)))
+(ansi-color-underline (:inherit ('quote 'underline)))
+(ansi-color-slow-blink (:box (:line-width -1)))
+(ansi-color-fast-blink (:box (:line-width -1)))
+(ansi-color-inverse (:inverse-video t))
+
 ;; message
-(message-header-cc (:weight 'bold :foreground lighter-green))
-(message-header-newsgroups (:weight 'bold :slant 'italic :foreground lighter-olive))
-(message-header-xheader (:foreground neutral9))
-(message-separator (:foreground neutral15))
-(message-cited-text-1 (:foreground lighter-purple))
-(message-cited-text-2 (:foreground green))
-(message-cited-text-3 (:foreground yellow))
-(message-cited-text-4 (:foreground orange))
-(message-mml (:foreground lighter-green))
-(message-signature-separator (:weight 'bold))
+(message-header-other (:foreground orange))
+(message-header-to (:weight 'bold :foreground fg))
+(message-header-subject (:foreground fg))
+(message-header-name (:foreground light-yellow))
 
-;; vc
-(vc-state-base nil)
-(vc-up-to-date-state (:inherit 'vc-state-base))
-(vc-needs-update-state (:inherit 'vc-state-base))
-(vc-locked-state (:inherit 'vc-state-base))
-(vc-locally-added-state (:inherit 'vc-state-base))
-(vc-conflict-state (:inherit 'vc-state-base))
-(vc-removed-state (:inherit 'vc-state-base))
-(vc-missing-state (:inherit 'vc-state-base))
-(vc-edited-state (:inherit 'vc-state-base))
-
-;; eww
-(eww-form-submit (:box (:line-width 2 :style 'released-button) :foreground bg :background neutral8))
-(eww-form-file (:box (:line-width 2 :style 'released-button) :foreground bg :background neutral8))
-(eww-form-checkbox (:box (:line-width 2 :style 'released-button) :foreground bg :background neutral11))
-(eww-form-select (:box (:line-width 2 :style 'released-button) :foreground bg :background neutral11))
-(eww-form-text (:box (:line-width 1) :foreground neutral15 :background grey10))
-(eww-form-textarea (:box (:line-width 1) :foreground bg :background neutral11))
-(eww-invalid-certificate (:weight 'bold :foreground red))
-(eww-valid-certificate (:weight 'bold :foreground green))
-
-;; rst
-(rst-block (:inherit 'font-lock-keyword-face))
-(rst-external (:inherit 'font-lock-type-face))
-(rst-definition (:inherit 'font-lock-function-name-face))
-(rst-directive (:inherit 'font-lock-builtin-face))
-(rst-comment (:inherit 'font-lock-comment-face))
-(rst-emphasis1 (:inherit 'italic))
-(rst-emphasis2 (:inherit 'bold))
-(rst-literal (:inherit 'font-lock-string-face))
-(rst-reference (:inherit 'font-lock-variable-name-face))
-(rst-transition (:inherit 'font-lock-keyword-face))
-(rst-adornment (:inherit 'font-lock-keyword-face))
-(rst-level-1 (:background neutral2))
-(rst-level-2 (:background neutral3))
-(rst-level-3 (:background grey10))
-(rst-level-4 (:background grey9))
-(rst-level-5 (:background neutral7))
-(rst-level-6 (:background neutral8))
-
-;; transient
-(transient-purple (:foreground dark-purple :inherit 'transient-key))
-(transient-teal (:foreground neutral6 :inherit 'transient-key))
-(transient-pink (:foreground light-purple :inherit 'transient-key))
-(transient-amaranth (:foreground red :inherit 'transient-key))
-(transient-blue (:foreground neutral4 :inherit 'transient-key))
-(transient-red (:foreground red :inherit 'transient-key))
-(transient-separator (:extend t :background neutral11))
-(transient-higher-level (:underline t))
-(transient-disabled-suffix (:weight 'bold :foreground neutral0 :background red))
-(transient-enabled-suffix (:weight 'bold :foreground neutral0 :background lighter-green))
-(transient-inapt-suffix (:slant 'italic :inherit 'shadow))
-(transient-mismatched-key (:underline t))
-(transient-nonstandard-key (:underline t))
-(transient-unreachable-key (:inherit ('transient-key 'shadow)))
-(transient-active-infix (:inherit 'secondary-selection))
-(transient-unreachable (:inherit 'shadow))
-(transient-inactive-value (:inherit 'shadow))
-(transient-inactive-argument (:inherit 'shadow))
-(transient-value (:inherit 'font-lock-string-face))
-(transient-argument (:inherit 'font-lock-warning-face))
-(transient-key (:inherit 'font-lock-builtin-face))
-(transient-heading (:inherit 'font-lock-keyword-face))
-
-;; gnus
-(gnus-group-news-1-empty (:foreground lighter-cyan))
-(gnus-group-news-1 (:weight 'bold :inherit 'gnus-group-news-1-empty))
-(gnus-group-news-2-empty (:foreground lighter-cyan))
-(gnus-group-news-2 (:weight 'bold :inherit 'gnus-group-news-2-empty))
-(gnus-group-news-3-empty nil)
-(gnus-group-news-3 (:weight 'bold :inherit 'gnus-group-news-3-empty))
-(gnus-group-news-4-empty nil)
-(gnus-group-news-4 (:weight 'bold :inherit 'gnus-group-news-4-empty))
-(gnus-group-news-5-empty nil)
-(gnus-group-news-5 (:weight 'bold :inherit 'gnus-group-news-5-empty))
-(gnus-group-news-6-empty nil)
-(gnus-group-news-6 (:weight 'bold :inherit 'gnus-group-news-6-empty))
-(gnus-group-news-low-empty (:foreground lighter-cyan))
-(gnus-group-news-low (:weight 'bold :inherit 'gnus-group-news-low-empty))
-(gnus-group-mail-1-empty (:foreground lighter-cyan))
-(gnus-group-mail-1 (:weight 'bold :inherit 'gnus-group-mail-1-empty))
-(gnus-group-mail-2-empty (:foreground lighter-green))
-(gnus-group-mail-2 (:weight 'bold :inherit 'gnus-group-mail-2-empty))
-(gnus-group-mail-3-empty (:foreground lighter-green))
-(gnus-group-mail-3 (:weight 'bold :inherit 'gnus-group-mail-3-empty))
-(gnus-group-mail-low-empty (:foreground lighter-green))
-(gnus-group-mail-low (:weight 'bold :inherit 'gnus-group-mail-low-empty))
-(gnus-summary-selected (:underline t :extend t))
-(gnus-summary-cancelled (:extend t :foreground lighter-olive :background bg))
-(gnus-summary-normal-ticked (:extend t :foreground lighter-purple))
-(gnus-summary-high-ticked (:weight 'bold :inherit 'gnus-summary-normal-ticked))
-(gnus-summary-low-ticked (:slant 'italic :inherit 'gnus-summary-normal-ticked))
-(gnus-summary-normal-ancient (:extend t :foreground neutral11))
-(gnus-summary-high-ancient (:weight 'bold :inherit 'gnus-summary-normal-ancient))
-(gnus-summary-low-ancient (:slant 'italic :inherit 'gnus-summary-normal-ancient))
-(gnus-summary-normal-undownloaded (:weight 'normal :extend t :foreground cyan))
-(gnus-summary-high-undownloaded (:weight 'bold :inherit 'gnus-summary-normal-undownloaded))
-(gnus-summary-low-undownloaded (:slant 'italic :inherit 'gnus-summary-normal-undownloaded))
-(gnus-summary-normal-unread (:extend t))
-(gnus-summary-high-unread (:weight 'bold :inherit 'gnus-summary-normal-unread))
-(gnus-summary-low-unread (:slant 'italic :inherit 'gnus-summary-normal-unread))
-(gnus-summary-normal-read (:extend t :foreground lighter-green))
-(gnus-summary-high-read (:weight 'bold :inherit 'gnus-summary-normal-read))
-(gnus-summary-low-read (:slant 'italic :inherit 'gnus-summary-normal-read))
-(gnus-splash (:foreground neutral11))
-(gnus-emphasis-bold (:weight 'bold))
-(gnus-emphasis-italic (:slant 'italic))
-(gnus-emphasis-underline (:underline t))
-(gnus-emphasis-underline-bold (:weight 'bold :underline t))
-(gnus-emphasis-underline-italic (:slant 'italic :underline t))
-(gnus-emphasis-bold-italic (:weight 'bold :slant 'italic))
-(gnus-emphasis-underline-bold-italic (:weight 'bold :slant 'italic :underline t))
-(gnus-emphasis-strikethru (:strike-through t))
-(gnus-emphasis-highlight-words (:foreground lighter-olive :background bg))
-(gnus-button (:weight 'bold))
-(gnus-signature (:slant 'italic))
-(gnus-header-from (:foreground lighter-green))
-(gnus-header-subject (:foreground lighter-green))
-(gnus-header-newsgroups (:slant 'italic :foreground lighter-olive))
-(gnus-header-name (:foreground lighter-green))
-(gnus-header-content (:slant 'italic :foreground lighter-green))
-
-(line-number-major-tick (:weight 'bold :background neutral11))
-(line-number-minor-tick (:weight 'bold :background neutral8))
-
-(fill-column-indicator (:weight 'normal :slant 'normal :underline nil :overline nil :strike-through nil :box nil :inverse-video nil :stipple nil :inherit 'shadow))
-
-(nobreak-space (:underline t :inherit 'escape-glyph))
-(nobreak-hyphen (:foreground lighter-cyan))
-
-(mode-line-highlight (:box (:line-width 2 :color neutral6 :style 'released-button)))
-(mode-line-emphasis (:weight 'bold))
-(mode-line-buffer-id (:weight 'bold))
-
-(csv-separator-face (:foreground high-cyan))
-
-;; tty-menu
-(tty-menu-enabled-face (:weight 'bold :foreground lighter-olive :background neutral4))
-(tty-menu-disabled-face (:foreground neutral11 :background neutral4))
-(tty-menu-selected-face (:background red))
-
-;; show-paren
-(show-paren-match-expression (:inherit 'show-paren-match))
-(show-paren-mismatch (:foreground bg :background high-purple))
-(show-paren-match (:background low-cyan))
-
-;; completions
-(completions-group-title (:slant 'italic :inherit 'shadow))
-(completions-group-separator
- (:strike-through t :inherit 'shadow))
-(completions-annotations (:inherit ('italic 'shadow)))
-(completions-first-difference (:inherit 'bold))
-(completions-common-part (:foreground grey15))
-
-;; tab-bar
-(tab-bar-tab (:box (:line-width 1 :style 'released-button) :inherit 'tab-bar))
-(tab-bar-tab-inactive (:background neutral11 :inherit 'tab-bar-tab))
-(tab-bar-tab-group-current (:weight 'bold :box nil :inherit 'tab-bar-tab))
-(tab-bar-tab-group-inactive (:inherit ('shadow 'tab-bar-tab-inactive)))
-(tab-bar-tab-ungrouped (:inherit ('shadow 'tab-bar-tab-inactive)))
-(tab-bar (:foreground bg :background neutral15 :inherit 'variable-pitch))
-
-;; calendar
-(calendar-today (:underline t))
-(calendar-weekday-header (:inherit 'font-lock-constant-face))
-(calendar-weekend-header (:inherit 'font-lock-comment-face))
-(calendar-month-header (:inherit 'font-lock-function-name-face))
-(holiday (:background dark-orange))
-
-;; yas
-(yas-field-highlight-face (:inherit 'region))
-(yas--field-debug-face nil)
-
-;; hl-todo
-(hl-todo (:weight 'bold :foreground light-purple))
-
-;; xref
-(xref-file-header (:inherit 'compilation-info))
-(xref-line-number (:inherit 'compilation-line-number))
-(xref-match (:inherit 'match))
-
-;; outline
-(outline-1 (:inherit 'font-lock-function-name-face))
-(outline-2 (:inherit 'font-lock-variable-name-face))
-(outline-3 (:inherit 'font-lock-keyword-face))
-(outline-4 (:inherit 'font-lock-comment-face))
-(outline-5 (:inherit 'font-lock-type-face))
-(outline-6 (:inherit 'font-lock-constant-face))
-(outline-7 (:inherit 'font-lock-builtin-face))
-(outline-8 (:inherit 'font-lock-string-face))
-
-;; widget
-(widget-documentation (:foreground light-green))
-(widget-button (:weight 'bold))
-(widget-field (:extend t :background grey3))
-(widget-single-line-field (:background grey9))
-(widget-inactive (:inherit 'shadow))
-(widget-button-pressed (:foreground red))
-
-;; epa
-(epa-validity-high (:weight 'bold :foreground lighter-cyan))
-(epa-validity-medium (:slant 'italic :foreground lighter-cyan))
-(epa-validity-low (:slant 'italic))
-(epa-validity-disabled (:slant 'italic :inverse-video t))
-(epa-string (:foreground neutral15))
-(epa-mark (:weight 'bold :foreground yellow))
-(epa-field-name (:weight 'bold :foreground lighter-cyan))
-(epa-field-body (:slant 'italic :foreground lighter-cyan))
-
-;; shr
-(shr-strike-through (:strike-through t))
-(shr-link (:inherit 'link))
-(shr-selected-link (:background red :inherit 'shr-link))
-(shr-abbreviation (:underline (:style 'wave) :inherit 'underline))
-(shr-h1 (:height 1.3 :weight 'bold))
-(shr-h2 (:weight 'bold))
-(shr-h3 (:slant 'italic))
-(shr-h4 nil)
-(shr-h5 nil)
-(shr-h6 nil)
-
-;; speedbar
-(speedbar-button-face (:foreground light-green))
-(speedbar-file-face (:foreground lighter-cyan))
-(speedbar-directory-face (:foreground neutral15))
-(speedbar-tag-face (:foreground lighter-olive))
-(speedbar-selected-face (:underline t :foreground red))
-(speedbar-highlight-face (:background cyan))
-(speedbar-separator-face (:overline neutral10 :foreground neutral15 :background neutral4))
-
-;; shortdoc
-(shortdoc-heading (:height 1.3 :weight 'bold :inherit 'variable-pitch))
-(shortdoc-section (:inherit 'variable-pitch))
-
-;; window-divider
-(window-divider-first-pixel (:foreground neutral11))
-(window-divider-last-pixel (:foreground grey9))
-
-;; fonts
-(fixed-pitch (:family "SauceCodePro Nerd Font Mono" :height 100 :inherit 'default))
-(fixed-pitch-serif (:family "Monospace Serif"))
-(variable-pitch (:family "NotoSans Display Nerd Font" :height 105))
-
-;; nushell
-(nushell-pay-attention-face (:inherit 'font-lock-builtin-face))
-
-;; focus
-(focus-unfocused (:inherit 'shadow))
-(focus-focused nil)
-
-;; term
-(term (:inherit 'default))
-(term-bold       (:inherit 'ansi-color-bold))
-(term-underline  (:inherit 'ansi-color-underline))
-(term-fast-blink (:inherit 'ansi-color-fast-blink))
-(term-slow-blink (:inherit 'ansi-color-slow-blink))
-(term-italic     (:inherit 'ansi-color-italic))
-(term-faint      (:inherit 'ansi-color-faint))
-
-(term-color-black   (:inherit 'ansi-color-black))
-(term-color-red     (:inherit 'ansi-color-red))
-(term-color-green   (:inherit 'ansi-color-green))
-(term-color-yellow  (:inherit 'ansi-color-yellow))
-(term-color-blue    (:inherit 'ansi-color-blue))
-(term-color-magenta (:inherit 'ansi-color-magenta))
-(term-color-cyan    (:inherit 'ansi-color-cyan))
-(term-color-white   (:inherit 'ansi-color-white))
-
-(term-color-bright-black   (:inherit 'ansi-color-bright-black))
-(term-color-bright-red     (:inherit 'ansi-color-bright-red))
-(term-color-bright-green   (:inherit 'ansi-color-bright-green))
-(term-color-bright-yellow  (:inherit 'ansi-color-bright-yellow))
-(term-color-bright-blue    (:inherit 'ansi-color-bright-blue))
-(term-color-bright-magenta (:inherit 'ansi-color-bright-magenta))
-(term-color-bright-cyan    (:inherit 'ansi-color-bright-cyan))
-(term-color-bright-white   (:inherit 'ansi-color-bright-white))
-
-;; apropos
-(apropos-symbol (:inherit 'bold))
-(apropos-keybinding (:inherit 'underline))
-(apropos-property (:inherit 'font-lock-builtin-face))
-(apropos-button (:inherit ('font-lock-variable-name-face 'button)))
-(apropos-function-button (:inherit ('font-lock-function-name-face 'button)))
-(apropos-variable-button (:inherit ('font-lock-variable-name-face 'button)))
-(apropos-user-option-button (:inherit ('font-lock-variable-name-face 'button)))
-(apropos-misc-button (:inherit ('font-lock-constant-face 'button)))
-
-;; info
-(info-node (:weight 'bold :slant 'italic :foreground neutral15))
-(info-title-1 (:height 1.2 :inherit 'info-title-2))
-(info-title-2 (:height 1.2 :inherit 'info-title-3))
-(info-title-3 (:height 1.2 :inherit 'info-title-4))
-(info-title-4 (:weight 'bold :inherit 'variable-pitch))
-(info-menu-header (:weight 'bold :inherit 'variable-pitch))
-(info-menu-star (:foreground red))
-(info-xref (:inherit 'link))
-(info-xref-visited (:inherit ('link-visited 'info-xref)))
-(info-header-xref (:inherit 'info-xref))
-(info-header-node (:inherit 'info-node))
-(info-index-match (:inherit 'match))
-
-;; ess
-(ess-watch-current-block-face (:inherit 'highlight))
-(ess-bp-fringe-recover-face (:foreground dark-purple))
-(ess-bp-fringe-browser-face (:foreground neutral3))
-(ess-bp-fringe-logger-face (:foreground darker-red))
-(ess-bp-fringe-inactive-face (:foreground grey9))
-(ess-debug-blink-same-ref-face (:background neutral7))
-(ess-debug-blink-ref-not-found-face (:background dark-purple))
-(ess-debug-current-debug-line-face (:inherit 'highlight))
-(ess-tracebug-last-input-fringe-face (:overline neutral3 :foreground neutral3))
-(ess-r-control-flow-keyword-face (:inherit 'ess-keyword-face))
-(ess-keyword-face (:inherit 'font-lock-keyword-face))
-(ess-matrix-face (:inherit 'font-lock-constant-face))
-(ess-constant-face (:inherit 'font-lock-type-face))
-(ess-modifiers-face (:inherit 'font-lock-constant-face))
-(ess-paren-face (:inherit 'font-lock-constant-face))
-(ess-assignment-face (:inherit 'font-lock-constant-face))
-(ess-%op%-face (:inherit 'ess-operator-face))
-(ess-operator-face (:inherit 'font-lock-constant-face))
-(ess-numbers-face (:slant 'normal :inherit 'font-lock-type-face))
-(ess-function-call-face (:slant 'normal :inherit 'font-lock-function-name-face))
-
-;; help
-(help-key-binding (:foreground high-orange :background grey4 :box (:line-width 1 :color grey6)))
-(help-argument-name (:inherit 'italic))
-(help-for-help-header (:height 1.26))
-
-;; simple.el
-(next-error (:inherit 'region))
-(next-error-message (:extend t :inherit 'highlight))
-(separator-line (:height 0.1 :background neutral5))
+;; sh
+(sh-heredoc (:foreground high-olive))
+(sh-quoted-exec (:foreground high-purple))
+(sh-escaped-newline (:inherit 'font-lock-string-face))
 
 ;; faces.el
 (mouse nil)
@@ -3049,38 +2978,396 @@ Open some file types using external programs.
 (vc-git-log-edit-summary-max-warning (:inherit 'error))
 (vc-git-log-edit-summary-target-warning (:inherit 'warning))
 (which-func (:inherit 'font-lock-function-name-face))
+
+;; focus
+(focus-unfocused (:inherit 'shadow))
+(focus-focused nil)
+
+;; term
+(term (:inherit 'default))
+(term-bold       (:inherit 'ansi-color-bold))
+(term-underline  (:inherit 'ansi-color-underline))
+(term-fast-blink (:inherit 'ansi-color-fast-blink))
+(term-slow-blink (:inherit 'ansi-color-slow-blink))
+(term-italic     (:inherit 'ansi-color-italic))
+(term-faint      (:inherit 'ansi-color-faint))
+
+(term-color-black   (:inherit 'ansi-color-black))
+(term-color-red     (:inherit 'ansi-color-red))
+(term-color-green   (:inherit 'ansi-color-green))
+(term-color-yellow  (:inherit 'ansi-color-yellow))
+(term-color-blue    (:inherit 'ansi-color-blue))
+(term-color-magenta (:inherit 'ansi-color-magenta))
+(term-color-cyan    (:inherit 'ansi-color-cyan))
+(term-color-white   (:inherit 'ansi-color-white))
+
+(term-color-bright-black   (:inherit 'ansi-color-bright-black))
+(term-color-bright-red     (:inherit 'ansi-color-bright-red))
+(term-color-bright-green   (:inherit 'ansi-color-bright-green))
+(term-color-bright-yellow  (:inherit 'ansi-color-bright-yellow))
+(term-color-bright-blue    (:inherit 'ansi-color-bright-blue))
+(term-color-bright-magenta (:inherit 'ansi-color-bright-magenta))
+(term-color-bright-cyan    (:inherit 'ansi-color-bright-cyan))
+(term-color-bright-white   (:inherit 'ansi-color-bright-white))
+
+;; apropos
+(apropos-symbol (:inherit 'bold))
+(apropos-keybinding (:inherit 'underline))
+(apropos-property (:inherit 'font-lock-builtin-face))
+(apropos-button (:inherit ('font-lock-variable-name-face 'button)))
+(apropos-function-button (:inherit ('font-lock-function-name-face 'button)))
+(apropos-variable-button (:inherit ('font-lock-variable-name-face 'button)))
+(apropos-user-option-button (:inherit ('font-lock-variable-name-face 'button)))
+(apropos-misc-button (:inherit ('font-lock-constant-face 'button)))
+
+;; info
+(info-node (:weight 'bold :slant 'italic :foreground neutral15))
+(info-title-1 (:height 1.2 :inherit 'info-title-2))
+(info-title-2 (:height 1.2 :inherit 'info-title-3))
+(info-title-3 (:height 1.2 :inherit 'info-title-4))
+(info-title-4 (:weight 'bold :inherit 'variable-pitch))
+(info-menu-header (:weight 'bold :inherit 'variable-pitch))
+(info-menu-star (:foreground red))
+(info-xref (:inherit 'link))
+(info-xref-visited (:inherit ('link-visited 'info-xref)))
+(info-header-xref (:inherit 'info-xref))
+(info-header-node (:inherit 'info-node))
+(info-index-match (:inherit 'match))
+
+;; ess
+(ess-watch-current-block-face (:inherit 'highlight))
+(ess-bp-fringe-recover-face (:foreground dark-purple))
+(ess-bp-fringe-browser-face (:foreground neutral3))
+(ess-bp-fringe-logger-face (:foreground darker-red))
+(ess-bp-fringe-inactive-face (:foreground grey9))
+(ess-debug-blink-same-ref-face (:background neutral7))
+(ess-debug-blink-ref-not-found-face (:background dark-purple))
+(ess-debug-current-debug-line-face (:inherit 'highlight))
+(ess-tracebug-last-input-fringe-face (:overline neutral3 :foreground neutral3))
+(ess-r-control-flow-keyword-face (:inherit 'ess-keyword-face))
+(ess-keyword-face (:inherit 'font-lock-keyword-face))
+(ess-matrix-face (:inherit 'font-lock-constant-face))
+(ess-constant-face (:inherit 'font-lock-type-face))
+(ess-modifiers-face (:inherit 'font-lock-constant-face))
+(ess-paren-face (:inherit 'font-lock-constant-face))
+(ess-assignment-face (:inherit 'font-lock-constant-face))
+(ess-%op%-face (:inherit 'ess-operator-face))
+(ess-operator-face (:inherit 'font-lock-constant-face))
+(ess-numbers-face (:slant 'normal :inherit 'font-lock-type-face))
+(ess-function-call-face (:slant 'normal :inherit 'font-lock-function-name-face))
+
+;; help
+(help-key-binding (:foreground high-orange :background grey4 :box (:line-width 1 :color grey6)))
+(help-argument-name (:inherit 'italic))
+(help-for-help-header (:height 1.26))
+
+;; simple.el
+(next-error (:inherit 'region))
+(next-error-message (:extend t :inherit 'highlight))
+(separator-line (:height 0.1 :background neutral5))
+
+;; gnus
+(gnus-group-news-1-empty (:foreground lighter-cyan))
+(gnus-group-news-1 (:weight 'bold :inherit 'gnus-group-news-1-empty))
+(gnus-group-news-2-empty (:foreground lighter-cyan))
+(gnus-group-news-2 (:weight 'bold :inherit 'gnus-group-news-2-empty))
+(gnus-group-news-3-empty nil)
+(gnus-group-news-3 (:weight 'bold :inherit 'gnus-group-news-3-empty))
+(gnus-group-news-4-empty nil)
+(gnus-group-news-4 (:weight 'bold :inherit 'gnus-group-news-4-empty))
+(gnus-group-news-5-empty nil)
+(gnus-group-news-5 (:weight 'bold :inherit 'gnus-group-news-5-empty))
+(gnus-group-news-6-empty nil)
+(gnus-group-news-6 (:weight 'bold :inherit 'gnus-group-news-6-empty))
+(gnus-group-news-low-empty (:foreground lighter-cyan))
+(gnus-group-news-low (:weight 'bold :inherit 'gnus-group-news-low-empty))
+(gnus-group-mail-1-empty (:foreground lighter-cyan))
+(gnus-group-mail-1 (:weight 'bold :inherit 'gnus-group-mail-1-empty))
+(gnus-group-mail-2-empty (:foreground lighter-green))
+(gnus-group-mail-2 (:weight 'bold :inherit 'gnus-group-mail-2-empty))
+(gnus-group-mail-3-empty (:foreground lighter-green))
+(gnus-group-mail-3 (:weight 'bold :inherit 'gnus-group-mail-3-empty))
+(gnus-group-mail-low-empty (:foreground lighter-green))
+(gnus-group-mail-low (:weight 'bold :inherit 'gnus-group-mail-low-empty))
+(gnus-summary-selected (:underline t :extend t))
+(gnus-summary-cancelled (:extend t :foreground lighter-olive :background bg))
+(gnus-summary-normal-ticked (:extend t :foreground lighter-purple))
+(gnus-summary-high-ticked (:weight 'bold :inherit 'gnus-summary-normal-ticked))
+(gnus-summary-low-ticked (:slant 'italic :inherit 'gnus-summary-normal-ticked))
+(gnus-summary-normal-ancient (:extend t :foreground neutral11))
+(gnus-summary-high-ancient (:weight 'bold :inherit 'gnus-summary-normal-ancient))
+(gnus-summary-low-ancient (:slant 'italic :inherit 'gnus-summary-normal-ancient))
+(gnus-summary-normal-undownloaded (:weight 'normal :extend t :foreground cyan))
+(gnus-summary-high-undownloaded (:weight 'bold :inherit 'gnus-summary-normal-undownloaded))
+(gnus-summary-low-undownloaded (:slant 'italic :inherit 'gnus-summary-normal-undownloaded))
+(gnus-summary-normal-unread (:extend t))
+(gnus-summary-high-unread (:weight 'bold :inherit 'gnus-summary-normal-unread))
+(gnus-summary-low-unread (:slant 'italic :inherit 'gnus-summary-normal-unread))
+(gnus-summary-normal-read (:extend t :foreground lighter-green))
+(gnus-summary-high-read (:weight 'bold :inherit 'gnus-summary-normal-read))
+(gnus-summary-low-read (:slant 'italic :inherit 'gnus-summary-normal-read))
+(gnus-splash (:foreground neutral11))
+(gnus-emphasis-bold (:weight 'bold))
+(gnus-emphasis-italic (:slant 'italic))
+(gnus-emphasis-underline (:underline t))
+(gnus-emphasis-underline-bold (:weight 'bold :underline t))
+(gnus-emphasis-underline-italic (:slant 'italic :underline t))
+(gnus-emphasis-bold-italic (:weight 'bold :slant 'italic))
+(gnus-emphasis-underline-bold-italic (:weight 'bold :slant 'italic :underline t))
+(gnus-emphasis-strikethru (:strike-through t))
+(gnus-emphasis-highlight-words (:foreground lighter-olive :background bg))
+(gnus-button (:weight 'bold))
+(gnus-signature (:slant 'italic))
+(gnus-header-from (:foreground lighter-green))
+(gnus-header-subject (:foreground lighter-green))
+(gnus-header-newsgroups (:slant 'italic :foreground lighter-olive))
+(gnus-header-name (:foreground lighter-green))
+(gnus-header-content (:slant 'italic :foreground lighter-green))
+
+(line-number-major-tick (:weight 'bold :background neutral11))
+(line-number-minor-tick (:weight 'bold :background neutral8))
+
+(fill-column-indicator (:weight 'normal :slant 'normal :underline nil :overline nil :strike-through nil :box nil :inverse-video nil :stipple nil :inherit 'shadow))
+
+(nobreak-space (:underline t :inherit 'escape-glyph))
+(nobreak-hyphen (:foreground lighter-cyan))
+
+(mode-line-highlight (:box (:line-width 2 :color neutral6 :style 'released-button)))
+(mode-line-emphasis (:weight 'bold))
+(mode-line-buffer-id (:weight 'bold))
+
+(csv-separator-face (:foreground high-cyan))
+
+;; tty-menu
+(tty-menu-enabled-face (:weight 'bold :foreground lighter-olive :background neutral4))
+(tty-menu-disabled-face (:foreground neutral11 :background neutral4))
+(tty-menu-selected-face (:background red))
+
+;; show-paren
+(show-paren-match-expression (:inherit 'show-paren-match))
+(show-paren-mismatch (:foreground bg :background high-purple))
+(show-paren-match (:background low-cyan))
+
+;; completions
+(completions-group-title (:slant 'italic :inherit 'shadow))
+(completions-group-separator
+ (:strike-through t :inherit 'shadow))
+(completions-annotations (:inherit ('italic 'shadow)))
+(completions-first-difference (:inherit 'bold))
+(completions-common-part (:foreground grey15))
+
+;; tab-bar
+(tab-bar-tab (:box (:line-width 1 :style 'released-button) :inherit 'tab-bar))
+(tab-bar-tab-inactive (:background neutral11 :inherit 'tab-bar-tab))
+(tab-bar-tab-group-current (:weight 'bold :box nil :inherit 'tab-bar-tab))
+(tab-bar-tab-group-inactive (:inherit ('shadow 'tab-bar-tab-inactive)))
+(tab-bar-tab-ungrouped (:inherit ('shadow 'tab-bar-tab-inactive)))
+(tab-bar (:foreground bg :background neutral15 :inherit 'variable-pitch))
+
+;; calendar
+(calendar-today (:underline t))
+(calendar-weekday-header (:inherit 'font-lock-constant-face))
+(calendar-weekend-header (:inherit 'font-lock-comment-face))
+(calendar-month-header (:inherit 'font-lock-function-name-face))
+(holiday (:background dark-orange))
+
+;; hl-todo
+(hl-todo (:weight 'bold :foreground light-purple))
+
+;; xref
+(xref-file-header (:inherit 'compilation-info))
+(xref-line-number (:inherit 'compilation-line-number))
+(xref-match (:inherit 'match))
+
+;; outline
+(outline-1 (:inherit 'font-lock-function-name-face))
+(outline-2 (:inherit 'font-lock-variable-name-face))
+(outline-3 (:inherit 'font-lock-keyword-face))
+(outline-4 (:inherit 'font-lock-comment-face))
+(outline-5 (:inherit 'font-lock-type-face))
+(outline-6 (:inherit 'font-lock-constant-face))
+(outline-7 (:inherit 'font-lock-builtin-face))
+(outline-8 (:inherit 'font-lock-string-face))
+
+;; widget
+(widget-documentation (:foreground light-green))
+(widget-button (:weight 'bold))
+(widget-field (:extend t :background grey3))
+(widget-single-line-field (:background grey9))
+(widget-inactive (:inherit 'shadow))
+(widget-button-pressed (:foreground red))
+
+;; epa
+(epa-validity-high (:weight 'bold :foreground lighter-cyan))
+(epa-validity-medium (:slant 'italic :foreground lighter-cyan))
+(epa-validity-low (:slant 'italic))
+(epa-validity-disabled (:slant 'italic :inverse-video t))
+(epa-string (:foreground neutral15))
+(epa-mark (:weight 'bold :foreground yellow))
+(epa-field-name (:weight 'bold :foreground lighter-cyan))
+(epa-field-body (:slant 'italic :foreground lighter-cyan))
+
+;; shr
+(shr-strike-through (:strike-through t))
+(shr-link (:inherit 'link))
+(shr-selected-link (:background red :inherit 'shr-link))
+(shr-abbreviation (:underline (:style 'wave) :inherit 'underline))
+(shr-h1 (:height 1.3 :weight 'bold))
+(shr-h2 (:weight 'bold))
+(shr-h3 (:slant 'italic))
+(shr-h4 nil)
+(shr-h5 nil)
+(shr-h6 nil)
+
+;; speedbar
+(speedbar-button-face (:foreground light-green))
+(speedbar-file-face (:foreground lighter-cyan))
+(speedbar-directory-face (:foreground neutral15))
+(speedbar-tag-face (:foreground lighter-olive))
+(speedbar-selected-face (:underline t :foreground red))
+(speedbar-highlight-face (:background cyan))
+(speedbar-separator-face (:overline neutral10 :foreground neutral15 :background neutral4))
+
+;; shortdoc
+(shortdoc-heading (:height 1.3 :weight 'bold :inherit 'variable-pitch))
+(shortdoc-section (:inherit 'variable-pitch))
+
+;; window-divider
+(window-divider-first-pixel (:foreground neutral11))
+(window-divider-last-pixel (:foreground grey9))
+
+;; fonts
+(fixed-pitch (:family "SauceCodePro Nerd Font Mono" :height 100 :inherit 'default))
+(fixed-pitch-serif (:family "Monospace Serif"))
+(variable-pitch (:family "NotoSans Display Nerd Font" :height 105))
+
+;; message
+(message-header-cc (:weight 'bold :foreground lighter-green))
+(message-header-newsgroups (:weight 'bold :slant 'italic :foreground lighter-olive))
+(message-header-xheader (:foreground neutral9))
+(message-separator (:foreground neutral15))
+(message-cited-text-1 (:foreground lighter-purple))
+(message-cited-text-2 (:foreground green))
+(message-cited-text-3 (:foreground yellow))
+(message-cited-text-4 (:foreground orange))
+(message-mml (:foreground lighter-green))
+(message-signature-separator (:weight 'bold))
+
+;; vc
+(vc-state-base nil)
+(vc-up-to-date-state (:inherit 'vc-state-base))
+(vc-needs-update-state (:inherit 'vc-state-base))
+(vc-locked-state (:inherit 'vc-state-base))
+(vc-locally-added-state (:inherit 'vc-state-base))
+(vc-conflict-state (:inherit 'vc-state-base))
+(vc-removed-state (:inherit 'vc-state-base))
+(vc-missing-state (:inherit 'vc-state-base))
+(vc-edited-state (:inherit 'vc-state-base))
+
+;; eww
+(eww-form-submit (:box (:line-width 2 :style 'released-button) :foreground bg :background neutral8))
+(eww-form-file (:box (:line-width 2 :style 'released-button) :foreground bg :background neutral8))
+(eww-form-checkbox (:box (:line-width 2 :style 'released-button) :foreground bg :background neutral11))
+(eww-form-select (:box (:line-width 2 :style 'released-button) :foreground bg :background neutral11))
+(eww-form-text (:box (:line-width 1) :foreground neutral15 :background grey10))
+(eww-form-textarea (:box (:line-width 1) :foreground bg :background neutral11))
+(eww-invalid-certificate (:weight 'bold :foreground red))
+(eww-valid-certificate (:weight 'bold :foreground green))
+
+;; rst
+(rst-block (:inherit 'font-lock-keyword-face))
+(rst-external (:inherit 'font-lock-type-face))
+(rst-definition (:inherit 'font-lock-function-name-face))
+(rst-directive (:inherit 'font-lock-builtin-face))
+(rst-comment (:inherit 'font-lock-comment-face))
+(rst-emphasis1 (:inherit 'italic))
+(rst-emphasis2 (:inherit 'bold))
+(rst-literal (:inherit 'font-lock-string-face))
+(rst-reference (:inherit 'font-lock-variable-name-face))
+(rst-transition (:inherit 'font-lock-keyword-face))
+(rst-adornment (:inherit 'font-lock-keyword-face))
+(rst-level-1 (:background neutral2))
+(rst-level-2 (:background neutral3))
+(rst-level-3 (:background grey10))
+(rst-level-4 (:background grey9))
+(rst-level-5 (:background neutral7))
+(rst-level-6 (:background neutral8))
+
+;; transient
+(transient-purple (:foreground dark-purple :inherit 'transient-key))
+(transient-teal (:foreground neutral6 :inherit 'transient-key))
+(transient-pink (:foreground light-purple :inherit 'transient-key))
+(transient-amaranth (:foreground red :inherit 'transient-key))
+(transient-blue (:foreground neutral4 :inherit 'transient-key))
+(transient-red (:foreground red :inherit 'transient-key))
+(transient-separator (:extend t :background neutral11))
+(transient-higher-level (:underline t))
+(transient-disabled-suffix (:weight 'bold :foreground neutral0 :background red))
+(transient-enabled-suffix (:weight 'bold :foreground neutral0 :background lighter-green))
+(transient-inapt-suffix (:slant 'italic :inherit 'shadow))
+(transient-mismatched-key (:underline t))
+(transient-nonstandard-key (:underline t))
+(transient-unreachable-key (:inherit ('transient-key 'shadow)))
+(transient-active-infix (:inherit 'secondary-selection))
+(transient-unreachable (:inherit 'shadow))
+(transient-inactive-value (:inherit 'shadow))
+(transient-inactive-argument (:inherit 'shadow))
+(transient-value (:inherit 'font-lock-string-face))
+(transient-argument (:inherit 'font-lock-warning-face))
+(transient-key (:inherit 'font-lock-builtin-face))
+(transient-heading (:inherit 'font-lock-keyword-face))
+
+<<faces-package>>
+<<faces-elpaca>>
+<<faces-meow>>
+<<faces-custom>>
+<<faces-which-key>>
+<<faces-whitespace>>
+<<faces-git-gutter>>
+<<faces-yeet-mode-line>>
+<<faces-line-number>>
+<<faces-dired>>
+<<faces-vertico>>
+<<faces-helpful>>
+<<faces-company>>
+<<faces-orderless>>
+<<faces-org>>
+<<faces-org-roam>>
+<<faces-olivetti>>
+<<faces-eshell>>
+<<faces-eglot>>
+<<faces-dape>>
+<<faces-treesit>>
+<<faces-rainbow-delimiters>>
+<<faces-sly>>
+<<faces-cc>>
+<<faces-realgud>>
+<<faces-yas>>
+<<faces-compilation>>
+<<faces-j>>
+<<faces-markdown>>
+<<faces-tuareg>>
+<<faces-nushell>>
+<<faces-sieve>>
+<<faces-minimap>>
+<<faces-magit>>
+<<faces-vterm>>
+<<faces-gnuplot>>
+<<faces-dashboard>>
 #+end_src
 
-#+begin_src elisp :tangle ~/config/emacs/themes/battery.el
-     )
-    (custom-theme-set-variables
-     (quote ,name)
-     `(ansi-color-names-vector
-       [,red
-        ,olive
-        ,orange
-        ,purple
-        ,yellow
-        ,green
-        ,cyan]))))
-
-(provide 'battery)
-;;; battery.el ends here
-#+end_src
-
-* light variant
+** light variant
 #+begin_src elisp :tangle ~/config/emacs/themes/battery-light-theme.el
 ;;; battery-light-theme.el --- Warm, dark and vibrant color scheme for Emacs -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2022 Guilherme Machado
 ;;
 ;; Author: Guilherme Machado <https://github.com/goiabae>
-;; Maintainer: Guilherme Machado <TODO>
-;; Created: fevereiro 02, 2022
-;; Version: 0.0.1
+;; Maintainer: Guilherme Machado <goiabae@protonmail.com>
+;; Created: 02 Feb 2022
+;; Version: 0.0.2
 ;; Keywords: convenience extensions faces files frames outlines
 ;; Homepage: https://github.com/goiabae/battery-theme
-;; Package-Requires: ((autothemer "0.2"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -3090,6 +3377,7 @@ Open some file types using external programs.
 ;;  Gruvbox, from Vim.
 
 ;;; Code:
+
 (require 'battery)
 
 (battery-deftheme battery-light "Warm, light and vibrant colour theme" t)
@@ -3098,19 +3386,18 @@ Open some file types using external programs.
 ;;; battery-light-theme.el ends here
 #+end_src
 
-* dark variant
+** dark variant
 #+begin_src elisp :tangle ~/config/emacs/themes/battery-dark-theme.el
 ;;; battery-dark.el --- Warm, dark and vibrant color scheme for Emacs -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2022 Guilherme Machado
 ;;
 ;; Author: Guilherme Machado <https://github.com/goiabae>
-;; Maintainer: Guilherme Machado <TODO>
-;; Created: fevereiro 02, 2022
-;; Version: 0.0.1
+;; Maintainer: Guilherme Machado <goiabae@protonmail.com>
+;; Created: 02 Feb 2022
+;; Version: 0.0.2
 ;; Keywords: convenience extensions faces files frames outlines
 ;; Homepage: https://github.com/goiabae/battery-theme
-;; Package-Requires: ((autothemer "0.2"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -3120,6 +3407,7 @@ Open some file types using external programs.
 ;;  Gruvbox, from Vim.
 
 ;;; Code:
+
 (require 'battery)
 
 (battery-deftheme battery-dark "Warm, dark and vibrant colour theme" nil)
