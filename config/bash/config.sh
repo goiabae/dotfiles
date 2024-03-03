@@ -33,10 +33,10 @@ alias cd='cd -P' # follow symlinks
 alias gpg=gpg2
 alias ls='ls -F --color=auto' # colors and short descriptors (e.g. */?)
 
-alias   e="emacsclient --tty --socket-name=emacsd"
+alias e="emacsclient --tty --socket-name=emacsd"
 alias edit="emacsclient -nc --socket-name=emacsd"
 
 alias surch="xbps-query -R -s"
-alias wget="wget --hsts-file=$XDG_CACHE_HOME/wget-hsts"
+alias wget="wget --hsts-file=$XDG_CACHE_HOME/wget.hist"
 alias anime="ani-cli -q 720"
 alias manga="manga-cli"
