@@ -220,6 +220,9 @@ $a.SFEED_AUTOCMD = "to"
 $a.LUA_PATH = (luarocks-5.1 path --lr-path | str trim -r)
 $a.LUA_CPATH = (luarocks-5.1 path --lr-cpath | str trim -r)
 
+$a.GVIMINIT = 'let $MYGVIMRC="$XDG_CONFIG_HOME/vim/gvimrc" | source $MYGVIMRC'
+$a.VIMINIT = 'let $MYVIMRC="$XDG_CONFIG_HOME/vim/vimrc" | source $MYVIMRC'
+
 let e = $a
 
 def main [] {}
