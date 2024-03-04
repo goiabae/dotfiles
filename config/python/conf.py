@@ -1,27 +1,23 @@
-import os
-import atexit
-import readline
+def is_vanilla() -> bool:
+    import sys
+    return not hasattr(__builtins__, '__IPYTHON__') and 'bpython' not in sys.argv[0]
 
-if 'PYTHONHISTFILE' in os.environ:
-  history = os.path.expanduser(os.environ['PYTHONHISTFILE'])
-elif 'XDG_CACHE_HOME' in os.environ:
-  history = os.path.join(os.path.expanduser(os.environ['XDG_CACHE_HOME']), 'python', 'python_history')
-else:
-  history = os.path.join(os.path.expanduser('~'), '.python_history')
+def setup_history():
+    import os
+    import atexit
+    import readline
+    from pathlib import Path
 
-history = os.path.abspath(history)
-_dir, _ = os.path.split(history)
-os.makedirs(_dir, exist_ok=True)
+    if state_home := os.environ.get('XDG_STATE_HOME'):
+        state_home = Path(state_home)
+    else:
+        state_home = Path.home() / '.local' / 'state'
 
-try:
-  readline.read_history_file(history)
-except OSError:
-  pass
+    history: Path = state_home / 'python.hist'
 
-def write_history():
-  try:
-    readline.write_history_file(history)
-  except OSError:
-    pass
+    readline.read_history_file(str(history))
+    atexit.register(readline.write_history_file, str(history))
 
-atexit.register(write_history)
+
+if is_vanilla():
+    setup_history()
