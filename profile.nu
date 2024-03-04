@@ -78,6 +78,7 @@ $a.JULIA_DEPOT_PATH = (
 
 $a.OPAMROOT = ($a.XDG_DATA_HOME | path join opam)
 $a.NUGET_PACKAGES = ($a.XDG_CACHE_HOME | path join nuget packages)
+$a.DVDCSS_CACHE = ($a.XDG_DATA_HOME | path join dvdcss)
 
 $a.OPAM_SWITCH_PREFIX = ($a.OPAMROOT | path join default)
 
