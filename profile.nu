@@ -106,6 +106,8 @@ $a._JAVA_OPTIONS = $"-Djava.util.prefs.userRoot=($a.XDG_CONFIG_HOME | path join 
 $a.ERRFILE = ($a.XDG_CACHE_HOME | path join X11 xsession-errors)
 $a.LEIN_HOME = ($a.XDG_DATA_HOME | path join lein)
 
+$a.KODI_DATA = ($a.XDG_DATA_HOME | path join kodi)
+
 let python_version = (
   python3 --version
   | parse "Python {major}.{minor}.{patch}"
