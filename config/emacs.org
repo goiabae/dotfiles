@@ -615,7 +615,7 @@ When pressing chorded commands show a little banned on the modeline givin hints 
 
 ** &rest
 
-#+name: better-defaults
+#+name: init-rest
 #+begin_src elisp :noweb yes
 <<auto-save-files>>
 <<lock-files>>
