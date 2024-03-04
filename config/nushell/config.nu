@@ -676,6 +676,8 @@ def inv-instances [] {
 
 alias surch = xbps search
 alias wget = ^wget --hsts-file ($env.XDG_DATA_HOME | path join wget.hist)
+alias adb = with-env [HOME $env.ANDROID_USER_HOME] { ^adb }
+
 def s [] { ls | grid --color }
 
 use ~/lib/nu/iptv.nu

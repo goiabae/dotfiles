@@ -40,3 +40,4 @@ alias surch="xbps-query -R -s"
 alias wget="wget --hsts-file=$XDG_CACHE_HOME/wget.hist"
 alias anime="ani-cli -q 720"
 alias manga="manga-cli"
+alias adb='HOME="$ANDROID_USER_HOME" adb'

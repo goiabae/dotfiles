@@ -97,6 +97,7 @@ $a.GNUPGHOME = ($a.XDG_DATA_HOME | path join gnupg)
 
 $a.W3M_DIR = ($a.XDG_DATA_HOME | path join w3m)
 $a.ANDROID_HOME = ($a.XDG_DATA_HOME | path join android)
+$a.ANDROID_USER_HOME = ($a.XDG_DATA_HOME | path join android)
 $a.DOTNET_ROOT = ($nu.home-path | path join app dotnet latest)
 $a.MINETEST_USER_PATH = ($a.XDG_DATA_HOME | path join minetest)
 $a.OMNISHARPHOME = ($a.XDG_CONFIG_HOME | path join omnisharp)
