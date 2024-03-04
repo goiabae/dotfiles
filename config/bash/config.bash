@@ -37,9 +37,8 @@ alias e="emacsclient --tty --socket-name=emacsd"
 alias edit="emacsclient -nc --socket-name=emacsd"
 
 alias surch="xbps-query -R -s"
+
 alias wget="wget --hsts-file=$XDG_CACHE_HOME/wget.hist"
-alias anime="ani-cli -q 720"
-alias manga="manga-cli"
 alias mitmproxy="mitmproxy --set confdir=$XDG_CONFIG_HOME/mitmproxy"
 alias mitmweb="mitmweb --set confdir=$XDG_CONFIG_HOME/mitmproxy"
 alias adb='HOME="$ANDROID_USER_HOME" adb'
