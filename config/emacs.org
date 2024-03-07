@@ -2,7 +2,7 @@
 #+author: Guilherme Machado
 
 * early init
- [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html][This]] file is loaded *before* package.el and the GUI are initialized. Always use lexical binding. *ALWAYS*.
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html][This]] file is loaded *before* package.el and the GUI are initialized. Always use lexical binding. *ALWAYS*.
 
 #+begin_src elisp :tangle (locate-user-emacs-file "early-init.el") :noweb yes
 ;; -*- lexical-binding: t -*-
@@ -261,6 +261,8 @@ Don't load =full.el= when running on terminal. For example when invoked by the =
      ))
 
 (use-package meow
+  :demand t
+  :commands meow-indicator
   :config
   (meow-setup)
   (setq meow-use-clipboard t
