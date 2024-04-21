@@ -1640,6 +1640,16 @@ The nushell treesitter parser is not good at all and the LSP barely does anythin
 (use-package kotlin-mode
   :commands kotlin-mode)
 
+(use-package fala-mode
+  :elpaca
+  (fala-mode
+    :type git
+    :host github
+    :repo "goiabae/fala"
+    :files (:defaults "etc/*.el"))
+  :mode "\\.fala\\'"
+  :commands fala-mode)
+
 (use-package csharp-mode
   :elpaca nil
   :requires eglot
