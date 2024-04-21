@@ -1691,10 +1691,9 @@ Open some file types using external programs.
 (use-package openwith
   :custom
   (openwith-associations
-   `((,(rx ".pdf") "xdg-open" (file))
-     (,(rx ".mp3") "deadbeef" (file))
-     (,(rx (or ".mpeg" ".avi" ".wmv" ".mp4" ".mkv")) "mpv" (file))
-     (,(rx (or ".jpg" ".jpeg" ".webp" ".gif")) "imv" (file))))
+    (let* ((exts '("pdf" "mp3" "mpeg" "avi" "wmv" "mp4" "mkv" "jpg" "jpeg" "webp" "gif"))
+            (regex (eval `(rx ,(cons 'or (mapcar #'(lambda (x) (concat "." x)) exts))))))
+      `((,regex "xdg-open" '(file)))))
   :init (openwith-mode t))
 #+end_src
 
