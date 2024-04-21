@@ -1771,6 +1771,10 @@ After the =elpaca= queue has being emptied, load the dashboard. Whenever creatin
 
 (use-package gnuplot)
 
+(use-package fence-edit
+  :elpaca (fence-edit :type git :host github :repo "aaronbieber/fence-edit.el")
+  :bind (:map prog-mode-map
+          ("C-c '" . fence-edit-code-region-with-mode)))
 #+end_src
 
 ** provide feature
