@@ -1445,6 +1445,14 @@ Does things like insert if statements and other boring repetitive stuff.
 (setq compilation-scroll-output nil)
 #+end_src
 
+**** bison and flex
+Don't run =c-mode= on those files. That will just mess everything up. As a better alternative, use =fence-edit=. It's on the bottom of the file.
+
+#+begin_src elisp
+(add-to-list 'auto-mode-alist '("\\.y\\'" . prog-mode))
+(add-to-list 'auto-mode-alist '("\\.l\\'" . prog-mode))
+#+end_src
+
 *** J
 On Void Linux this is pretty finnicky since the default name of the console executable is =jc= due to conflicts with other packages.
 
