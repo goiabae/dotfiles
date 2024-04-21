@@ -703,7 +703,7 @@ def tv [] {
 }
 
 # a bug prevents this from being an alias
-def yt [] { sfeed view -p /bin/mpv youtube }
+def yt [] { sfeed view -p (which mpv | first | get path) youtube }
 
 def pomo [--work(-w): duration, --break(-b): duration] {
 	const audio = `/home/goiabae/audio/Gnome sound effect [j3hOd7u35no].opus`
