@@ -477,6 +477,7 @@ This assumes that this version of Emacs has the `bind-key' included in the defau
  ("C-c w s b" . split-window-below)
  ("C-c w s r" . split-window-right)
  ("C-h F"     . describe-face)
+ ("C-h C-m"   . man)
  ("DEL" . backward-delete-char)
 )
 
@@ -986,6 +987,8 @@ Don't align block text with heading text. One space of additional indentation on
 #+begin_src elisp
 (use-package org
   :bind (("C-c o i" . org-id-get-create)
+         ("C-c o y" . org-cut-subtree)
+         ("C-c o p" . org-paste-subtree)
          ("C-c o a" . org-agenda))
   :hook ((org-mode . org-indent-mode)
          (org-mode . visual-line-mode)
