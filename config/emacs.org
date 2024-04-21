@@ -993,7 +993,7 @@ Don't align block text with heading text. One space of additional indentation on
          (text-scale-mode-hook . yeet/update-org-latex-fragment-scale))
   :custom
   (org-directory "~/doc/note")
-  (org-tags-column -68)
+  (org-tags-column 0)
   (org-adapt-indentation nil)
   (org-src-preserve-indentation t)
   (org-src-window-setup 'current-window)
@@ -1152,7 +1152,9 @@ Have to find a better way to load src_elisp{`org-phscroll'}.
 (use-package olivetti
   :hook (org-mode . olivetti-mode)
   :custom (olivetti-body-width
-           (+ 4 (- org-tags-column))))
+            (if (> 0 org-tags-column)
+              (+ 4 (- org-tags-column))
+              fill-column)))
 
 (use-package phscroll
   :elpaca (phscroll
