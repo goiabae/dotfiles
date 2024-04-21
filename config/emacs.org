@@ -383,8 +383,9 @@ Set native compilation cache path to xdg cache. Also, don't compile when the edi
 #+name: native-compilation
 #+begin_src elisp
 (when (fboundp 'native-compile-async)
-  (setq native-comp-deferred-compilation nil
-        comp-deferred-compilation nil)
+  (if (version< emacs-version "29.1")
+    (setq native-comp-deferred-compilation t)
+    (setq native-comp-jit-compilation t))
   (push
    (expand-file-name "emacs/native-lisp" (xdg-cache-home))
    native-comp-eln-load-path))
