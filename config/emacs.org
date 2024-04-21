@@ -1638,6 +1638,14 @@ The nushell treesitter parser is not good at all and the LSP barely does anythin
 (use-package kotlin-mode
   :commands kotlin-mode)
 
+(use-package csharp-mode
+  :elpaca nil
+  :requires eglot
+  :config
+  (add-to-list 'eglot-server-programs
+    (cons 'csharp-mode
+      ;; name of server is in pascal case on NixOS
+      (eglot-alternatives '(("OmniSharp" "-lsp"))))))
 #+end_src
 
 ** clipboard
