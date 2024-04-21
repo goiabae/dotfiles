@@ -1,9 +1,9 @@
 [settings]
-default-library = book
+default-library = article
 opentool = xdg-open
 
-[paper]
-dir = ~/doc/paper
+[article]
+dir = ~/doc/article
 
 [book]
 dir = ~/doc/book
