@@ -1288,7 +1288,7 @@ After having some issues with =eglot= wanting to call a function not in the buil
 For now, I just disable the =onTypeFormatting= LSP message altogether.
 
 #+name: eglot-disable-server-formatting
-#+begin_src elisp
+#+begin_src elisp :tangle nil
 (setopt eglot-ignored-server-capabilities
   '(:documentOnTypeFormattingProvider
     :documentFormattingProvider
