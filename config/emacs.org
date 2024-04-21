@@ -730,9 +730,6 @@ Set the window of graphical frames. Frames should be resized pixel-by-pixel, rat
 (setq frame-title-format
       '(buffer-line-name "Emacs %b (%f)" "Emacs %b")
       frame-resize-pixelwise t)
-
-(map-put default-frame-alist 'width  40)
-(map-put default-frame-alist 'height 22)
 #+end_src
 
 *** git status of line on left margin
