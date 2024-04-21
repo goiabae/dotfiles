@@ -1,6 +1,10 @@
 [user]
 name = goiabae
-email = goiabae@protonmail.com
+email = gm4ch4d0@gmail.com
+signingkey = gm4ch4d0@gmail.com
+
+[commit]
+gpgsign = true
 
 [credential "https://github.com"]
 helper =
