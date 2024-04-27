@@ -37,10 +37,12 @@ def create_right_prompt [] {
 $env.PROMPT_COMMAND = { create_left_prompt }
 $env.PROMPT_COMMAND_RIGHT = { create_right_prompt }
 
-$env.PROMPT_INDICATOR = $"(ansi yb)|> (ansi reset)"
-$env.PROMPT_INDICATOR_VI_INSERT = ": "
-$env.PROMPT_INDICATOR_VI_NORMAL = "|> "
-$env.PROMPT_MULTILINE_INDICATOR = "::: "
+def indicator [x] { $"(ansi yellow)($x)(ansi reset)" }
+
+$env.PROMPT_INDICATOR = (indicator "|> ")
+$env.PROMPT_INDICATOR_VI_INSERT = (indicator ": ")
+$env.PROMPT_INDICATOR_VI_NORMAL = (indicator "|> ")
+$env.PROMPT_MULTILINE_INDICATOR = (indicator "::: ")
 
 let comma_sep = {
   from_string: { |s| $s | split row (char esep) }
