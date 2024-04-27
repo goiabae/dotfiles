@@ -1647,8 +1647,12 @@ The nushell treesitter parser is not good at all and the LSP barely does anythin
   :config (add-to-list 'org-babel-load-languages '(julia . t)))
 
 (use-package nix-mode
+  :after eglot
   :mode "\\.nix\\'"
-  :commands nix-mode)
+  :commands nix-mode
+  :config
+  (add-to-list 'eglot-server-programs
+    (cons 'nix-mode '("nixd"))))
 
 (use-package prolog
   :elpaca nil
