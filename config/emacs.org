@@ -718,10 +718,8 @@ The advice ensures that the color palette is available to the user as global var
 (use-package autothemer)
 
 (use-package battery
-  :elpaca (battery
-           :type git
-           :host github
-           :repo "goiabae/emacs-theme-battery"))
+  :elpaca
+  (battery :type git :host github :repo "goiabae/emacs-theme-battery"))
 
 (cl-defun yeet/get-geolocation ()
   (with-temp-buffer
@@ -1327,11 +1325,7 @@ For now, I just disable the =onTypeFormatting= LSP message altogether.
 
 #+begin_src elisp
 (use-package dape
-  :elpaca
-  (dape
-    :type git
-    :host github
-    :repo "svaante/dape")
+  :elpaca (dape :type git :host github :repo "svaante/dape")
   :custom (dape-buffer-window-arrangement 'right))
 #+end_src
 
