@@ -1,3 +1,5 @@
+# written for nushell 0.90.1
+
 use ~/lib/nu/unix.nu
 
 def 'stringy' [
