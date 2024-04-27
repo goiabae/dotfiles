@@ -195,6 +195,7 @@ $a.MANPATH = (do {
 $a.PATH = (
 	$env.PATH
 	| append [
+		($nu.home-path | path join '.nix-profile' bin)
 		($a.CARGO_HOME | path join bin)
 		/opt/texlive/2023/bin/x86_64-linux
 		($a.OPAM_SWITCH_PREFIX | path join bin)
