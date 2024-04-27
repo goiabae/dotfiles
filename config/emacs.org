@@ -1200,6 +1200,15 @@ Have to find a better way to load src_elisp{`org-phscroll'}.
               :html-background "Transparent"
               :html-scale 1.0
               :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
+
+  (let ((progs
+          (map-elt
+            (map-elt org-preview-latex-process-alist org-preview-latex-default-process)
+            :programs)))
+    (if (not
+          (-reduce (lambda (x y) (and x y))
+            (mapcar 'executable-find progs)))
+      (warn "Can't make latex preview images. programs are not available")))
   ;; specify the justification you want
   (plist-put org-format-latex-options :justify 'center)
 
