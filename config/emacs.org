@@ -1748,8 +1748,14 @@ Open some file types using external programs.
 #+end_src
 
 ** git interface
+Keywords like =TODO= and =FIXME= are collected into a section in Magit.
+
 #+begin_src elisp
 (use-package magit)
+
+(use-package magit-todos
+  :after magit
+  :config (magit-todos-mode 1))
 #+end_src
 
 ** dashboard
