@@ -376,7 +376,7 @@ def "emacs eval" [exp: string, --server_socket (-s): path]  {
     error make {
       msg: "Couldn't connect with emacs server"
     }
-  } else $in.stdout
+  } else { $in.stdout }
 }
 
 def "org-roam nodes" [] {
