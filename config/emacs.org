@@ -182,7 +182,7 @@ Don't load =full.el= when running on terminal. For example when invoked by the =
      '("R" . meow-swap-grab)
      '("T" . undefined)
      '("Y" . meow-sync-grab)
-     '("U" . meow-undo-in-selection)
+     '("U" . undo-redo)
      '("I" . meow-open-above)
      '("O" . meow-to-block)
      '("P" . undefined)
