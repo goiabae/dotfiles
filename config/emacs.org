@@ -1618,10 +1618,9 @@ The nushell treesitter parser is not good at all and the LSP barely does anythin
   :hook (nushell-ts-mode . eglot-ensure)
   :after (org treesit eglot)
   :config
-  (map-put! 'org-babel-load-languages 'nushell-ts t)
-  (map-put! 'treesit-language-source-alist 'nu '("https://github.com/nushell/tree-sitter-nu"))
-  (add-to-list 'eglot-server-programs
-    (cons '(nushell-ts-mode nushell-mode) '("nu" "--lsp")))
+  (map-put org-babel-load-languages 'nushell-ts t)
+  (map-put treesit-language-source-alist 'nu '("https://github.com/nushell/tree-sitter-nu" nil nil nil nil))
+  (map-put eglot-server-programs 'nushell-ts-mode '("nu" "--lsp"))
   :commands nushell-ts-mode)
 #+end_src
 
