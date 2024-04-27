@@ -1294,6 +1294,12 @@ After having some issues with =eglot= wanting to call a function not in the buil
     (add-to-list 'project-switch-commands '(magit-project-status "Magit"))))
 #+end_src
 
+This allows for arbitrary shell scripts and environment variables to be sourced in a reversible way when switching buffers (cwd changes). Integrates nicely with =nix= shells.
+
+#+begin_src elisp
+(use-package direnv :config (direnv-mode))
+#+end_src
+
 ** programming languages
 
 #+begin_src elisp
