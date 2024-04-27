@@ -263,13 +263,13 @@ $env.config = {
   ]
 }
 
-use ~/lib/nu/completions.nu *
-use ~/lib/nu/xdg.nu
-use ~/lib/nu/sfeed.nu
-use ~/lib/nu/unix.nu
-use ~/lib/nu/x11.nu *
-use ~/lib/nu/yt.nu
-use ~/lib/nu/xbps.nu
+use completions.nu *
+use xdg.nu
+use sfeed.nu
+use unix.nu
+use x11.nu *
+use yt.nu
+use xbps.nu
 
 def weather [--city (-c): string] {
   let tab = [
