@@ -444,6 +444,18 @@ Set native compilation cache path to xdg cache. Also, don't compile when the edi
   (setq elpaca-use-package-by-default t))
 
 (elpaca-wait)
+
+(defvar *builtin-load-path* load-path)
+(defun is-builtin (sym)
+  "Returns whether the SYM corresponds to a given feature that can be loaded from the default load-path"
+  (let ((load-path *builtin-load-path*))
+    (and (require sym nil t) t)))
+
+(defun maybe-recipe (sym &optional recipe)
+  "If SYM is a builtin package return nil, otherwise return the RECIPE for it."
+  (unless recipe
+    (setq recipe (cons sym (elpaca-order-defaults sym))))
+  (if (is-builtin sym) nil recipe))
 #+end_src
 
 ** key bindings
@@ -987,6 +999,7 @@ Don't align block text with heading text. One space of additional indentation on
 
 #+begin_src elisp
 (use-package org
+  :elpaca `,(maybe-recipe 'org)
   :bind (("C-c o i" . org-id-get-create)
          ("C-c o y" . org-cut-subtree)
          ("C-c o p" . org-paste-subtree)
@@ -1061,7 +1074,7 @@ This adds little shortcuts like <s TAB, which create a new source block under po
 
 #+begin_src elisp
 (use-package org-tempo
-  :elpaca nil
+  :elpaca `,(maybe-recipe 'org-tempo)
   :after org)
 #+end_src
 
@@ -1272,7 +1285,15 @@ line are justified."
 After having some issues with =eglot= wanting to call a function not in the built-in distribution of package, I've decided to install =project=, instead.
 
 #+begin_src elisp
-(use-package project :demand t)
+(use-package project
+  :elpaca `,(maybe-recipe 'project)
+  :demand t
+  :after magit
+  :bind (:map project-prefix-map
+          ("m" . magit-project-status))
+  :config (map-delete project-switch-commands 'project-vc-dir)
+  (setq project-switch-commands
+    (add-to-list 'project-switch-commands '(magit-project-status "Magit"))))
 #+end_src
 
 ** programming languages
@@ -1285,6 +1306,7 @@ After having some issues with =eglot= wanting to call a function not in the buil
 *** LSP client
 #+begin_src elisp :noweb yes
 (use-package eglot
+  :elpaca `,(maybe-recipe 'eglot)
   :after project
   :config
   <<eglot-disable-server-formatting>>)
@@ -1316,8 +1338,8 @@ For now, I just disable the =onTypeFormatting= LSP message altogether.
 *** Tree Sitter
 
 #+begin_src elisp
-(use-package treesit :elpaca nil
-  :custom (treesit-language-source-alist '()))
+(use-package treesit
+  :elpaca `,(maybe-recipe 'treesit))
 #+end_src
 
 *** LISPs
@@ -1492,6 +1514,7 @@ Zig always indents by 4 spaces. Use =zls= as the language server.
 
 #+begin_src elisp
 (use-package lua-mode
+  :elpaca `,(maybe-recipe 'lua-mode)
   :commands lua-mode
   :requires (f eglot)
   :config
