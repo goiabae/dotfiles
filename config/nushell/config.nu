@@ -73,21 +73,16 @@ $env.config = {
   show_banner: false
   use_grid_icons: false
   use_ansi_coloring: true
+  highlight_resolved_externals: true
 
-  cursor_shape: {
-    emacs: block
-    vi_insert: line
-    vi_normal: block
-  }
+  cursor_shape: { emacs: block }
 
   ls: {
     use_ls_colors: true
     clickable_links: true
   }
 
-  rm: {
-    always_trash: true
-  }
+  rm: { always_trash: true }
 
   table: {
     mode: none
@@ -107,17 +102,8 @@ $env.config = {
     status_bar_background: { fg: '#1D1F21' bg: '#C4C9C6' }
     highlight: { bg: 'yellow' fg: 'black' }
 
-    status: {
-      # warn: {bg: 'yellow', fg: 'blue'}
-      # error: {bg: 'yellow', fg: 'blue'}
-      # info: {bg: 'yellow', fg: 'blue'}
-    }
-
-    try: {
-      # border_color: 'red'
-      # highlighted_color: 'blue'
-      # reactive: false
-    }
+    status: {}
+    try: {}
 
     table: {
       split_line: '#404040'
@@ -131,26 +117,10 @@ $env.config = {
 
       show_head: true
       show_index: true
-
-      # selected_cell: {fg: 'white', bg: '#777777'}
-      # selected_row: {fg: 'yellow', bg: '#C1C2A3'}
-      # selected_column: blue
-
-      # padding_column_right: 2
-      # padding_column_left: 2
-
-      # padding_index_left: 2
-      # padding_index_right: 1
     }
 
-    config: {
-      cursor_color: { bg: 'yellow' fg: 'black' }
-
-      # border_color: white
-      # list_color: green
-    }
+    config: { cursor_color: { bg: 'yellow' fg: 'black' } }
   }
-
 
   history: {
     max_size: 10000
@@ -172,21 +142,11 @@ $env.config = {
     format: "auto"
   }
 
-  hooks: {
-    pre_prompt:    [{ || null }]
-    pre_execution: [{ || null }]
-    env_change: { PWD: [{ |before, after| null }] }
-    display_output: { ||
-      # if (term size).columns >= 100 {
-      #   with-env [config ($env.config | update table.mode "rounded")] {
-      #     table -e
-      #   }
-      # } else {
-      #   $in
-      # }
+  hooks: { env_change: { PWD: [{ |before, after|
+    if not (which direnv | is-empty) {
+      direnv export json | from json | default {} | load-env
     }
-    command_not_found: { || null }
-  }
+  }]}}
 
   menus: [{
       name: completion_menu
@@ -218,95 +178,13 @@ $env.config = {
         description_text: yellow
       }
     }
-    {
-      name: help_menu
-      only_buffer_difference: true
-      marker: "? "
-      type: {
-        layout: description
-        columns: 4
-        col_width: 20
-        col_padding: 2
-        selection_rows: 4
-        description_rows: 10
-      }
-      style: {
-        text: green
-        selected_text: green_reverse
-        description_text: yellow
-      }
-    }
-    {
-      name: commands_menu
-      only_buffer_difference: false
-      marker: "# "
-      type: {
-        layout: columnar
-        columns: 4
-        col_width: 20
-        col_padding: 2
-      }
-      style: {
-        text: green
-        selected_text: green_reverse
-        description_text: yellow
-      }
-      source: { |buffer, position|
-        $nu.scope.commands
-        | where name =~ $buffer
-        | each { |it| {value: $it.name description: $it.usage} }
-      }
-    }
-    {
-      name: vars_menu
-      only_buffer_difference: true
-      marker: "# "
-      type: {
-        layout: list
-        page_size: 10
-      }
-      style: {
-        text: green
-        selected_text: green_reverse
-        description_text: yellow
-      }
-      source: { |buffer, position|
-        $nu.scope.vars
-        | where name =~ $buffer
-        | sort-by name
-        | each { |it| {value: $it.name description: $it.type} }
-      }
-    }
-    {
-      name: commands_with_description
-      only_buffer_difference: true
-      marker: "# "
-      type: {
-        layout: description
-        columns: 4
-        col_width: 20
-        col_padding: 2
-        selection_rows: 4
-        description_rows: 10
-      }
-      style: {
-        text: green
-        selected_text: green_reverse
-        description_text: yellow
-      }
-      source: { |buffer, position|
-        $nu.scope.commands
-        | where name =~ $buffer
-        | each { |it| {value: $it.name description: $it.usage} }
-      }
-    }
   ]
   keybindings: [
     {
       name: completion_menu
       modifier: none
       keycode: tab
-      mode: emacs # Options: emacs vi_normal vi_insert
+      mode: emacs
       event: {
         until: [
           { send: menu name: completion_menu }
@@ -329,13 +207,6 @@ $env.config = {
       event: { send: menu name: history_menu }
     }
     {
-      name: next_page
-      modifier: control
-      keycode: char_x
-      mode: emacs
-      event: { send: menupagenext }
-    }
-    {
       name: undo_or_previous_page
       modifier: control
       keycode: char_z
@@ -348,59 +219,46 @@ $env.config = {
        }
     }
     {
-      name: yank
+      name: paste
       modifier: control
       keycode: char_y
       mode: emacs
-      event: {
-        until: [
-          {edit: pastecutbufferafter}
-        ]
-      }
+      event: { edit: pastecutbufferbefore }
     }
     {
-      name: unix-line-discard
+      name: cut
       modifier: control
-      keycode: char_u
-      mode: [emacs, vi_normal, vi_insert]
-      event: {
-        until: [
-          {edit: cutfromlinestart}
-        ]
-      }
+      keycode: char_w
+      mode: emacs
+      event: { edit: cutfromstart }
     }
     {
-      name: kill-line
+      name: cut-line
       modifier: control
       keycode: char_k
-      mode: [emacs, vi_normal, vi_insert]
-      event: {
-        until: [
-          {edit: cuttolineend}
-        ]
-      }
+      mode: emacs
+      event: { edit: cutfromlinestart }
     }
-    # Keybindings used to trigger the user defined menus
     {
-      name: commands_menu
+      name: move_to_line_start
       modifier: control
-      keycode: char_t
-      mode: [emacs, vi_normal, vi_insert]
-      event: { send: menu name: commands_menu }
+      keycode: char_a
+      mode: emacs
+      event: { edit: movetolinestart }
     }
-    {
-      name: vars_menu
-      modifier: alt
-      keycode: char_o
-      mode: [emacs, vi_normal, vi_insert]
-      event: { send: menu name: vars_menu }
-    }
-    {
-      name: commands_with_description
+		{
+      name: move_to_line_end
       modifier: control
-      keycode: char_s
-      mode: [emacs, vi_normal, vi_insert]
-      event: { send: menu name: commands_with_description }
+      keycode: char_e
+      mode: emacs
+      event: { edit: movetolineend }
+    }
+    {
+      name: delete_one_word_backward
+      modifier: control
+      keycode: backspace
+      mode: emacs
+      event: { edit: backspaceword }
     }
   ]
 }
