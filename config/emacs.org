@@ -1620,6 +1620,8 @@ The nushell treesitter parser is not good at all and the LSP barely does anythin
   :config
   (map-put org-babel-load-languages 'nushell-ts t)
   (map-put treesit-language-source-alist 'nu '("https://github.com/nushell/tree-sitter-nu" nil nil nil nil))
+  (when (not (treesit-language-available-p 'nu))
+    (treesit-install-language-grammar 'nu))
   (map-put eglot-server-programs 'nushell-ts-mode '("nu" "--lsp"))
   :commands nushell-ts-mode)
 #+end_src
