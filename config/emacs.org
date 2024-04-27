@@ -758,19 +758,19 @@ Show git status of lines on the left side of the windows. Change the default ugl
 *** modeline
 #+begin_src elisp
 (defface yeet/mode-line-buffer-name
-  `((t . (:inherit 'default :background "#edd76d")))
+  `((t . (:inherit 'mode-line :background "#edd76d")))
   "Background color lightest yellow.")
 
 (defface yeet/mode-line-readable-buffer
-  `((t . (:inherit 'default :foreground "#67191b" :weight bold)))
+  `((t . (:inherit 'mode-line :foreground "#67191b" :weight bold)))
   "Background color lightest yellow.")
 
 (defface yeet/mode-line-writeable-buffer
-  `((t . (:inherit 'default :foreground "#423818" :weight bold)))
+  `((t . (:inherit 'mode-line :foreground "#423818" :weight bold)))
   "Background color lightest yellow.")
 
 (defface yeet/mode-line-executable-buffer
-  `((t . (:inherit 'default :foreground "#302f16" :weight bold)))
+  `((t . (:inherit 'mode-line :foreground "#302f16" :weight bold)))
   "Background color lightest yellow.")
 #+end_src
 
