@@ -1,4 +1,4 @@
-# made for nushell version 0.87.1
+# made for nushell version 0.90.1
 
 let dark_theme = {
     separator: white
