@@ -697,6 +697,7 @@ Always use lexical binding. *ALWAYS*.
 ;; -*- lexical-binding: t -*-
 
 (require 'map)
+(require 'seq)
 #+end_src
 
 ** visuals
@@ -1207,8 +1208,9 @@ Have to find a better way to load src_elisp{`org-phscroll'}.
             (map-elt org-preview-latex-process-alist org-preview-latex-default-process)
             :programs)))
     (if (not
-          (-reduce (lambda (x y) (and x y))
-            (mapcar 'executable-find progs)))
+          (seq-reduce (lambda (x y) (and x y))
+            (mapcar 'executable-find progs)
+            t))
       (warn "Can't make latex preview images. programs are not available")))
   ;; specify the justification you want
   (plist-put org-format-latex-options :justify 'center)
@@ -1377,8 +1379,7 @@ For now, I just disable the =onTypeFormatting= LSP message altogether.
 #+begin_src elisp
 (use-package elisp-mode
   :elpaca nil
-  :hook ((emacs-lisp-mode . dash-fontify-mode)
-         (emacs-lisp-mode . yeet/disable-tabs)
+  :hook ((emacs-lisp-mode . yeet/disable-tabs)
          (emacs-lisp-mode . yeet/lisp-prettify-symbols)))
 #+end_src
 
