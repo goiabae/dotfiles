@@ -1,6 +1,0 @@
-export PATH=$HOME/bin:$PATH
-
-case $0 in
-	# if $0 starts with a dash, it is a login shell. See sh(1).
-	-*) eval "$(nu ~/profile.nu shell)" ;;
-esac
