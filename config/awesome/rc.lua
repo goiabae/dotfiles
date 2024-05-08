@@ -23,9 +23,19 @@ local mouse_click = {
 
 local global_keys = gears.table.join(
 	-- stylua: ignore start
+
+	-- change client focus
+	awful.key({ Super }, "j", fix(awful.client.focus.byidx, 1), { description = "focus next", group = "client" }),
+	awful.key({ Super }, "k", fix(awful.client.focus.byidx, -1), { description = "focus previous", group = "client" }),
+
+	-- change tag focus
+	awful.key({ Super }, "h", awful.tag.viewprev, { description = "view previous", group = "tag" }),
+	awful.key({ Super }, "l", awful.tag.viewnext, { description = "view next", group = "tag" }),
+
 	awful.key({ Super, "Shift" }, "Return", fix(awful.spawn, terminal), { description = "open a terminal", group = "launcher" }),
 	awful.key({ Super, "Shift" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
 	awful.key({ Super, "Shift" }, "e", awesome.quit, { description = "quit awesome", group = "awesome" })
+
 	--stylua: ignore end
 )
 
