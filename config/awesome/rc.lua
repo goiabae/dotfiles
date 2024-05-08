@@ -10,6 +10,7 @@ local function fix(f, x)
 end
 
 local terminal = os.getenv("TERMINAL") or "xterm"
+local editor = os.getenv("EDITOR") or (terminal .. " -e " .. "nano")
 
 local Super = "Mod4"
 
@@ -32,7 +33,9 @@ local global_keys = gears.table.join(
 	awful.key({ Super }, "h", awful.tag.viewprev, { description = "view previous", group = "tag" }),
 	awful.key({ Super }, "l", awful.tag.viewnext, { description = "view next", group = "tag" }),
 
+	awful.key({ Super }, "Return", fix(awful.spawn, terminal .. " --drop-down"), { description = "open a drop-down terminal", group = "launcher" }),
 	awful.key({ Super, "Shift" }, "Return", fix(awful.spawn, terminal), { description = "open a terminal", group = "launcher" }),
+	awful.key({ Super }, "e", fix(awful.spawn, editor), { description = "open a text editor", group = "launcher" }),
 	awful.key({ Super, "Shift" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
 	awful.key({ Super, "Shift" }, "e", awesome.quit, { description = "quit awesome", group = "awesome" })
 
