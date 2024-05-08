@@ -1,5 +1,6 @@
 local awful = require("awful")
 local gears = require("gears")
+local beautiful = require("beautiful")
 
 ---@param f function|table
 ---@return function
@@ -11,6 +12,8 @@ end
 
 local terminal = os.getenv("TERMINAL") or "xterm"
 local editor = os.getenv("EDITOR") or (terminal .. " -e " .. "nano")
+
+beautiful.init(gears.filesystem.get_themes_dir() .. "gtk" .. "/theme.lua")
 
 local Super = "Mod4"
 
