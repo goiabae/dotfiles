@@ -1045,7 +1045,8 @@ Don't align block text with heading text. One space of additional indentation on
   (add-to-list 'warning-suppress-types '(org-element-cache))
   (defun yeet/update-org-latex-fragment-scale ()
     (let ((text-scale-factor (expt text-scale-mode-step text-scale-mode-amount)))
-      (plist-put org-format-latex-options :scale (* 1.2 text-scale-factor)))))
+      (plist-put org-format-latex-options :scale (* 1.2 text-scale-factor))))
+  (setq org-latex-compiler "lualatex"))
 
 ;; contains additional babel sub-packages
 (use-package org-contrib
@@ -1257,7 +1258,6 @@ line are justified."
 
 ;; auto generate inline latex images
 (use-package org-fragtog
-  ; :disabled
   :after org
   :hook (org-mode . org-fragtog-mode))
 #+end_src
