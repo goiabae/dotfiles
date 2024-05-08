@@ -13,6 +13,14 @@ local terminal = os.getenv("TERMINAL") or "xterm"
 
 local Super = "Mod4"
 
+local mouse_click = {
+	left = 1,
+	middle = 2,
+	right = 3,
+	scroll_up = 4,
+	scroll_down = 5,
+}
+
 local global_keys = gears.table.join(
 	-- stylua: ignore start
 	awful.key({ Super, "Shift" }, "Return", fix(awful.spawn, terminal), { description = "open a terminal", group = "launcher" }),
@@ -35,14 +43,33 @@ awful.screen.connect_for_each_screen(function (s)
 	awful.tag(tag_names, s, awful.layout.layouts[1])
 end)
 
-awful.rules.rules = {
-	{
-		rule = {},
-		properties = {
-			focus = awful.client.focus.filter,
-			raise = true,
-			screen = awful.screen.preferred,
-			placement = awful.placement.no_overlap + awful.placement.no_offscreen
+do
+	local buttons = gears.table.join(
+		awful.button({ Super }, mouse_click.left, function(c)
+			c:emit_signal("request::activate", "mouse_click", { raise = true })
+			awful.mouse.client.move(c)
+		end),
+		awful.button({ Super }, mouse_click.right, function(c)
+			c:emit_signal("request::activate", "mouse_click", { raise = true })
+			awful.mouse.client.resize(c)
+		end)
+	)
+
+	awful.rules.rules = {
+		{
+			rule = {},
+			properties = {
+				focus = awful.client.focus.filter,
+				raise = true,
+				buttons = buttons,
+				screen = awful.screen.preferred,
+				placement = awful.placement.no_overlap + awful.placement.no_offscreen
+			}
 		}
 	}
-}
+end
+
+-- focus follows mouse.
+client.connect_signal("mouse::enter", function(c)
+	c:emit_signal("request::activate", "mouse_enter", { raise = false })
+end)
