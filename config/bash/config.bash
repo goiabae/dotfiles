@@ -42,3 +42,7 @@ alias wget="wget --hsts-file=$XDG_CACHE_HOME/wget.hist"
 alias mitmproxy="mitmproxy --set confdir=$XDG_CONFIG_HOME/mitmproxy"
 alias mitmweb="mitmweb --set confdir=$XDG_CONFIG_HOME/mitmproxy"
 alias adb='HOME="$ANDROID_USER_HOME" adb'
+
+if [ -n "$(which direnv)" ]; then
+	eval "$(direnv hook bash)"
+fi

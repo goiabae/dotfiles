@@ -1,1 +1,5 @@
-source "${XDG_CONFIG_HOME}/bash/config.bash"
+[ -f /etc/bashrc ] && source /etc/bashrc
+
+if [ -n "$XDG_CONFIG_HOME" ] && [ -f "${XDG_CONFIG_HOME}/bash/config.bash" ]; then
+	source "${XDG_CONFIG_HOME}/bash/config.bash"
+fi
