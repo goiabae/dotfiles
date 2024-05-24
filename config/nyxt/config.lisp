@@ -1,3 +1,5 @@
+;; written for Nyxt 3.11
+
 (in-package #:nyxt-user)
 
 (define-configuration :context-buffer
