@@ -483,12 +483,6 @@ def inv-instances [] {
 	| each { get 1 }
 }
 
-alias surch = xbps search
-alias wget = ^wget --hsts-file ($env.XDG_DATA_HOME | path join wget.hist)
-alias mitmproxy = ^mitmproxy --set $"confdir=($env.XDG_CONFIG_HOME)/mitmproxy"
-alias mitmweb = ^mitmweb --set $"confdir=($env.XDG_CONFIG_HOME)/mitmproxy"
-alias adb = with-env [HOME $env.ANDROID_USER_HOME] { ^adb }
-
 def s [] { ls | grid --color }
 
 use ~/lib/nu/iptv.nu
@@ -555,3 +549,8 @@ def album-tracks [] {
   let rs = mbz release-group releases ($rgs | input list 'select release-group' | get id)
   mbz release recordings ($rs | input list 'select release' | get id)
 }
+alias surch = xbps search
+alias wget = ^wget --hsts-file ($env.XDG_DATA_HOME | path join wget.hist)
+alias mitmproxy = ^mitmproxy --set $"confdir=($env.XDG_CONFIG_HOME)/mitmproxy"
+alias mitmweb = ^mitmweb --set $"confdir=($env.XDG_CONFIG_HOME)/mitmproxy"
+alias adb = with-env [HOME $env.ANDROID_USER_HOME] { ^adb }
