@@ -270,6 +270,7 @@ use x11.nu *
 use yt.nu
 use xbps.nu
 use wrappers.nu *
+use music.nu
 
 def weather [--city (-c): string] {
   let tab = [
@@ -359,53 +360,6 @@ def "emacs eval" [exp: string, --server_socket (-s): path]  {
       msg: "Couldn't connect with emacs server"
     }
   } else { $in.stdout }
-}
-
-def 'music' [] {
-  let file = '~/doc/table/music.csv'
-  open --raw $file | from csv --no-infer | into int score revisions
-}
-
-def 'music add' [] {
-  let entry = ($in | default {
-    author: (input 'Enter author (+ separated list): ')
-    title: (input 'Enter title: ')
-    type: ([track list] | input list 'Select type: ')
-    score: (input 'Enter score (0-10 nat): ' | into float)
-    revisions: 0
-    added: (date now | date format '%Y-%m-%d')
-    modified: (date now | date format '%Y-%m-%d')
-  })
-  let file = '~/doc/table/music.3.csv'
-  let mus = (open $file)
-  if ($entry | select author title) not-in ($mus | select author title) {
-    $mus | append $entry | save --force $file
-  }
-}
-
-def 'music review' [] {
-  let input = $in
-  let file = '~/doc/table/music.3.csv'
-  let mus = (open $file)
-  let res = (
-    $mus
-    | select author title
-    | enumerate
-    | where $it.item == $input
-  )
-  if ($res | is-empty) {
-    return
-  }
-  let index = ($res | first | get index)
-  let score = (input 'Enter new score: ')
-  let prev = ($mus | get $index)
-  $mus
-  | update $index (
-    $prev
-    | update revisions ($prev.revisions + 1)
-    | update score $score
-  )
-  | save --force $file
 }
 
 def next-ascension [--pretty (-p)] {
