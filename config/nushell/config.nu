@@ -246,7 +246,7 @@ $env.config = {
       mode: emacs
       event: { edit: movetolinestart }
     }
-		{
+    {
       name: move_to_line_end
       modifier: control
       keycode: char_e
@@ -296,7 +296,7 @@ def www [...query] {
 }
 
 
-def 'mal anime season' [year: string, season: string] {
+def 'mal anime season' [year: string, season: string] -> list<any> {
   let resp = (http get $"https://myanimelist.net/anime/season/($year)/($season)")
   let categories = ($resp | query web --as-html --query '.seasonal-anime-list')
   let seasonal_anime = (
@@ -345,7 +345,7 @@ def "firefox tabs" [] -> list<any> {
   }
 }
 
-def "emacs eval" [exp: string, --server_socket (-s): path]  {
+def "emacs eval" [exp: string, --server_socket (-s): path] -> string {
   let socket = (
     $server_socket
     | default (xdg runtime-dir | path join emacs server)
@@ -354,14 +354,15 @@ def "emacs eval" [exp: string, --server_socket (-s): path]  {
   | complete
   | if $in.exit_code != 0 {
     error make {
-      msg: "Couldn't connect with emacs server"
+      msg: $"Couldn't connect with emacs server: ($in.stderr)"
     }
   } else { $in.stdout }
 }
 
-def next-ascension [--pretty (-p)] {
+# cookie clicker
+def next-ascension [--pretty (-p)] -> list<any> {
   into string
-  | ^next-ascension
+  | ^next-ascension # J script
   | lines
   | first
   | split column ' ' chips cookies
@@ -373,19 +374,9 @@ def next-ascension [--pretty (-p)] {
   }
 }
 
-def inv-instances [] {
-	let url = {
-		scheme: https
-		host: api.invidious.io
-		path: /instances.json
-	}
-	$url
-	| url join
-	| http get $in
-	| each { get 1 }
+def inv-instances [] -> list<any> {
+	http get "https://api.invidious.io/instances.json" | each { get 1 }
 }
-
-def s [] { ls | grid --color }
 
 def tv [] {
 	use iptv.nu
