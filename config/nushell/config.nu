@@ -327,26 +327,22 @@ def 'mal anime season' [year: string, season: string] {
 
 def 'from list' [] { $in | lines }
 
-module firefox {
-  export def tabs [] {
-    cd ~/.mozilla/firefox
-    let default_profile = (open installs.ini | jc --ini | from json | values | get default.0)
-    let info = (lz4jsoncat  $'($default_profile)/sessionstore-backups/recovery.jsonlz4' | from json)
-		$info.windows
-    | reduce -f [] { |w, acc|
-      $w.tabs
-      | each { |tab|
-        $tab
-        | get entries
-        | select url title
-        | last
-			}
-      | append $acc
-	  }
+def "firefox tabs" [] -> list<any> {
+  cd ~/.mozilla/firefox
+  let default_profile = (open installs.ini | jc --ini | from json | values | get default.0)
+  let info = (lz4jsoncat  $'($default_profile)/sessionstore-backups/recovery.jsonlz4' | from json)
+  $info.windows
+  | reduce -f [] { |w, acc|
+    $w.tabs
+    | each { |tab|
+      $tab
+      | get entries
+      | select url title
+      | last
+    }
+    | append $acc
   }
 }
-
-use firefox
 
 def "emacs eval" [exp: string, --server_socket (-s): path]  {
   let socket = (
