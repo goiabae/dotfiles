@@ -1496,6 +1496,7 @@ On Void Linux this is pretty finnicky since the default name of the console exec
 
 #+begin_src elisp
 (use-package j-mode
+  :elpaca (j-mode :type git :host github :repo "LdBeth/j-mode")
   :config (setq j-console-cmd "jconsole"))
 
 (use-package ob-J
