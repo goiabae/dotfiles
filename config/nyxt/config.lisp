@@ -2,7 +2,7 @@
 
 (in-package #:nyxt-user)
 
-(define-configuration :context-buffer
+(define-configuration context-buffer
   ((search-engines
      (list
        (make-instance 'search-engine
