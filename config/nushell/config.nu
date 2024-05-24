@@ -269,6 +269,7 @@ use unix.nu
 use x11.nu *
 use yt.nu
 use xbps.nu
+use wrappers.nu *
 
 def weather [--city (-c): string] {
   let tab = [
@@ -292,11 +293,6 @@ def www [...query] {
   w3m $"($search_engine)($query | str join '+')"
 }
 
-def 'flatpak search' [query: string] {
-  ^flatpak search $query
-  | from tsv --noheaders
-  | rename name description id version branch remote
-}
 
 def 'mal anime season' [year: string, season: string] {
   let resp = (http get $"https://myanimelist.net/anime/season/($year)/($season)")
@@ -327,21 +323,8 @@ def 'mal anime season' [year: string, season: string] {
   echo $seasonal_anime
 }
 
-def free [] {
-  ^free
-  | lines
-  | skip
-  | parse -r '(?P<name>[[:alpha:]]*):\s+(?P<total>[0-9]*)\s+(?P<used>[0-9]*)\s+(?P<free>[0-9]*)\s+(?P<shared>[0-9]*)\s+(?P<buff>[0-9]*)\s+(?P<available>[0-9]*)'
-  | rename name total used free shared buff available
-  | str downcase name
-}
-
 
 def 'from list' [] { $in | lines }
-
-def fc-list [] {
-  ^fc-list | lines | parse '{path}: {name}:style={style}'
-}
 
 module firefox {
   export def tabs [] {
