@@ -33,3 +33,8 @@
 
 (define-configuration prompt-buffer
   ((default-modes (pushnew 'nyxt/mode/vi:vi-insert-mode %slot-value%))))
+
+(define-configuration web-buffer
+  ((default-modes
+    (append %slot-value%
+      '(nyxt/mode/reduce-tracking:reduce-tracking-mode)))))
