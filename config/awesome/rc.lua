@@ -1,5 +1,6 @@
 local awful = require("awful")
 local gears = require("gears")
+local wibox = require("wibox")
 local beautiful = require("beautiful")
 
 ---@param f function|table
@@ -81,9 +82,25 @@ do
 				screen = awful.screen.preferred,
 				placement = awful.placement.no_overlap + awful.placement.no_offscreen
 			}
-		}
+		},
+		{ rule_any = { type = { "normal", "dialog" } }, properties = { titlebars_enabled = true } },
 	}
 end
+
+client.connect_signal("request::titlebars", function(c)
+	awful.titlebar(c):setup {
+		{
+			layout = wibox.layout.fixed.horizontal,
+		},
+		{
+			layout = wibox.layout.flex.horizontal,
+		},
+		{
+			layout = wibox.layout.fixed.horizontal(),
+		},
+		layout = wibox.layout.align.horizontal,
+													}
+end)
 
 -- focus follows mouse.
 client.connect_signal("mouse::enter", function(c)
