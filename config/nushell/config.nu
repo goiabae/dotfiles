@@ -265,7 +265,6 @@ $env.config = {
 
 use completions.nu *
 use xdg.nu
-use sfeed.nu
 use unix.nu
 use x11.nu *
 use yt.nu
@@ -454,9 +453,9 @@ def inv-instances [] {
 
 def s [] { ls | grid --color }
 
-use ~/lib/nu/iptv.nu
-
 def tv [] {
+	use iptv.nu
+
 	let user = (iptv default-user)
 	let file = (xdg cache-home | path join iptv.json)
 
@@ -475,7 +474,10 @@ def tv [] {
 }
 
 # a bug prevents this from being an alias
-def yt [] { sfeed view -p (which mpv | first | get path) youtube }
+def yt [] {
+	use sfeed.nu
+	sfeed view -p (which player | first | get path) youtube
+}
 
 def pomo [--work(-w): duration, --break(-b): duration] {
 	const audio = `/home/goiabae/audio/Gnome sound effect [j3hOd7u35no].opus`
