@@ -379,37 +379,6 @@ def "emacs eval" [exp: string, --server_socket (-s): path]  {
   } else { $in.stdout }
 }
 
-def "org-roam nodes" [] {
-  emacs eval 'org-roam-db-location'
-  | str trim -r
-  | str replace -a '"' ''
-  | open $in
-  | get nodes
-}
-
-def "org-roam random-node" [] {
-  org-roam nodes
-  | get random
-  | select title file
-  | str replace -a '"' '' title file
-}
-
-def accountances [] {
-	cd ~/doc/pdf/accountances/
-	fd .
-	| lines
-	| skip
-	| where not ($it | str ends-with '/')
-	| each { |path|
-		 $path
-		| path basename
-		| parse "{stem}.{ext}"
-		| $in.0.stem
-		| into datetime
-		| {path: $path, expire: $in}
-	}
-}
-
 def 'music' [] {
   let file = '~/doc/table/music.csv'
   open --raw $file | from csv --no-infer | into int score revisions
