@@ -273,28 +273,61 @@ use wrappers.nu *
 use music.nu
 use nix-locate.nu
 
-def weather [--city (-c): string] {
-  let tab = [
-    [name           id     ];
-    ["Toledo"       3446370]
-    ["Sao Paulo"    3448439]
-    ["Paranapanema" 3455061]
-  ]
-  let i = (if $city == null { "Toledo" } else { $city })
-  let id = ($tab | where name == $i | first | get id)
-  let appid = "5f3a866fcadbf0e0615e100650378d72"
-  http get $"http://api.openweathermap.org/data/2.5/weather?id=($id)&units=metric&appid=($appid)"
+def "get random" [] { get (random int 0..(($in | length) - 1)) }
+
+def 'from list' [] { lines }
+
+def "from xbps-repodata" [] {
+	zstdcat '-'
+	| tar --extract --to-stdout --file '-' index.plist
+	| jc --plist
+	| from json
 }
 
-def "get random" [] {
-  $in | get (random int 0..(($in | length) - 1))
+# parses an ipv6 or ipv4 string into a string of digits
+def "from ip" [] -> string { python3 -c $"import ipaddress; print\(int\(ipaddress.ip_address\('($in)'\)\)\)" }
+
+def "secret token" [name] {
+	let res = ^secret token $name | complete
+	if $res.exit_code == 0 {
+		$res.stdout | str trim -r
+	} else error make {
+		msg: "Secret not found."
+	}
 }
 
-def www [...query] {
-  let search_engine = "https://lite.duckduckgo.com/lite/?q="
-  w3m $"($search_engine)($query | str join '+')"
+def ip-geolocation [
+	ip: string # ip is a string of digits
+] -> list<any> {
+	let db = xdg data-home  | path join geolite2-city-ipv6-num.csv
+	if not ($db | path exists) {
+		cd (xdg data-home)
+		http get https://cdn.jsdelivr.net/npm/@ip-location-db/geolite2-city-7z/geolite2-city-ipv6-num.csv.7z | save geolite2-city-ipv6-num.csv.7z
+		7z x geolite2-city-ipv6-num.csv.7z
+	}
+
+	open --raw $db
+	| from csv --no-infer --noheaders
+	| rename start end country state1 state2 city postcode lat lon timezone
+	| where { |it| ($it.start <= $ip) and ($it.end >= $ip) }
+	| first
 }
 
+def weather [--city (-c): string] -> list<any> {
+	let ip = http get https://6.ident.me | from ip
+	let geo = ip-geolocation $ip
+	http get (do { |x| $x | url join } {
+		scheme: https
+		host: api.openweathermap.org
+		path: /data/2.5/weather
+		params: {
+			lat: $geo.lat
+			lon: $geo.lon
+			units: metric
+			appid: (secret token openweathermap)
+		}
+	})
+}
 
 def 'mal anime season' [year: string, season: string] -> list<any> {
   let resp = (http get $"https://myanimelist.net/anime/season/($year)/($season)")
@@ -324,9 +357,6 @@ def 'mal anime season' [year: string, season: string] -> list<any> {
   )
   echo $seasonal_anime
 }
-
-
-def 'from list' [] { $in | lines }
 
 def "firefox tabs" [] -> list<any> {
   cd ~/.mozilla/firefox
@@ -427,21 +457,15 @@ def pomo [--work(-w): duration, --break(-b): duration] {
 	}
 }
 
-def "from xbps-repodata" [] {
-	zstdcat '-'
-	| tar --extract --to-stdout --file '-' index.plist
-	| jc --plist
-	| from json
+def album-tracks [] -> list<any> {
+	use mbz.nu
+	let author = input 'artist name: '
+	let artist = mbz search artist $author | input list 'select artist: '
+	let group = mbz artist release-groups $artist.id | input list 'select release-group: '
+	let release = mbz release-group releases $group.id | input list 'select release: '
+	mbz release recordings $release.id
 }
 
-use mbz.nu
-def album-tracks [] {
-  let author = input 'artist name: '
-  let as = mbz search artist $author
-  let rgs = mbz artist release-groups ($as | input list 'select artist' | get id)
-  let rs = mbz release-group releases ($rgs | input list 'select release-group' | get id)
-  mbz release recordings ($rs | input list 'select release' | get id)
-}
 alias surch = xbps search
 alias wget = ^wget --hsts-file ($env.XDG_DATA_HOME | path join wget.hist)
 alias mitmproxy = ^mitmproxy --set $"confdir=($env.XDG_CONFIG_HOME)/mitmproxy"
