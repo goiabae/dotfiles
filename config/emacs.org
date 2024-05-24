@@ -1421,9 +1421,9 @@ Disable =clang-format= of =clangd= when it can't find a =.clang-format= file.
           "--enable-config"
           (concat
             "--compile-commands-dir="
-            (f-join
-              (project-root (project-current t))
-              "build/")))))))
+            (if (project-current)
+                (f-join (project-root (project-current t)) "build/")
+              (f-join (temporary-file-directory) "eglot-build/"))))))))
 
 (use-package clang-format
   :hook ((c-mode c++-mode) . (lambda () (add-hook 'before-save-hook 'clang-format-buffer nil t)))
