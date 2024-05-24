@@ -271,6 +271,7 @@ use yt.nu
 use xbps.nu
 use wrappers.nu *
 use music.nu
+use nix-locate.nu
 
 def weather [--city (-c): string] {
   let tab = [
