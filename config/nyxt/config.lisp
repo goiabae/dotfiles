@@ -38,3 +38,19 @@
   ((default-modes
     (append %slot-value%
       '(nyxt/mode/reduce-tracking:reduce-tracking-mode)))))
+
+(defvar battery-theme
+  (make-instance 'theme:theme
+    :background-color "#fef5d8"
+    :secondary-color "#bdae93"
+    :text-color "#262524"
+    :action-color- "#d67146"
+    :action-color "#d67146"
+    :action-color+ "#d67146"
+    :primary-color "#635852"
+    :codeblock-color "#e7d8b3"
+    :background-color- "#f2e4ba"
+    :background-color+ "#fcf7e8"))
+
+(define-configuration browser
+  ((theme battery-theme)))
