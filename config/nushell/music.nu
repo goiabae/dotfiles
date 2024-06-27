@@ -12,11 +12,13 @@ export def add-mbid [entry] {
 		  "list" =>  { mbz search list $entry.author $entry.title }
 		}
 	if ($tracks | is-empty) { return }
-	# ytfzf -L $"($entry.title by $entry.author)"
-	let id = do {
+  let exact = $tracks | filter { |it| $it.author == $entry.author and $it.title == $entry.title and $it.score == 100 }
+	let id = if ($exact | is-not-empty) {
+		$exact.0.id
+  } else {
 		print ($tracks | merge (0..($in | length) | wrap index))
 		$tracks | get (input 'Enter index: ' | into int) | get id
-	}
+  }
 	open $db | query db $"
 	  update music
 		set mbid = '($id)',
@@ -24,13 +26,9 @@ export def add-mbid [entry] {
 		where author = \"($entry.author)\"
 		  and title = \"($entry.title)\";
   "
-	return
 }
 
 export def add [author, title, type, --force(-f)] {
-	# let author = input 'Enter author: '
-	# let title = input 'Enter title: '
-	# let type = [track list] | input list 'Select a type:'
 	let score = input 'Enter score: '
 	let today = date now | format date '%Y-%m-%d'
 	let mbid = do {
@@ -47,7 +45,11 @@ export def add [author, title, type, --force(-f)] {
 			}
 		} else {
 		  print $ids
-		  $ids | get (input 'Enter index: ' | into int) | get id
+			try {
+				$ids | get (input 'Enter index: ' | into int) | get id
+			} catch {
+				""
+			}
 		}
 	}
 	if $mbid == null { return }
@@ -66,12 +68,10 @@ export def add [author, title, type, --force(-f)] {
 	)
 }
 
-export def review [] {
+export def review [entry] {
 	let today = date now | format date '%Y-%m-%d'
-	let old = open $db | query db "select * from music where not mbid = '';" | into datetime modified | where ((date now ) - $it.modified) > 365day
-	let entry = do { print $old; $old | get (input 'Enter index: ' | into int) | get mbid }
 	let score = input 'Enter score: ' | into float
-	open $db | query db $"update music set modified = '($today)', score = ($score) where mbid = '($entry)'"
+	open $db | query db $"update music set modified = '($today)', score = ($score) where mbid = '($entry.mbid)';"
 }
 
 export def "todo add" [author: string, title: string, type: string] {
@@ -82,10 +82,14 @@ export def "todo add" [author: string, title: string, type: string] {
 
 export def todo [] { open $db | query db "select * from todo;" }
 
-export def "todo done" [entry] {
+export def "todo done" [entry, --force(-f)] {
 	open $db | query db "delete from todo where author = :author and title = :title and type = :type;" -p $entry
 	let author = $entry.author
 	let title = $entry.title
 	let type = $entry.type
-	add $author $title $type
+	if $force {
+		add --force $author $title $type
+	} else {
+		add $author $title $type
+	}
 }
