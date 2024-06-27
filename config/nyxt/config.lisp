@@ -32,7 +32,7 @@
   ((default-modes (pushnew 'nyxt/mode/vi:vi-normal-mode %slot-value%))))
 
 (define-configuration prompt-buffer
-  ((default-modes (pushnew 'nyxt/mode/vi:vi-insert-mode %slot-value%))))
+  ((default-modes (pushnew 'nyxt/mode/emacs:emacs-mode %slot-value%))))
 
 (define-configuration web-buffer
   ((default-modes
