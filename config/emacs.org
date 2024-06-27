@@ -1,8 +1,10 @@
 #+title: Emacs configuration
 #+author: Guilherme Machado
 
+Three files are generated in the user's Emacs configuration directory: =early-init.el=, =init.el= and =full.el=. For fast startup, when invoked from the terminal (with =VISUAL= or =EDITOR= environment variables) as an external editor by other programs, such as git, don't load the =full.el= configuration.
+
 * early init
-[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html][This]] file is loaded *before* package.el and the GUI are initialized. Always use lexical binding. *ALWAYS*.
+[[https://www.gnu.org/software/emacs/manual/html_node/emacs/Early-Init-File.html][This]] file is loaded *before* package.el and the GUI are initialized.
 
 #+begin_src elisp :tangle (locate-user-emacs-file "early-init.el") :noweb yes
 ;; -*- lexical-binding: t -*-
@@ -65,7 +67,6 @@ Disable loading those files.
 #+end_src
 
 * init
-Don't load =full.el= when running on terminal. For example when invoked by the =VISUAL= or =EDITOR= variables by a terminal program (e.g. git or editor).
 
 #+begin_src elisp :tangle (locate-user-emacs-file "init.el") :noweb yes
 ;; -*- lexical-binding: t -*-
@@ -80,7 +81,7 @@ Don't load =full.el= when running on terminal. For example when invoked by the =
 <<init-rest>>
 
 (when (or (display-graphic-p) (daemonp))
-    (require 'full))
+  (require 'full))
 
 (provide 'init)
 #+end_src
@@ -249,14 +250,14 @@ Don't load =full.el= when running on terminal. For example when invoked by the =
   (setq meow-use-clipboard t
         meow-visit-sanitize-completion nil)
   (meow-global-mode 1)
-  (setq-default meow-cursor-type-insert 'box
-                meow-cursor-type-beacon 'box
-                meow-cursor-type-normal 'box
-                meow-cursor-type-keypad 'box
-                meow-cursor-type-motion 'box
-                meow-cursor-type-default 'box
-                meow-cursor-type-region-cursor 'box
-                )
+  (setq-default
+    meow-cursor-type-insert 'box
+    meow-cursor-type-beacon 'box
+    meow-cursor-type-normal 'box
+    meow-cursor-type-keypad 'box
+    meow-cursor-type-motion 'box
+    meow-cursor-type-default 'box
+    meow-cursor-type-region-cursor 'box)
   (add-to-list 'meow-mode-state-list '(comint-mode . normal)))
 #+end_src
 
@@ -268,8 +269,7 @@ Stop =electric= from indent things automatically. Highlight matching pairs of ch
 (use-package electric
   :elpaca nil
   :custom (electric-indent-inhibit t)
-  ;; disable auto-identation
-  :config (electric-indent-mode nil))
+  :config (electric-indent-mode nil)) ;; disable auto-identation
 
 (use-package elec-pair
   :elpaca nil
@@ -283,7 +283,7 @@ Stop =electric= from indent things automatically. Highlight matching pairs of ch
   :config (electric-pair-mode t))
 
 (setq-default indent-tabs-mode t
-              fill-column 70
+              fill-column 80
               truncate-lines nil)
 #+end_src
 
@@ -323,7 +323,7 @@ When running on a non-graphic display (terminal, for example), by default Emacs 
 #+name: cursor-appearance
 #+begin_src elisp
 (blink-cursor-mode -1)
-(setq visible-cursor nil)
+(setopt visible-cursor nil)
 #+end_src
 
 *** highlight whitespace
@@ -345,17 +345,16 @@ Add some directories to better integrate with the system. Prevent packages from 
 #+begin_src elisp
 (require 'xdg)
 
-(setq user-emacs-directory (expand-file-name "emacs" (xdg-config-home)))
+(setopt user-emacs-directory (expand-file-name "emacs" (xdg-config-home)))
 
 (push user-emacs-directory load-path)
 (push (expand-file-name "~/lib/elisp") load-path)
 
-(setq temporary-file-directory
+(setopt temporary-file-directory
       (expand-file-name "emacs/" (xdg-runtime-dir)))
 
 (unless (file-exists-p temporary-file-directory)
   (make-directory temporary-file-directory))
-
 #+end_src
 
 ** compilation
@@ -470,7 +469,8 @@ This assumes that this version of Emacs has the `bind-key' included in the defau
  ("C-="       . text-scale-increase)
  ("C-c ,"     . switch-to-buffer)
  ("C-c ."     . find-file)
- ("C-c b i"   . ibuffer)
+ ("C-c b l"   . list-buffers)
+ ("C-c b o"   . mode-line-other-buffer)
  ("C-c c"     . compile)
  ("C-c f d"   . delete-frame)
  ("C-c f m"   . make-frame)
@@ -487,6 +487,7 @@ This assumes that this version of Emacs has the `bind-key' included in the defau
  ("C-c w j"   . windmove-down)
  ("C-c w k"   . windmove-up)
  ("C-c w l"   . windmove-right)
+ ("C-c w o"   . other-window)
  ("C-c w s b" . split-window-below)
  ("C-c w s r" . split-window-right)
  ("C-h F"     . describe-face)
@@ -525,9 +526,7 @@ When pressing chorded commands show a little banned on the modeline givin hints 
 
 #+name: init-rest
 #+begin_src elisp :noweb yes
-<<auto-save-files>>
-<<lock-files>>
-<<backup-files>>
+<<annoying-files>>
 <<custom-el-file>>
 <<interactive-commands>>
 <<no-remember-point-unreadable>>
@@ -541,31 +540,22 @@ When pressing chorded commands show a little banned on the modeline givin hints 
 <<fs-str-libs>>
 #+end_src
 
-*** auto save
+*** annoying files
+Put auto-save files in a temporary directory. Don't auto-save every file. Delete the auto-save files when the buffer is manually saved.
 
-#+name: auto-save-files
+Make backup files. Save them in a temporary directory.
+
+#+name: annoying-files
 #+begin_src elisp
 (setq delete-auto-save-files t
       auto-save-list-file-prefix
-      (expand-file-name "auto-save" temporary-file-directory)
+        (expand-file-name "auto-save" temporary-file-directory)
       auto-save-default nil
       auto-save-file-name-transforms
-       `((".*" ,temporary-file-directory t)))
+        `((".*" ,temporary-file-directory t)))
 
-(auto-save-mode -1)
-#+end_src
-
-*** lock files
-
-#+name: lock-files
-#+begin_src elisp
 (setq create-lockfiles nil)
-#+end_src
 
-*** backup files
-
-#+name: backup-files
-#+begin_src elisp
 (setq backup-directory-alist
       `(("." . ,(expand-file-name "backup" temporary-file-directory))
         (,tramp-file-name-regexp . nil))
@@ -688,26 +678,50 @@ Disable automatic resize without any confirmation.
 #+end_src
 
 * full
-:PROPERTIES:
-:header-args: :tangle (locate-user-emacs-file "full.el")
-:END:
-Always use lexical binding. *ALWAYS*.
 
-#+begin_src elisp
+#+begin_src elisp :tangle (locate-user-emacs-file "full.el") :noweb yes
 ;; -*- lexical-binding: t -*-
 
 (require 'map)
 (require 'seq)
+
+<<full-visuals>>
+<<full-feel-good>>
+<<file-manager>>
+<<discoverability>>
+<<full-notes>>
+<<full-shell>>
+<<full-os-interface>>
+<<full-development>>
+
+(use-package ripgrep
+  :commands ripgrep-regexp
+  :bind ("C-c g"   . ripgrep-regexp))
+
+(provide 'full)
 #+end_src
 
 ** visuals
 Disable toolbar. When changing window hovered, focus on the new one. Unprettify symbols when "inside"" it.
 
-#+begin_src elisp
+#+name: full-visuals
+#+begin_src elisp :noweb yes
 (tool-bar-mode -1)
 
 (setq prettify-symbols-unprettify-at-point 'right-edge)
 (setq mouse-autoselect-window t)
+
+<<theme>>
+<<frames>>
+<<git-line-indicator>>
+<<mode-line>>
+<<fonts>>
+<<line-numbers>>
+<<scroll>>
+<<visual-bell>>
+<<highlight-todo-keywords>>
+<<popup-windows>>
+<<minimap>>
 #+end_src
 
 *** theme
@@ -715,6 +729,7 @@ The type of theme (light or dark) accompanies the day-night cycle (in theory, at
 
 The advice ensures that the color palette is available to the user as global variables of each color.
 
+#+name: theme
 #+begin_src elisp
 (use-package autothemer)
 
@@ -737,8 +752,9 @@ The advice ensures that the color palette is available to the user as global var
 #+end_src
 
 *** frames
-Set the window of graphical frames. Frames should be resized pixel-by-pixel, rather than by character, or whatever Emacs does by default. Set default geometry of a new frame.
+Set the window name of graphical frames. Frames should be resized pixel-by-pixel, rather than by character, or whatever Emacs does by default.
 
+#+name: frames
 #+begin_src elisp
 (setq frame-title-format
       '(buffer-line-name "Emacs %b (%f)" "Emacs %b")
@@ -746,27 +762,22 @@ Set the window of graphical frames. Frames should be resized pixel-by-pixel, rat
 #+end_src
 
 *** git status of line on left margin
-Show git status of lines on the left side of the windows. Change the default ugly signs to ASCII ones. This should be enabled for all modes derived from src_elisp{`prog-mode'}.
+Show git status of lines on the left side of the windows. Change the default ugly signs to ASCII ones.
 
+#+name: git-line-indicator
 #+begin_src elisp
 (use-package git-gutter
-  :hook (prog-mode . git-gutter-mode)
+  :hook (fundamental-mode . git-gutter-mode)
   :config
   (setq git-gutter:added-sign    "+"
         git-gutter:modified-sign "~"
         git-gutter:deleted-sign  "-"
         git-gutter:update-interval 0.02))
-
-(use-package git-gutter-fringe
-  :defer t
-  :config
-  ;; FIXME what is this?
-  (define-fringe-bitmap 'git-gutter-fr:added    [224] nil nil '(center repeated))
-  (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
-  (define-fringe-bitmap 'git-gutter-fr:deleted  [128 192 224 240] nil nil 'bottom))
 #+end_src
 
 *** modeline
+
+#+name: mode-line
 #+begin_src elisp
 (defface yeet/mode-line-buffer-name
   `((t . (:inherit 'mode-line :background "#edd76d")))
@@ -783,9 +794,7 @@ Show git status of lines on the left side of the windows. Change the default ugl
 (defface yeet/mode-line-executable-buffer
   `((t . (:inherit 'mode-line :foreground "#302f16" :weight bold)))
   "Background color lightest yellow.")
-#+end_src
 
-#+begin_src elisp
 (setq column-number-mode t) ;; include column number in mode-line coordinates
 
 (defun yeet/make-file-executable (file-path)
@@ -854,18 +863,9 @@ Show git status of lines on the left side of the windows. Change the default ugl
 *** fonts
 I don't know if this is the best way of doing this. I would want to do something more declarative, rather.
 
+#+name: fonts
 #+begin_src elisp
-;; nil means all frames
-(set-face-attribute 'default nil
-  :family "SauceCodePro Nerd Font Mono"
-  :height 100)
-
-(set-face-attribute 'fixed-pitch nil
-  :inherit 'default)
-
-(set-face-attribute 'variable-pitch nil
-  :family "NotoSans Display Nerd Font"
-  :height 105)
+(set-face-attribute 'default nil :height 100)
 
 ;; set font for character sets from languages of East Asia
 ;; t to use the default fontset
@@ -877,6 +877,8 @@ I don't know if this is the best way of doing this. I would want to do something
 #+end_src
 
 *** line numbers
+
+#+name: line-numbers
 #+begin_src elisp
 (use-package display-line-numbers
   :elpaca nil
@@ -886,23 +888,33 @@ I don't know if this is the best way of doing this. I would want to do something
 #+end_src
 
 *** better scrolling
+
+#+name: scroll
 #+begin_src elisp
 (setq scroll-step 1
       scroll-preserve-screen-position t
       scroll-margin 3
       scroll-conservatively 101
       scroll-up-aggressively 0.01
-      scrolll-down-aggressively 0.01
+      scroll-down-aggressively 0.01
       hscroll-step 1
       hscroll-margin 1
 
       ;; reduce cursor lag
       auto-window-vscroll nil)
+
+(when (not (version< emacs-version "29.1"))
+    (setq pixel-scroll-precision-large-scroll-height 40.0))
+
+(pixel-scroll-precision-mode t)
 #+end_src
+
+https://def.lakaban.net/2023-03-05-high-quality-scrolling-emacs/
 
 *** visual bell
 The src_elisp{`ring-bell'} function flashes the mode-line in inverted colors. This is triggered by events such as trying to src_elisp{`delete-backward-char'} on empty modeline buffer.
 
+#+name: visual-bell
 #+begin_src elisp
 (setq visible-bell nil
       ring-bell-function
@@ -912,8 +924,9 @@ The src_elisp{`ring-bell'} function flashes the mode-line in inverted colors. Th
 #+end_src
 
 *** highlight comment keywords
-Highlight things like TODO, FIXME and NOTE on comments and =org-mode= headings.
+Highlight things like TODO, FIXME and NOTE on comments. This only works for =prog-mode= and is not related to =org-mode= todo keywords.
 
+#+name: highlight-todo-keywords
 #+begin_src elisp
 (use-package hl-todo
   :hook (prog-mode . hl-todo-mode)
@@ -925,21 +938,88 @@ Highlight things like TODO, FIXME and NOTE on comments and =org-mode= headings.
           ("WARN"  . warning))))
 #+end_src
 
+*** pop-ups create windows, not frames
+Wether or not popups should create new frames instead of splitting windows. May not work with all modes. This is good when using a tiling window manager.
+
+#+name: popup-windows
+#+begin_src elisp
+(setq-default pop-up-frames nil
+              pop-up-windows t)
+#+end_src
+
+*** side minimap
+
+#+name: minimap
+#+begin_src elisp
+(use-package minimap
+  :custom
+  (minimap-window-location 'right)
+  (minimap-update-delay 0.5))
+#+end_src
+
 ** file manager
 =dired-omit-files= is used to hide dotfiles by default.
 
+#+name: file-manager
 #+begin_src elisp
 (use-package dired
   :elpaca nil
   :hook ((dired-mode . auto-revert-mode)
-         (dired-mode . dired-hide-details-mode)
-         (dired-mode . dired-omit-mode))
+         (dired-mode . dired-hide-details-mode))
   :custom (dired-omit-files (rx bol ?. (not (any ?.)))))
 #+end_src
 
-** mini buffer selection menu
+** help and discoverability
+The =helpful= package puts *more information* into the =*Help*= buffers, making the more useful.
+
+#+name: discoverability
+#+begin_src elisp :noweb yes
+(use-package helpful
+  :elpaca (helpful
+           :type git
+           :host github
+           :repo "Wilfred/helpful")
+  :bind (("C-h f" . helpful-callable)
+         ("C-h v" . helpful-variable)
+         ("C-h k" . helpful-key)
+         ("C-h o" . helpful-symbol)))
+
+<<apropos>>
+#+end_src
+
+=apropos= searches for symbols matching a pattern and displays info about them. Good for search things when you don't know their name. =apropos-command= only searches commands (and/or functions).
+
+#+name: apropos
+#+begin_src elisp
+(setq-default apropos-do-all t)
+#+end_src
+
+** make editor feel good
+
+#+name: full-feel-good
+#+begin_src elisp :noweb yes
+(use-package company
+  :hook prog-mode
+  :custom
+  (company-format-margin-function #'company-text-icons-margin)
+  (company-selection-wrap-around t)
+  (company-minimum-prefix-length 1)
+  (company-clang-use-compile-flags-txt t))
+
+(use-package orderless
+  :custom
+  (completion-styles '(orderless))
+  (completion-category-overrrides
+   '((file (styles partial-completion)))))
+
+<<full-mini-buffer>>
+<<full-dashboard>>
+#+end_src
+
+*** mini buffer selection menu
 The =vertico= package replaces the default minibuffer input area with a *vertical list of items* (a grid is also available). In general, this makes it easier to find things.
 
+#+name: full-mini-buffer
 #+begin_src elisp
 (use-package vertico
   :elpaca (vertico
@@ -955,48 +1035,32 @@ The =vertico= package replaces the default minibuffer input area with a *vertica
   (vertico-preselect 'prompt))
 #+end_src
 
-** help and discoverability
-The =helpful= package puts *more information* into the =*Help*= buffers, making the more useful.
+*** dashboard
+After the =elpaca= queue has being emptied, load the dashboard. Whenever creating a new frame, open the dashboard by default.
 
+#+name: full-dashboard
 #+begin_src elisp
-(use-package helpful
-  :elpaca (helpful
-           :type git
-           :host github
-           :repo "Wilfred/helpful")
-  :bind (("C-h f" . helpful-callable)
-         ("C-h v" . helpful-variable)
-         ("C-h k" . helpful-key)
-         ("C-h x" . helpful-command)))
-#+end_src
-
-=apropos= searches for symbols matching a pattern and displays info about them. Good for search things when you don't know their name. =apropos-command= only searches commands (and/or functions).
-
-#+begin_src elisp
-(setq-default apropos-do-all t)
-#+end_src
-
-** auto-completion
-#+begin_src elisp
-(use-package company
-  :hook prog-mode
+(use-package dashboard
+  :elpaca t
+  :hook ((elpaca-after-init . dashboard-insert-startupify-lists)
+         (elpaca-after-init . dashboard-initialize))
   :custom
-  (company-format-margin-function #'company-text-icons-margin)
-  (company-selection-wrap-around t)
-	(company-minimum-prefix-length 1)
-	(company-clang-use-compile-flags-txt t))
-
-(use-package orderless
-  :custom
-	(completion-styles '(orderless))
-	(completion-category-overrrides
-   '((file (styles partial-completion)))))
+  (initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+  (dashboard-startup-banner nil)
+  (dashboard-projects-backend 'project-el)
+  (dashboard-items
+   '((recents  . 10)
+     (projects . 5)
+     (agenda   . 10)))
+  :config
+  (dashboard-setup-startup-hook))
 #+end_src
 
-** org
+** note taking
 Don't align block text with heading text. One space of additional indentation on each heading level. "/Fontify/" source block delimiters such that faces can be applied to them. Hide things like /italic/ and *bold* characters.
 
-#+begin_src elisp
+#+name: full-notes
+#+begin_src elisp :noweb yes
 (use-package org
   :elpaca `,(maybe-recipe 'org)
   :bind (("C-c o i" . org-id-get-create)
@@ -1027,7 +1091,7 @@ Don't align block text with heading text. One space of additional indentation on
     (list
       (expand-file-name "todo.org" org-directory)
       (expand-file-name "task.org" org-directory)))
-  (org-todo-keywords '((sequence "TODO" "DOING" "DONE")))
+  (org-todo-keywords '((sequence "TODO" "DOING" "DONE(!)")))
   (org-todo-keyword-faces '(("DOING" . org-doing)))
   :config
   (defface org-doing
@@ -1046,8 +1110,7 @@ Don't align block text with heading text. One space of additional indentation on
   (add-to-list 'warning-suppress-types '(org-element-cache))
   (defun yeet/update-org-latex-fragment-scale ()
     (let ((text-scale-factor (expt text-scale-mode-step text-scale-mode-amount)))
-      (plist-put org-format-latex-options :scale (* 1.2 text-scale-factor))))
-  (setq org-latex-compiler "lualatex"))
+      (plist-put org-format-latex-options :scale (* 1.2 text-scale-factor)))))
 
 ;; contains additional babel sub-packages
 (use-package org-contrib
@@ -1057,10 +1120,20 @@ Don't align block text with heading text. One space of additional indentation on
 (use-package org-cliplink
   :after org
   :bind ("C-c o l c" . org-cliplink))
+
+<<full-org-slides>>
+<<full-org-blocks>>
+<<full-org-roam>>
+<<full-org-literate>>
+<<full-org-visuals>>
+<<full-org-latex>>
+<<full-spell-checker>>
+<<full-pdf>>
 #+end_src
 
 *** presentation slides
 
+#+name: full-org-slides
 #+begin_src elisp
 (use-package org-tree-slide
   :after org
@@ -1072,6 +1145,7 @@ Don't align block text with heading text. One space of additional indentation on
 *** block shortcuts
 This adds little shortcuts like <s TAB, which create a new source block under point. Saves a lot of time.
 
+#+name: full-org-blocks
 #+begin_src elisp
 (use-package org-tempo
   :elpaca `,(maybe-recipe 'org-tempo)
@@ -1081,11 +1155,11 @@ This adds little shortcuts like <s TAB, which create a new source block under po
 *** "/relational"/ note taking
 We add a new entry to the src_elisp{`display-buffer-alist'} for =org-roam=, such that it's buffer is placed on the right side of the current buffer.
 
+#+name: full-org-roam
 #+begin_src elisp
 (use-package org-roam
-  :requires org
-  :bind (("C-c o r j" . org-roam-dailies-find-today)
-         ("C-c o r f" . org-roam-node-find)
+  :after org
+  :bind (("C-c o r f" . org-roam-node-find)
          ("C-c o r i" . org-roam-node-insert)
          ("C-c o r w" . yeet/goto-notes-weekly)
          ("C-c o r b" . org-roam-buffer-toggle))
@@ -1093,8 +1167,9 @@ We add a new entry to the src_elisp{`display-buffer-alist'} for =org-roam=, such
   (defun yeet/goto-notes-weekly ()
     "Opens current week's `org-roam' entry."
     (interactive)
-    (org-roam-dailies-find-today "w"))
-  (setq display-buffer-alist
+    (org-roam-dailies-goto-today "w"))
+  :custom
+  (display-buffer-alist
     (map-insert display-buffer-alist "\\*org-roam\\*"
       '((display-buffer-in-side-window)
         (side . right)
@@ -1103,7 +1178,6 @@ We add a new entry to the src_elisp{`display-buffer-alist'} for =org-roam=, such
         (window-parameters
           . ((no-other-window . t)
              (no-delete-other-windows . t))))))
-  :custom
   (org-roam-directory org-directory)
   (org-roam-dailies-directory "journal/")
   (org-roam-file-exclude-regexp '("\\.stfolder" "\\.stignore" "\\.stversions" "data/"))
@@ -1136,15 +1210,18 @@ We add a new entry to the src_elisp{`display-buffer-alist'} for =org-roam=, such
 
 (use-package org-roam-ui
   :after org-roam
+  :bind (("C-c o r g" . org-roam-ui-mode))
   :commands org-roam-ui-mode
   :custom (org-roam-ui-sync-theme t))
 #+end_src
 
 *** source code execution and literate programming
+
+#+name: full-org-literate
 #+begin_src elisp
 ;; org-babel
 (use-package ob
-  :elpaca nil
+  :elpaca nil ;; shipped with org-mode
   :after org
   :custom
   (org-babel-load-languages
@@ -1157,7 +1234,6 @@ We add a new entry to the src_elisp{`display-buffer-alist'} for =org-roam=, such
 
 ;; automatically tangle blocks when saving buffer
 (use-package org-auto-tangle
-  :disabled
   :after org
   :hook (org-mode . org-auto-tangle-mode))
 #+end_src
@@ -1165,6 +1241,7 @@ We add a new entry to the src_elisp{`display-buffer-alist'} for =org-roam=, such
 *** TODO alignment and line wrapping
 Have to find a better way to load src_elisp{`org-phscroll'}.
 
+#+name: full-org-visuals
 #+begin_src elisp
 (use-package olivetti
   :hook (org-mode . olivetti-mode)
@@ -1183,6 +1260,8 @@ Have to find a better way to load src_elisp{`org-phscroll'}.
 #+end_src
 
 *** latex fragments
+
+#+name: full-org-latex
 #+begin_src elisp
 (use-package org-latex
   :no-require
@@ -1248,15 +1327,8 @@ line are justified."
                                            (org-remove-latex-fragment-image-overlays ,beg ,end)))
                                       map)))
 
-  ;; advise the function to a
   (advice-add 'org--format-latex-make-overlay :after 'org-justify-fragment-overlay)
   (advice-add 'org--format-latex-make-overlay :after 'org-latex-fragment-tooltip))
-
-(use-package math-preview
-  :disabled
-  :custom
-  (math-preview-command "/home/goiabae/var/npm/bin/math-preview")
-  (math-preview-scale 1.1))
 
 ;; auto generate inline latex images
 (use-package org-fragtog
@@ -1266,8 +1338,10 @@ line are justified."
 
 *** spell checker
 
+#+name: full-spell-checker
 #+begin_src elisp :tangle no
 (use-package ispell
+  :disabled
   :elpaca nil
   :hook (org-mode . flyspell-mode)
   :config
@@ -1277,22 +1351,46 @@ line are justified."
   (ispell-hunspell-add-multi-dic ispell-dictionary))
 #+end_src
 
+*** pdf annotation
+My petty attempt at building the ultimate PDF annotation/search setup. Highlighting and annotations are separate things, which is annoying.
+
+#+name: full-pdf
+#+begin_src elisp
+(use-package pdf-tools
+  :config
+  (pdf-tools-install)
+  (pdf-loader-install))
+
+(use-package org-noter)
+#+end_src
+
 ** terminal and shell
 
+#+name: full-shell
 #+begin_src elisp
 (use-package esh-mode
   :elpaca nil
   :config (setq eshell-directory-name
                 (expand-file-name "emacs/eshell/" (xdg-data-home))))
-#+end_src
 
-#+begin_src elisp
 (use-package vterm)
 #+end_src
 
-** project management
+** development
+
+#+name: full-development
+#+begin_src elisp :noweb yes
+<<full-project>>
+<<full-direnv>>
+<<full-lsp>>
+<<full-dap>>
+<<full-languages>>
+<<full-git>>
+#+end_src
+
 After having some issues with =eglot= wanting to call a function not in the built-in distribution of package, I've decided to install =project=, instead.
 
+#+name: full-project
 #+begin_src elisp
 (use-package project
   :elpaca `,(maybe-recipe 'project)
@@ -1307,339 +1405,58 @@ After having some issues with =eglot= wanting to call a function not in the buil
 
 This allows for arbitrary shell scripts and environment variables to be sourced in a reversible way when switching buffers (cwd changes). Integrates nicely with =nix= shells.
 
+#+name: full-direnv
 #+begin_src elisp
 (use-package direnv :config (direnv-mode))
 #+end_src
 
-** programming languages
-
-#+begin_src elisp
-(defun yeet/disable-tabs () (setq indent-tabs-mode nil))
-(defun yeet/enable-tabs  () (setq indent-tabs-mode t  ))
-#+end_src
-
 *** LSP client
-#+begin_src elisp :noweb yes
+For now, I just disable formatting LSP messages altogether.
+
+#+name: full-lsp
+#+begin_src elisp
 (use-package eglot
   :elpaca `,(maybe-recipe 'eglot)
-  :after project
-  :config
-  <<eglot-disable-server-formatting>>)
+  :after (project)
+  :custom
+  (eglot-ignored-server-capabilities
+    '(:documentOnTypeFormattingProvider
+       :documentFormattingProvider
+       :documentRangeFormattingProvider)))
 #+end_src
 
-**** TODO fix very annoying formatter
-For now, I just disable the =onTypeFormatting= LSP message altogether.
+*** TODO DAP client
+Broken with the current version of jsonrpc included in Emacs 29. Works in Emacs 30.
 
-#+name: eglot-disable-server-formatting
-#+begin_src elisp :tangle nil
-(setopt eglot-ignored-server-capabilities
-  '(:documentOnTypeFormattingProvider
-    :documentFormattingProvider
-    :documentRangeFormattingProvider))
-#+end_src
-
-*** DAP client
-
+#+name: full-dap
 #+begin_src elisp
 (use-package dape
+  :if (not (version< emacs-version "30"))
   :elpaca (dape :type git :host github :repo "svaante/dape")
   :custom (dape-buffer-window-arrangement 'right))
 #+end_src
 
-*** Tree Sitter
+*** programming languages
 
-#+begin_src elisp
+#+name: full-languages
+#+begin_src elisp :noweb yes
+(defun yeet/disable-tabs () (setq indent-tabs-mode nil))
+(defun yeet/enable-tabs  () (setq indent-tabs-mode t  ))
+
 (use-package treesit
   :elpaca `,(maybe-recipe 'treesit))
-#+end_src
 
-*** LISPs
+<<full-lisp>>
+<<full-c-cpp>>
+<<full-j>>
+<<full-zig>>
+<<full-lua>>
+<<full-python>>
+<<full-markdown>>
+<<full-ocaml>>
+<<full-tex>>
+<<full-nushell>>
 
-#+begin_src elisp
-(defun yeet/lisp-prettify-symbols ()
-  (setq-local prettify-symbols-alist '(("lambda" . ?λ)))
-  (prettify-symbols-mode))
-
-(use-package rainbow-delimiters
-  :hook ((lisp-data-mode clojure-mode) . rainbow-delimiters-mode))
-#+end_src
-
-**** Clojure
-#+begin_src elisp
-(use-package clojure-mode
-  :commands clojure-mode
-  :config
-  ;; this makes so that clojure code is always indented relative
-  ;; to the indentation of the current root and not to the arguments
-  ;; of a function
-  (setq clojure-indent-style 'always-indent))
-#+end_src
-
-**** Emacs Lisp
-#+begin_src elisp
-(use-package elisp-mode
-  :elpaca nil
-  :hook ((emacs-lisp-mode . yeet/disable-tabs)
-         (emacs-lisp-mode . yeet/lisp-prettify-symbols)))
-#+end_src
-
-**** Common LISP
-#+begin_src elisp
-(use-package lisp-mode
-  :elpaca nil
-  :hook ((lisp-mode . yeet/disable-tabs)
-         (lisp-mode . yeet/lisp-prettify-symbols)
-         (lisp-mode .
-           (lambda ()
-             (setq-local lisp-indent-function 'common-lisp-indent-function))))
-  :custom (lisp-indent-offset 2))
-
-(use-package sly
-  :after lisp-mode
-  :commands sly
-  :config (setq inferior-lisp-program "/bin/sbcl"))
-#+end_src
-
-*** C and C++
-Disable =clang-format= of =clangd= when it can't find a =.clang-format= file.
-
-#+begin_src elisp
-(use-package cc-mode
-  :elpaca nil
-  :requires eglot
-  :hook ((c-mode c++-mode) . eglot-ensure)
-  :custom (c-label-minimum-indentation 0)
-  :config
-  (when (not (locate-file "clangd" exec-path))
-    (warn "`clangd' not in `exec-path'. Emacs won't be able to connect to C/C++ LSP server."))
-  (add-to-list 'eglot-server-programs
-    (cons '(c-mode c++-mode)
-      (lambda (x)
-        (list
-          "clangd"
-          "--fallback-style=none"
-          "--enable-config"
-          (concat
-            "--compile-commands-dir="
-            (if (project-current)
-                (f-join (project-root (project-current t)) "build/")
-              (f-join (temporary-file-directory) "eglot-build/"))))))))
-
-(use-package clang-format
-  :hook ((c-mode c++-mode) . (lambda () (add-hook 'before-save-hook 'clang-format-buffer nil t)))
-  :config
-  (setq clang-format-style "file"
-        ;; if no `.clang-format' is found, don't do anything
-        clang-format-fallback-style "none"))
-#+end_src
-
-**** cmake
-Have not found a good solution with working with CMake in Emacs yet. This will have to do.
-
-#+begin_src elisp
-(use-package cmake-mode)
-
-(defun yeet/cmake-prepare (is-release)
-  (interactive
-   (list (yes-or-no-p "Set build type to Release (otherwise Debug)? ")))
-  (let ((default-directory (project-root (project-current t)))
-        (compile-command
-         (s-join " "
-                 (list "cmake" "-S" "." "-B" "build" "-Wdeprecated" "-D" (concat "CMAKE_BUILD_TYPE=" (if is-release "Release" "Debug")) "-D" "CMAKE_EXPORT_COMPILE_COMMANDS=1"))))
-    (call-interactively 'compile)))
-
-(defun yeet/cmake-build ()
-  (interactive)
-  (let ((default-directory (project-root (project-current t)))
-        (compile-command "cmake --build build"))
-    (call-interactively 'compile)))
-#+end_src
-
-**** debugger
-#+begin_src elisp
-(use-package realgud
-  :disabled
-  :bind ("C-c d" . realgud:gdb))
-#+end_src
-
-**** disassembler
-#+begin_src elisp
-(use-package rmsbolt :commands rmsbolt)
-#+end_src
-
-**** snippet inserting/autocomplete
-Does things like insert if statements and other boring repetitive stuff.
-
-#+begin_src elisp
-(use-package yasnippet-snippets)
-(use-package yasnippet
-  :after yasnippet-snippets
-  :hook ((c-mode c++-mode) . yas-minor-mode)
-  :config (yas-reload-all))
-#+end_src
-
-**** compilation
-#+begin_src elisp
-(setq compilation-scroll-output nil)
-#+end_src
-
-**** bison and flex
-Don't run =c-mode= on those files. That will just mess everything up. As a better alternative, use =fence-edit=. It's on the bottom of the file.
-
-#+begin_src elisp
-(add-to-list 'auto-mode-alist '("\\.y\\'" . prog-mode))
-(add-to-list 'auto-mode-alist '("\\.l\\'" . prog-mode))
-#+end_src
-
-*** J
-On Void Linux this is pretty finnicky since the default name of the console executable is =jc= due to conflicts with other packages.
-
-#+begin_src elisp
-(use-package j-mode
-  :elpaca (j-mode :type git :host github :repo "LdBeth/j-mode")
-  :config (setq j-console-cmd "jconsole"))
-
-(use-package ob-J
-  :elpaca nil ;; comes from `'org-contrib'
-  :after (ob org-contrib j-mode)
-  :custom (org-babel-J-command "jconsole")
-  :config (add-to-list 'org-babel-load-languages '(J . t)))
-#+end_src
-
-*** Zig
-Zig always indents by 4 spaces. Use =zls= as the language server.
-
-#+begin_src elisp
-(use-package zig-mode
-  :hook (zig-mode . eglot-ensure)
-  :commands zig-mode
-  :custom
-  (zig-indent-offset 4)
-  (zig-format-on-save nil)
-  :config
-  (when (not (locate-file "zls" exec-path))
-    (warn "`zls' not in `exec-path'. Emacs won't be able to connect to Zig LSP server.")))
-#+end_src
-
-*** Lua
-
-#+begin_src elisp
-(use-package lua-mode
-  :elpaca `,(maybe-recipe 'lua-mode)
-  :commands lua-mode
-  :requires (f eglot)
-  :config
-  (setq lua-indent-level 2)
-  (add-to-list 'eglot-server-programs
-    (cons 'lua-mode
-      (eglot-alternatives
-        `(("lua-language-server" "--config-path" ,(f-join (xdg-config-home) "lua-language-server" "config.lua")))))))
-#+end_src
-
-*** Python
-When using python on [[id:2929ef7d-0e55-4c9e-8f08-b120d9997f10][Org Mode]] src blocks, import sympy and numpy by default.
-
-#+begin_src elisp
-(use-package python
-  :elpaca nil
-  :config (setq python-indent-offset 2))
-
-(use-package ob-python
-  :elpaca nil
-  :after (ob org-contrib python)
-  :custom
-  (org-babel-default-header-args:python
-   '((:session  . "none")
-     (:results  . "output")
-     (:exports  . "code")
-     (:cache    . "no")
-     (:noweb    . "no")
-     (:hlines   . "no")
-     (:tangle   . "no")
-     (:prologue . "import sympy as sp, numpy as np")))
-  :config (add-to-list 'org-babel-load-languages '(python . t)))
-
-(use-package auto-virtualenv
-  :after python
-  :hook (python-mode . auto-virtualenv-set-virtualenv))
-#+end_src
-
-*** Markdown
-
-#+begin_src elisp
-(use-package markdown-mode
-  :commands markdown-mode
-  :mode ("README\\.md\\'" . gfm-mode)
-  :init (setq markdown-command "multimarkdown"))
-#+end_src
-
-*** OCaml
-
-#+begin_src elisp
-(use-package tuareg-mode
-  :elpaca (tuareg-mode
-           :type git
-           :host github
-           :repo "ocaml/tuareg")
-  :commands tuareg-mode)
-#+end_src
-
-*** TeX
-Turn some mathematical TeX macros into their correspondent unicode symbols. See [[https://www.gnu.org/software/auctex/manual/auctex/Prettifying.html][this]].
-
-#+begin_src elisp
-(use-package tex
-  :elpaca
-  (auctex
-    :files ("*.el" "*.info" "dir" "doc" "etc" "images" "latex" "style")
-    :pre-build
-    (("./autogen.sh")
-     ("./configure")
-     ("make")
-     ("make" "install")))
-  :mode ("\\.tex\\'" . LaTeX-mode)
-  :hook ((LaTeX-mode . prettify-symbols-mode)
-         (LaTeX-mode . tex-fold-mode)))
-
-(use-package xenops
-  :after tex
-  :hook (LaTeX-mode . xenops-mode))
-#+end_src
-
-*** Nushell
-The nushell treesitter parser is not good at all and the LSP barely does anything beyond syntax checking. In addition to all that, nushell updates frequently, which makes maintaining all those packages difficult. Gonna have to wait, I guess.
-
-#+begin_src elisp
-(use-package nushell-mode
-  :disabled
-  :elpaca (nushell-mode
-             :type git
-             :host github
-             :repo "mrkkrp/emacs-nushell")
-  :mode "\\.nu\\'"
-  :commands nushell-mode
-  :config
-  (setq nushell-indent-offset 2))
-
-(use-package nushell-ts-mode
-  :elpaca (nushell-ts-mode
-           :type git
-           :host github
-           :repo "herbertjones/nushell-ts-mode")
-  :hook (nushell-ts-mode . eglot-ensure)
-  :after (org treesit eglot)
-  :config
-  (map-put org-babel-load-languages 'nushell-ts t)
-  (map-put treesit-language-source-alist 'nu '("https://github.com/nushell/tree-sitter-nu" nil nil nil nil))
-  (when (not (treesit-language-available-p 'nu))
-    (treesit-install-language-grammar 'nu))
-  (map-put eglot-server-programs 'nushell-ts-mode '("nu" "--lsp"))
-  :commands nushell-ts-mode)
-#+end_src
-
-*** &rest
-
-#+begin_src elisp
 (use-package     bnf-mode :commands bnf-mode)
 (use-package     csv-mode :commands csv-mode)
 (use-package haskell-mode :commands haskell-mode)
@@ -1695,75 +1512,369 @@ The nushell treesitter parser is not good at all and the LSP barely does anythin
 
 (use-package csharp-mode
   :elpaca nil
-  :requires eglot
+  :after eglot
   :config
   (add-to-list 'eglot-server-programs
     (cons 'csharp-mode
       ;; name of server is in pascal case on NixOS
       (eglot-alternatives '(("OmniSharp" "-lsp"))))))
+
+(use-package k-mode
+  :elpaca
+  (k-mode
+    :protocol https
+    :inherit t
+    :depth 1
+    :host github
+    :files (:defaults "emacs/*.el")
+    :repo "runtimeverification/k-editor-support"))
 #+end_src
 
-** clipboard
-Use the X11 clipboard as the default for things like yanking, killing and pasting.
+**** LISPs
 
+#+name: full-lisp
+#+begin_src elisp :noweb yes
+(defun yeet/lisp-prettify-symbols ()
+  (setq-local prettify-symbols-alist '(("lambda" . ?λ)))
+  (prettify-symbols-mode))
+
+(use-package rainbow-delimiters
+  :hook ((lisp-data-mode clojure-mode) . rainbow-delimiters-mode))
+
+<<full-clojure>>
+<<full-elisp>>
+<<full-clisp>>
+#+end_src
+
+***** Clojure
+
+#+name: full-clojure
 #+begin_src elisp
-(setq-default x-select-enable-clipboard t
-              x-select-enable-primary nil)
+(use-package clojure-mode
+  :commands clojure-mode
+  :config
+  ;; this makes so that clojure code is always indented relative
+  ;; to the indentation of the current root and not to the arguments
+  ;; of a function
+  (setq clojure-indent-style 'always-indent))
 #+end_src
 
-** pop-ups
-Wether or not popups should create new frames instead of splitting windows. May not work with all modes. This is good when using a tiling window manager.
+***** Emacs Lisp
 
+#+name: full-elisp
 #+begin_src elisp
-(setq-default pop-up-frames nil
-              pop-up-windows t)
+(use-package elisp-mode
+  :elpaca nil
+  :hook ((emacs-lisp-mode . yeet/disable-tabs)
+         (emacs-lisp-mode . yeet/lisp-prettify-symbols)))
 #+end_src
 
-** disable startup message
-Stop Emacs' default startup message from appearing in the src_elisp{`*Messages'} buffer.
+***** Common LISP
 
-#+begin_src elisp :tangle nil
-(unless (daemonp)
-  (advice-add #'display-startup-echo-area-message :override #'ignore))
-#+end_src
-
-** open in external program
-Open some file types using external programs.
-
+#+name: full-clisp
 #+begin_src elisp
-(use-package openwith
+(use-package lisp-mode
+  :elpaca nil
+  :hook ((lisp-mode . yeet/disable-tabs)
+         (lisp-mode . yeet/lisp-prettify-symbols)
+         (lisp-mode .
+           (lambda ()
+             (setq-local lisp-indent-function 'common-lisp-indent-function))))
+  :custom (lisp-indent-offset 2))
+
+(use-package sly
+  :after lisp-mode
+  :commands sly
+  :config (setq inferior-lisp-program "/bin/sbcl"))
+#+end_src
+
+**** C and C++
+Disable =clang-format= of =clangd= when it can't find a =.clang-format= file.
+
+#+name: full-c-cpp
+#+begin_src elisp :noweb yes
+(use-package cc-mode
+  :elpaca nil
+  :after eglot
+  :hook ((c-mode c++-mode) . eglot-ensure)
+  :custom (c-label-minimum-indentation 0)
+  :config
+  (when (not (locate-file "clangd" exec-path))
+    (warn "`clangd' not in `exec-path'. Emacs won't be able to connect to C/C++ LSP server."))
+  (add-to-list 'eglot-server-programs
+    (cons '(c-mode c++-mode)
+      (lambda (x)
+        (list
+          "clangd"
+          "--fallback-style=none"
+          "--enable-config"
+          (concat
+            "--compile-commands-dir="
+            (if (project-current)
+                (f-join (project-root (project-current t)) "build/")
+              (f-join (temporary-file-directory) "eglot-build/"))))))))
+
+(use-package clang-format
+  :hook ((c-mode c++-mode) . (lambda () (add-hook 'before-save-hook 'clang-format-buffer nil t)))
+  :config
+  (setq clang-format-style "file"
+        ;; if no `.clang-format' is found, don't do anything
+        clang-format-fallback-style "none"))
+
+<<full-cmake>>
+<<full-snippets>>
+<<full-compilation>>
+<<full-bison-flex>>
+#+end_src
+
+***** cmake
+Have not found a good solution with working with CMake in Emacs yet. This will have to do. If the treesitter package is available, then we use it instead of =cmake-mode=.
+
+#+name: full-cmake
+#+begin_src elisp
+(use-package cmake
+  :after eglot
+  :elpaca nil
+  :no-require t
+  :config
+  (unless (require 'cmake-ts-mode nil t)
+    (use-package cmake-mode))
+  (setq eglot-server-programs
+    (map-insert eglot-server-programs (list 'cmake-ts-mode 'cmake-mode) '("neocmakelsp" "--stdio"))))
+
+(defun run-commands (commands)
+  "Run a list of COMMANDS sequentially. Each command is a list of strings."
+  (let ((compile-command (s-join " && " (seq-map #'(lambda (xs) (s-join " " xs)) commands))))
+    (compile compile-command)))
+
+(defun yeet/project-cmake-get-configure-command (&optional build type)
+  (let ((build (if build build "build"))
+         (type (if type type "Debug")))
+    (list "cmake" "-S" "." "-B" build "-Wdeprecated" "-D" (concat "CMAKE_BUILD_TYPE" "=" type) "-D" "CMAKE_EXPORT_COMPILE_COMMANDS=1")))
+
+(defun yeet/project-build-cmake (&optional should-configure)
+  (let* ((default-directory (expand-file-name (project-root (project-current t))))
+          (should-configure
+            (if should-configure should-configure (not (locate-dominating-file default-directory "build"))))
+          (commands '(("cmake" "--build" "build"))))
+    (if should-configure
+      (let ((commands (cons (yeet/project-cmake-get-configure-command) commands)))
+        (run-commands commands))
+      (run-commands commands))))
+
+(defun yeet/project-build-cmake-p (root)
+  (locate-dominating-file root "CMakeLists.txt"))
+
+;; TODO verify if project is built with cmake
+(setq project-bs-build-function #'yeet/project-build-cmake)
+
+(map-put project-bs-handlers 'cmake (cons #'yeet/project-build-cmake-p #'yeet/project-build-cmake))
+
+(defun project-configure-cmake ()
+  (let* ((default-directory (expand-file-name (project-root (project-current t))))
+          (commands (list (yeet/project-cmake-get-configure-command))))
+    (run-commands commands)))
+#+end_src
+
+***** snippet inserting/autocomplete
+Does things like insert if statements and other boring repetitive stuff.
+
+#+name: full-snippets
+#+begin_src elisp
+(use-package yasnippet-snippets)
+(use-package yasnippet
+  :after yasnippet-snippets
+  :hook ((c-mode c++-mode) . yas-minor-mode)
+  :config (yas-reload-all))
+#+end_src
+
+***** compilation
+ANSI escape sequences get translated into text properties. Colors, for example.
+
+#+name: full-compilation
+#+begin_src elisp
+(setq compilation-scroll-output t)
+(setq ansi-color-for-compilation-mode t)
+(add-hook 'compilation-filter-hook #'ansi-color-compilation-filter)
+#+end_src
+
+***** bison and flex
+Don't run =c-mode= on those files. That will just mess everything up. As a better alternative, use =fence-edit=.
+
+#+name: full-bison-flex
+#+begin_src elisp
+(add-to-list 'auto-mode-alist '("\\.y\\'" . prog-mode))
+(add-to-list 'auto-mode-alist '("\\.l\\'" . prog-mode))
+
+(use-package fence-edit
+  :elpaca (fence-edit :type git :host github :repo "aaronbieber/fence-edit.el")
+  :bind (:map prog-mode-map
+          ("C-c '" . fence-edit-code-region-with-mode)))
+#+end_src
+
+**** J
+On Void Linux this is pretty finnicky since the default name of the console executable is =jc= due to conflicts with other packages.
+
+#+name: full-j
+#+begin_src elisp
+(use-package j-mode
+  :elpaca (j-mode :type git :host github :repo "LdBeth/j-mode")
+  :config (setq j-console-cmd "jconsole"))
+
+(use-package ob-J
+  :elpaca nil ;; comes from `'org-contrib'
+  :after (ob org-contrib j-mode)
+  :custom (org-babel-J-command "jconsole")
+  :config (add-to-list 'org-babel-load-languages '(J . t)))
+#+end_src
+
+**** Zig
+Zig always indents by 4 spaces. Use =zls= as the language server.
+
+#+name: full-zig
+#+begin_src elisp
+(use-package zig-mode
+  :hook (zig-mode . eglot-ensure)
+  :commands zig-mode
   :custom
-  (openwith-associations
-    (let* ((exts '("pdf" "mp3" "mpeg" "avi" "wmv" "mp4" "mkv" "jpg" "jpeg" "webp" "gif"))
-            (regex (eval `(rx ,(cons 'or (mapcar #'(lambda (x) (concat "." x)) exts))))))
-      `((,regex "xdg-open" '(file)))))
-  :init (openwith-mode t))
+  (zig-indent-offset 4)
+  (zig-format-on-save nil)
+  :config
+  (when (not (locate-file "zls" exec-path))
+    (warn "`zls' not in `exec-path'. Emacs won't be able to connect to Zig LSP server.")))
 #+end_src
 
-** email
+**** Lua
+
+#+name: full-lua
 #+begin_src elisp
-(use-package himalaya
-  :elpaca (himalaya
+(use-package lua-mode
+  :elpaca `,(maybe-recipe 'lua-mode)
+  :commands lua-mode
+  :after eglot
+  :requires f
+  :config
+  (setq lua-indent-level 2)
+  (add-to-list 'eglot-server-programs
+    (cons 'lua-mode
+      (eglot-alternatives
+        `(("lua-language-server" "--config-path" ,(f-join (xdg-config-home) "lua-language-server" "config.lua")))))))
+#+end_src
+
+**** Python
+When using python on [[id:2929ef7d-0e55-4c9e-8f08-b120d9997f10][Org Mode]] src blocks, import sympy and numpy by default.
+
+#+name: full-python
+#+begin_src elisp
+(use-package python
+  :elpaca nil
+  :config (setq python-indent-offset 2))
+
+(use-package ob-python
+  :elpaca nil
+  :after (ob org-contrib python)
+  :custom
+  (org-babel-default-header-args:python
+   '((:session  . "none")
+     (:results  . "output")
+     (:exports  . "code")
+     (:cache    . "no")
+     (:noweb    . "no")
+     (:hlines   . "no")
+     (:tangle   . "no")
+     (:prologue . "import sympy as sp, numpy as np")))
+  :config (add-to-list 'org-babel-load-languages '(python . t)))
+
+(use-package auto-virtualenv
+  :after python
+  :hook (python-mode . auto-virtualenv-set-virtualenv))
+#+end_src
+
+**** Markdown
+
+#+name: full-markdown
+#+begin_src elisp
+(use-package markdown-mode
+  :commands markdown-mode
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown"))
+#+end_src
+
+**** OCaml
+
+#+name: full-ocaml
+#+begin_src elisp
+(use-package tuareg-mode
+  :elpaca (tuareg-mode
+           :type git
+           :host github
+           :repo "ocaml/tuareg")
+  :commands tuareg-mode)
+#+end_src
+
+**** TeX
+Turn some mathematical TeX macros into their correspondent unicode symbols. See [[https://www.gnu.org/software/auctex/manual/auctex/Prettifying.html][this]].
+
+#+name: full-tex
+#+begin_src elisp
+(use-package tex
+  :elpaca
+  (auctex
+    :files ("*.el" "*.info" "dir" "doc" "etc" "images" "latex" "style")
+    :pre-build
+    (("./autogen.sh")
+     ("./configure")
+     ("make")
+     ("make" "install")))
+  :mode ("\\.tex\\'" . LaTeX-mode)
+  :hook ((LaTeX-mode . prettify-symbols-mode)
+         (LaTeX-mode . tex-fold-mode)))
+
+(use-package xenops
+  :after tex
+  :hook (LaTeX-mode . xenops-mode))
+#+end_src
+
+**** Nushell
+The nushell treesitter parser is not good at all and the LSP barely does anything beyond syntax checking. In addition to all that, nushell updates frequently, which makes maintaining all those packages difficult. Gonna have to wait, I guess.
+
+#+name: full-nushell
+#+begin_src elisp
+(use-package nushell-mode
+  :disabled
+  :elpaca (nushell-mode
              :type git
              :host github
-             :repo "dantecatalfamo/himalaya-emacs")
-  :commands himalaya
-  :bind ("C-c e l" . himalaya))
+             :repo "mrkkrp/emacs-nushell")
+  :mode "\\.nu\\'"
+  :commands nushell-mode
+  :config
+  (setq nushell-indent-offset 2))
+
+(use-package nushell-ts-mode
+  :elpaca (nushell-ts-mode
+           :type git
+           :host github
+           :repo "herbertjones/nushell-ts-mode")
+  :hook (nushell-ts-mode . eglot-ensure)
+  :after (org treesit eglot)
+  :config
+  (map-put org-babel-load-languages 'nushell-ts t)
+  (map-put treesit-language-source-alist 'nu '("https://github.com/nushell/tree-sitter-nu" nil nil nil nil))
+  (when (not (treesit-language-available-p 'nu))
+    (treesit-install-language-grammar 'nu))
+  (map-put eglot-server-programs 'nushell-ts-mode '("nu" "--lsp"))
+  :commands nushell-ts-mode)
 #+end_src
 
-** side minimap
-#+begin_src elisp
-(use-package minimap
-  :custom
-  (minimap-window-location 'right)
-  (minimap-update-delay 0.5))
-#+end_src
-
-** git interface
+*** git interface
 Keywords like =TODO= and =FIXME= are collected into a section in Magit.
 
+#+name: full-git
 #+begin_src elisp
-(use-package magit)
+(use-package magit
+  :custom
+  (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
 
 (use-package magit-todos
   :after magit
@@ -1774,61 +1885,42 @@ Keywords like =TODO= and =FIXME= are collected into a section in Magit.
   (blamer-idle-time 0.3)
   (blamer-min-offset 70)
   :config (global-blamer-mode 1))
+
+;; FIXME broken
+(use-package forge
+  :disabled
+  :after magit
+  :elpaca
+  `,(cons 'forge
+     (map-insert (elpaca-order-defaults 'forge) :ref "cdf34e7")))
+#+end_src
+** interface with the operating system
+
+#+name: full-os-interface
+#+begin_src elisp :noweb yes
+<<full-clipboard>>
+<<full-open-ext>>
 #+end_src
 
-** dashboard
-After the =elpaca= queue has being emptied, load the dashboard. Whenever creating a new frame, open the dashboard by default.
+*** clipboard
+Use the X11 clipboard as the default for things like yanking, killing and pasting.
 
+#+name: full-clipboard
 #+begin_src elisp
-(use-package dashboard
-  :elpaca t
-  :hook ((elpaca-after-init . dashboard-insert-startupify-lists)
-         (elpaca-after-init . dashboard-initialize))
+(setq-default x-select-enable-clipboard t
+              x-select-enable-primary nil)
+#+end_src
+
+*** open in external program
+Open some file types using external programs.
+
+#+name: full-open-ext
+#+begin_src elisp
+(use-package openwith
   :custom
-  (initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-  (dashboard-startup-banner nil)
-  (dashboard-projects-backend 'project-el)
-  (dashboard-items
-   '((recents  . 5)
-     (projects . 3)
-     (agenda   . 10)))
-  :config
-  (dashboard-setup-startup-hook))
-#+end_src
-
-** &rest
-#+begin_src elisp
-(defun yeet/open-music ()
-  (interactive) (find-file "~/doc/table/music.csv"))
-
-(defun yeet/open-config ()
-  (interactive) (find-file "~/config/emacs.org"))
-
-(bind-keys
- ("C-c a m" . yeet/open-music)
- ("C-c a c" . yeet/open-config))
-
-(use-package hypothesis
-  :elpaca (hypothesis
-           :type git
-           :host github
-           :repo "Kungsgeten/hypothesis")
-  :custom (hypothesis-username "marcofrango")
-          (hypothesis-token (shell-command-to-string "secret token hypothesis")))
-
-(use-package ripgrep
-  :commands ripgrep-regexp
-  :bind ("C-c g"   . ripgrep-regexp))
-
-(use-package gnuplot)
-
-(use-package fence-edit
-  :elpaca (fence-edit :type git :host github :repo "aaronbieber/fence-edit.el")
-  :bind (:map prog-mode-map
-          ("C-c '" . fence-edit-code-region-with-mode)))
-#+end_src
-
-** provide feature
-#+begin_src elisp
-(provide 'full)
+  (openwith-associations
+    (let* ((exts '("mp3" "mpeg" "avi" "wmv" "mp4" "mkv" "jpg" "jpeg" "webp" "gif"))
+            (regex (eval `(rx ,(cons 'or (mapcar #'(lambda (x) (concat "." x)) exts))))))
+      `((,regex "xdg-open" '(file)))))
+  :init (openwith-mode t))
 #+end_src
