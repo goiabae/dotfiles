@@ -329,34 +329,48 @@ def weather [--city (-c): string] -> list<any> {
 	})
 }
 
-def 'mal anime season' [year: string, season: string] -> list<any> {
-  let resp = (http get $"https://myanimelist.net/anime/season/($year)/($season)")
-  let categories = ($resp | query web --as-html --query '.seasonal-anime-list')
-  let seasonal_anime = (
-    $categories | each { |cat|
-      $cat
-      | query web --as-html --query '.seasonal-anime'
-      | each { |anime|
-        { release: ($anime | query web --query '.info .item' | first | into datetime)
-            title: ($anime | query web --query '.title-text' | str trim | first)
-            score: ($anime | query web --query '.information .score' | str trim | first)
-          members: ($anime | query web --query '.information .member' | str trim | first)
-            cover: (do {
-              let src = ($anime | query web --query 'img' --attribute 'src')
-              let data_src = ($anime | query web --query 'img' --attribute 'data-src')
-              $src | append $data_src | where $it != '' | first
-            })
-         synopsis: ($anime | query web --query '.synopsis p' | first | str replace '\n\(Source: .*\)' '')
-          # studio, source themes -> .synopsis .properties |> each :key [0] :value [1]
-        }
-      }
-      | insert category ($cat | query web --query '.anime-header' | first)
-    }
-    | flatten
-    | str downcase category
-  )
-  echo $seasonal_anime
+module anime-season {
+	def season-type [] {
+		[ WINTER, SPRING, SUMMER, FALL ]
+	}
+
+	export def main [year: int, season: string@season-type ] {
+		let query = open ($nu.default-config-dir | path join anime.gql)
+
+		const headers = {
+			Content-Type: "application/json"
+			Accept: "application/json"
+		}
+
+		mut as = []
+		mut idx = 0 # page index
+
+		loop {
+			let body = {
+				query: $query
+				variables: {
+					page: $idx
+					season: $season
+					year: $year
+				}
+			}
+
+			let res = http post -H $headers https://graphql.anilist.co ($body | to json)
+			if ($res.data.Page.media | is-empty) { break }
+
+			$as = ($as | append (
+				$res.data.Page.media | update relations.nodes { |row|
+					$row.relations.nodes | filter { |it| $it.type == ANIME }
+				}
+			))
+			$idx = $idx + 1
+		}
+
+		echo $as
+	}
 }
+
+use anime-season
 
 def "firefox tabs" [] -> list<any> {
   cd ~/.mozilla/firefox
