@@ -230,14 +230,14 @@ $env.config = {
       modifier: control
       keycode: char_w
       mode: emacs
-      event: { edit: cutfromstart }
+      event: { edit: cutwordright }
     }
     {
       name: cut-line
       modifier: control
       keycode: char_k
       mode: emacs
-      event: { edit: cutfromlinestart }
+      event: { edit: cuttoend }
     }
     {
       name: move_to_line_start
