@@ -448,21 +448,25 @@ def yt [] {
 	sfeed view -p (which player | first | get path) youtube
 }
 
-def pomo [--work(-w): duration, --break(-b): duration] {
-	let work = ($work | default 25min)
-	let break = ($break | default 15min)
-	let langs = (espeak --voices | detect columns | get language)
-	mut left = 1hr
+def pomodoro [
+  --work(-w): duration, # duration of work cycles
+	--break(-b): duration # duration of break cycles
+	--total(-t): duration # total work time
+] {
+	let work = $work | default 25min
+	let break = $break | default 15min
+	let langs = espeak --voices | detect columns | get language
+	mut left = $total | default 1hr
 
 	loop {
-		let lang = ($langs | get random)
+		let lang = $langs | get random
 
 		termdown -c 10 -v $lang ($work | into string)
 		notify-send "pomo: work done. go relax" $"($work | format duration min) have passed"
 
-		$left = ($left - $work)
+		$left = $left - $work
 		if ($left <= 0sec) {
-			notify-send "pomo: session completed" $"A total of (1hr | format duration min) of work has passed"
+			notify-send "pomo: session completed" $"A total of ($total | default 1hr | format duration min) of work has passed"
 			break
 		}
 
@@ -485,3 +489,4 @@ alias wget = ^wget --hsts-file ($env.XDG_DATA_HOME | path join wget.hist)
 alias mitmproxy = ^mitmproxy --set $"confdir=($env.XDG_CONFIG_HOME)/mitmproxy"
 alias mitmweb = ^mitmweb --set $"confdir=($env.XDG_CONFIG_HOME)/mitmproxy"
 alias adb = with-env [HOME $env.ANDROID_USER_HOME] { ^adb }
+alias pomo = pomodoro -w 10min -b 10min -t 90min
