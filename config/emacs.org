@@ -1271,7 +1271,7 @@ Have to find a better way to load src_elisp{`org-phscroll'}.
     ;; latex FIXME
   (setq org-startup-with-latex-preview t
         org-latex-inputenc-alist '(("utf8" . "utf8x"))
-        org-preview-latex-default-process 'dvisvgm
+        org-preview-latex-default-process 'tectonic-svg
         org-preview-latex-image-directory (expand-file-name "org-latex/" (xdg-cache-home))
         org-format-latex-options
         (list :foreground 'default
@@ -1281,6 +1281,17 @@ Have to find a better way to load src_elisp{`org-phscroll'}.
               :html-background "Transparent"
               :html-scale 1.0
               :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
+
+  (setq org-preview-latex-process-alist
+    (map-insert org-preview-latex-process-alist 'tectonic-svg
+      '(:programs ("tectonic" "dvisvgm")
+         :description "xdv > svg"
+         :message "you need to install the programs: tectonic and dvisvgm."
+         :image-input-type "xdv"
+         :image-output-type "svg"
+         :image-size-adjust (1.7 . 1.5)
+         :latex-compiler ("tectonic --outfmt xdv --outdir %o %f")
+         :image-converter ("dvisvgm %f --no-fonts --exact-bbox --scale=%S --output=%O"))))
 
   (let ((progs
           (map-elt
