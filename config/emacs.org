@@ -1673,14 +1673,6 @@ Have not found a good solution with working with CMake in Emacs yet. This will h
         (run-commands commands))
       (run-commands commands))))
 
-(defun yeet/project-build-cmake-p (root)
-  (locate-dominating-file root "CMakeLists.txt"))
-
-;; TODO verify if project is built with cmake
-(setq project-bs-build-function #'yeet/project-build-cmake)
-
-(map-put project-bs-handlers 'cmake (cons #'yeet/project-build-cmake-p #'yeet/project-build-cmake))
-
 (defun project-configure-cmake ()
   (let* ((default-directory (expand-file-name (project-root (project-current t))))
           (commands (list (yeet/project-cmake-get-configure-command))))
