@@ -346,13 +346,14 @@ Add some directories to better integrate with the system. Prevent packages from 
 #+begin_src elisp
 (require 'xdg)
 
-(setopt user-emacs-directory (expand-file-name "emacs" (xdg-config-home)))
+(when (not (eq system-type 'windows-nt))
+  (progn
+    (setopt user-emacs-directory (expand-file-name "emacs" (xdg-config-home)))
+    (push (expand-file-name "~/lib/elisp") load-path)
+    (setopt temporary-file-directory
+      (expand-file-name "emacs/" (xdg-runtime-dir)))))
 
 (push user-emacs-directory load-path)
-(push (expand-file-name "~/lib/elisp") load-path)
-
-(setopt temporary-file-directory
-      (expand-file-name "emacs/" (xdg-runtime-dir)))
 
 (unless (file-exists-p temporary-file-directory)
   (make-directory temporary-file-directory))
@@ -1369,11 +1370,12 @@ My petty attempt at building the ultimate PDF annotation/search setup. Highlight
 #+name: full-pdf
 #+begin_src elisp
 (use-package pdf-tools
+  :if (not (eq system-type 'windows-nt))
   :config
   (pdf-tools-install)
   (pdf-loader-install))
 
-(use-package org-noter)
+(use-package org-noter :if (not (eq system-type 'windows-nt)))
 #+end_src
 
 ** terminal and shell
@@ -1385,7 +1387,7 @@ My petty attempt at building the ultimate PDF annotation/search setup. Highlight
   :config (setq eshell-directory-name
                 (expand-file-name "emacs/eshell/" (xdg-data-home))))
 
-(use-package vterm)
+(use-package vterm :if (not (eq system-type 'windows-nt)))
 #+end_src
 
 ** development
