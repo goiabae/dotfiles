@@ -446,6 +446,8 @@ Set native compilation cache path to xdg cache. Also, don't compile when the edi
 
 (elpaca-wait)
 
+(setq elpaca-queue-limit 8)
+
 (defvar *builtin-load-path* load-path)
 (defun is-builtin (sym)
   "Returns whether the SYM corresponds to a given feature that can be loaded from the default load-path"
