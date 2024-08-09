@@ -1,25 +1,25 @@
 #!/usr/bin/env bash
 
-xfconf-query -c thunar -p /last-view --set "ThunarDetailsView"
+xfconf-query -n -c thunar -p /last-view --set "ThunarDetailsView"
 
-xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Shift><Super>parenleft" --set "pamixer --decrease 3"
-xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Shift><Super>parenright" --set "pamixer --increase 3"
-xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>e" --set "sh -c 'exec $EDITOR'"
-xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>m" --set "xfce4-popup-whiskermenu"
-xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>f" --set "thunar"
-xfconf-query -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>period" --set "rofi -show emoji"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Shift><Super>parenleft" --set "pamixer --decrease 3"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Shift><Super>parenright" --set "pamixer --increase 3"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>e" --set "sh -c 'exec $EDITOR'"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>m" --set "xfce4-popup-whiskermenu"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>f" --set "thunar"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>period" --set "rofi -show emoji"
 
-xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>h" --set "prev_workspace_key"
-xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>j" --set "cycle_windows_key"
-xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>k" --set "cycle_reverse_windows_key"
-xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>l" --set "next_workspace_key"
-xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>q" --set "close_window_key"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>h" --set "prev_workspace_key"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>j" --set "cycle_windows_key"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>k" --set "cycle_reverse_windows_key"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>l" --set "next_workspace_key"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>q" --set "close_window_key"
 
-xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>1" --set "workspace_1_key"
-xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>2" --set "workspace_2_key"
-xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>3" --set "workspace_3_key"
-xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>4" --set "workspace_4_key"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>1" --set "workspace_1_key"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>2" --set "workspace_2_key"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>3" --set "workspace_3_key"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>4" --set "workspace_4_key"
 
-xfconf-query -c xfwm4 -p "/general/workspace_count" -t int --set 4
-xfconf-query -c xfwm4 -p "/general/theme" --set "Lead95"
-xfconf-query -c xfwm4 -p "/general/title_font" --set "Sans Bold 8"
+xfconf-query -n -c xfwm4 -p "/general/workspace_count" -t int --set 4
+xfconf-query -n -c xfwm4 -p "/general/theme" --set "Lead95"
+xfconf-query -n -c xfwm4 -p "/general/title_font" --set "Sans Bold 8"
