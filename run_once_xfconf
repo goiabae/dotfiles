@@ -4,7 +4,7 @@ xfconf-query -n -c thunar -p /last-view -t string --set "ThunarDetailsView"
 
 xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Shift><Super>parenleft" -t string --set "pamixer --decrease 3"
 xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Shift><Super>parenright" -t string --set "pamixer --increase 3"
-xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>e" -t string --set "sh -c 'exec $EDITOR'"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>e" -t string --set "sh -c 'exec \$EDITOR'"
 xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>m" -t string --set "xfce4-popup-whiskermenu"
 xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>f" -t string --set "thunar"
 xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>period" -t string --set "rofi -show emoji"
