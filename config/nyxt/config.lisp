@@ -14,7 +14,17 @@
          :name "DuckDuckGo"
          :shortcut "ddg"
          :search-url "https://duckduckgo.com/?q=~a"
-         :fallback-url (quri:uri "https://duckduckgo.com/"))))))
+         :fallback-url (quri:uri "https://duckduckgo.com/"))
+       (make-instance 'search-engine
+         :name "NüschtOS Search"
+         :shortcut "nscht"
+         :search-url "https://search.nüschtos.de/?query=~a"
+         :fallback-url (quri:uri "https://search.nüschtos.de/"))
+       (make-instance 'search-engine
+         :name "Noogle"
+         :shortcut "ngle"
+         :search-url "https://noogle.dev/q?term=~a"
+         :fallback-url (quri:uri "https://noogle.dev/"))))))
 
 (define-configuration document-buffer
   ((zoom-ratio-default 0.8)))
