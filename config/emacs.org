@@ -1892,7 +1892,7 @@ Keywords like =TODO= and =FIXME= are collected into a section in Magit.
   :custom
   (blamer-idle-time 0.3)
   (blamer-min-offset 70)
-  :config (global-blamer-mode 1))
+  :config (global-blamer-mode -1))
 
 ;; FIXME broken
 (use-package forge
