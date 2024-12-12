@@ -71,7 +71,7 @@ export def add [author, title, type, --force(-f)] {
 export def review [entry] {
 	let today = date now | format date '%Y-%m-%d'
 	let score = input 'Enter score: ' | into float
-	open $db | query db $"update music set modified = '($today)', score = ($score) where mbid = '($entry.mbid)';"
+	open $db | query db $"update music set modified = '($today)', score = ($score) where title = '($entry.title)' and author = '($entry.author)';"
 }
 
 export def "todo add" [author: string, title: string, type: string] {
