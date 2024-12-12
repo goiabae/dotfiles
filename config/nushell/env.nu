@@ -61,7 +61,3 @@ $env.ENV_CONVERSIONS = {
 
 $env.NU_LIB_DIRS    = [($nu.home-path | path join lib nu) ($nu.config-path | path dirname)]
 $env.NU_PLUGIN_DIRS = [($nu.home-path | path join bin nu.d)]
-
-if $nu.is-login {
-	nu ~/profile.nu json | from json | load-env
-}
