@@ -7,7 +7,7 @@ def short-path [] {
   })
   $p
   | drop
-  | each { |dir| $dir | str substring 0..1 }
+  | each { |dir| $dir | str substring 0..0 }
   | append ($p | last)
   | path join
 }
