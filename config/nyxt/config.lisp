@@ -64,3 +64,24 @@
 
 (define-configuration browser
   ((theme battery-theme)))
+
+(defvar +mpv-command+ "mpv")
+
+(defun open-yt-in-mpv-handler (request-data)
+  "Open YouTube videos in MPV using `+mpv-command+'."
+  (let* ((url (url request-data))
+         (is-watch-route
+           (and url
+             (member (quri:uri-domain url) '("youtube.com" "youtu.be")
+               :test #'string=)
+             (string= (quri:uri-path url) "/watch"))))
+    (if is-watch-route
+      (progn
+        (echo "Youtube: opening video in mpv ~a" url)
+        (uiop:launch-program (list +mpv-command+ (quri:render-uri url)))
+        nil)
+      request-data)))
+
+(define-configuration web-buffer
+  ((request-resource-hook
+    (hooks:add-hook %slot-default% 'open-yt-in-mpv-handler))))
