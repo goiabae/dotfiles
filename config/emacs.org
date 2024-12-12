@@ -1818,6 +1818,10 @@ When using python on [[id:2929ef7d-0e55-4c9e-8f08-b120d9997f10][Org Mode]] src b
            :host github
            :repo "ocaml/tuareg")
   :commands tuareg-mode)
+
+(use-package utop
+  :config
+  (setq utop-command "dune utop . -- -emacs"))
 #+end_src
 
 **** TeX
