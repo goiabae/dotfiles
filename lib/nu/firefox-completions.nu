@@ -1,0 +1,43 @@
+export extern firefox [
+	--display: string        # X display to use
+	--sync                   # Make X calls synchronous
+	--g-fatal-warnings       # Make all warnings fatal
+	--help (-h)              # Print this message.
+	--version (-v)           # Print Firefox version.
+	--full-version           # Print Firefox version, build and platform build ids.
+	--profile (-P): path     # Start with profile at <path>.
+	--migration              # Start with migration wizard.
+	--ProfileManager         # Start with ProfileManager.
+	--no-remote              # Do not accept or send remote commands; implies --new-instance.
+	--new-instance           # Open new instance, not a new window in running instance.
+	--safe-mode              # Disables extensions and themes for this session.
+	--allow-downgrade        # Allows downgrading a profile.
+	--MOZ_LOG: string        # Treated as MOZ_LOG=<modules> environment variable, overrides it.
+	--MOZ_LOG_FILE: string   # Treated as MOZ_LOG_FILE=<file> environment variable, overrides it. If MOZ_LOG_FILE is not specified as an argument or as an environment variable, logging will be written to stdout.
+	--headless               # Run without a GUI.
+	--browser                # Open a browser window.
+	--new-window: string     # Open <url> in a new window.
+	--new-tab: string        # Open <url> in a new tab.
+	--private-window: string # Open <url> in a new private window.
+	--preferences            # Open Preferences dialog.
+	--screenshot: path       # Save screenshot to <path> or in working directory.
+	--screenshot             # Save screenshot to <path> or in working directory.
+	--window-size: string    # Width and optionally height of screenshot.
+	--search: string         # Search <term> with your default search engine.
+	--setDefaultBrowser      # Set this app as the default browser.
+	--first-startup          # Run post-install actions before opening a new window.
+	--kiosk                  # Start the browser in kiosk mode.
+	--kiosk-monitor: int     # Place kiosk browser window on given monitor.
+	--disable-pinch          # Disable touch-screen and touch-pad pinch gestures.
+	--jsconsole              # Open the Browser Console.
+	--devtools               # Open DevTools on initial load.
+	--jsdebugger: path       # Open the Browser Toolbox. Defaults to the local build but can be overridden by a firefox path.
+	--jsdebugger             # Open the Browser Toolbox. Defaults to the local build but can be overridden by a firefox path.
+	--wait-for-jsdebugger    # Spin event loop until JS debugger connects. Enables debugging (some) application startup code paths. Only has an effect when `--jsdebugger` is also supplied.
+	--start-debugger-server: string # Start the devtools server on a TCP port or Unix domain socket path. Defaults to TCP port 6000. Use WebSocket protocol if ws: prefix is specified.
+	--marionette             # Enable remote control server.
+	--remote-debugging-port: int # Start the Firefox Remote Agent, which is a low-level remote debugging interface used for WebDriver BiDi and CDP. Defaults to port 9222.
+	--remote-allow-hosts: string # Values of the Host header to allow for incoming requests. Please read security guidelines at https://firefox-source-docs.mozilla.org/remote/Security.html
+	--remote-allow-origins: string # Values of the Origin header to allow for incoming requests. Please read security guidelines at https://firefox-source-docs.mozilla.org/remote/Security.html
+	...urls
+]
