@@ -32,7 +32,6 @@
 .xsnowrc
 app/
 audio/
-bin/
 var/
 desktop/
 doc/
