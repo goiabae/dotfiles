@@ -70,7 +70,6 @@ $env.config.cursor_shape.emacs = "block"
 $env.config.rm.always_trash = true
 $env.config.table.mode = "none"
 $env.config.table.index_mode = "auto"
-$env.config.error_style = "plain"
 $env.config.display_errors.exit_code = true
 $env.config.filesize.metric = true
 
