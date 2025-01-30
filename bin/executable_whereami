@@ -1,0 +1,7 @@
+#!/usr/bin/env nu
+let api_key = secret token ipgeolocation.io
+http get https://api.ipgeolocation.io/ipgeo?apiKey=($api_key)
+| select longitude latitude
+| rename lon lat
+| into float lon lat
+| to json --raw
