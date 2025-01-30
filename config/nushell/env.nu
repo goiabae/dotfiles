@@ -49,13 +49,20 @@ let comma_sep = {
   to_string: { |v| $v | path expand | str join (char esep) }
 }
 
+# for some inexplicable reason, nushell calls to_string with things that are already strings.
+def maybe-serialize [f] {
+	{ |v| if ($v | describe | $in == "string") { $v } else { do $f $v } }
+}
+
 # Note: The conversions happen *after* config.nu is loaded
 $env.ENV_CONVERSIONS = {
   "PATH": $comma_sep
   "Path": $comma_sep
   "LS_COLORS": {
     from_string: { |s| $s | split row ':' | split column '=' regex seq | drop }
-    to_string: { |v| $v | each { |it| $it.regex + '=' + $it.seq } | str join (char esep) }
+    to_string: (maybe-serialize { |v|
+      $v | each { |it| $it.regex + '=' + $it.seq } | str join (char esep)
+    })
   }
 }
 
