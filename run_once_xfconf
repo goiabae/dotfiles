@@ -23,6 +23,7 @@ xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>4" -t strin
 xfconf-query -n -c xfwm4 -p "/general/workspace_count" -t int --set 4
 xfconf-query -n -c xfwm4 -p "/general/theme" -t string --set "Lead95"
 xfconf-query -n -c xfwm4 -p "/general/title_font" -t string --set "Sans Bold 8"
+xfconf-query -n -c xfwm4 -p "/general/easy_click" -t string --set "Super"
 
 xfconf-query -n -c xfwm4 -p /general/click_to_focus -t bool --set false
 
