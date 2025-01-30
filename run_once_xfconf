@@ -20,6 +20,11 @@ xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>2" -t strin
 xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>3" -t string --set "workspace_3_key"
 xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>4" -t string --set "workspace_4_key"
 
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Shift><Super>exclam"     -t string --set "move_window_workspace_1_key"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Shift><Super>at"         -t string --set "move_window_workspace_2_key"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Shift><Super>numbersign" -t string --set "move_window_workspace_3_key"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Shift><Super>dollar"     -t string --set "move_window_workspace_4_key"
+
 xfconf-query -n -c xfwm4 -p "/general/workspace_count" -t int --set 4
 xfconf-query -n -c xfwm4 -p "/general/theme" -t string --set "Lead95"
 xfconf-query -n -c xfwm4 -p "/general/title_font" -t string --set "Sans Bold 8"
