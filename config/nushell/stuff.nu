@@ -85,10 +85,15 @@ module anime-season {
 
 use anime-season
 
+const firefox_path = $nu.home-path | path join .mozilla/firefox
 
 def "firefox tabs" [] -> list<any> {
-  cd ~/.mozilla/firefox
-  let default_profile = (open installs.ini | jc --ini | from json | values | get default.0)
+	if not ($firefox_path | path join profiles.ini | path exists) {
+		error make { msg: "no firefox profiles.ini found" }
+	}
+	let profiles = $firefox_path | path join profiles.ini | open $in | jc --ini | from json
+	let default_profile = $profiles | values | where Default? == '1' | first | get Path
+	# FIXME: NixOS doesn't have a lz4json package
   let info = (lz4jsoncat  $'($default_profile)/sessionstore-backups/recovery.jsonlz4' | from json)
   $info.windows
   | reduce -f [] { |w, acc|
