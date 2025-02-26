@@ -171,6 +171,10 @@ def tv [] {
 		| save --force $file
 	}
 
+  if (open $file | from json | get user_info.auth | $in == 0) {
+		 error make { msg: "Authentication failed" }
+  }
+
 	let streams = (open $file | select stream_id name)
 	let sel = (try { $streams | input list -f } catch { return })
 
