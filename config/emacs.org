@@ -1102,6 +1102,7 @@ Don't align block text with heading text. One space of additional indentation on
   (org-todo-keywords '((sequence "TODO" "DOING" "DONE(!)")))
   (org-todo-keyword-faces '(("DOING" . org-doing)))
   (org-log-into-drawer t)
+  (org-export-with-todo-keywords nil) ;; When exporting to LaTeX, don't print the TODO keywords
   :config
   (defface org-doing
     `((t :inherit 'default))
