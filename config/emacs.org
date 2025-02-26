@@ -1101,6 +1101,7 @@ Don't align block text with heading text. One space of additional indentation on
       (expand-file-name "task.org" org-directory)))
   (org-todo-keywords '((sequence "TODO" "DOING" "DONE(!)")))
   (org-todo-keyword-faces '(("DOING" . org-doing)))
+  (org-log-into-drawer t)
   :config
   (defface org-doing
     `((t :inherit 'default))
