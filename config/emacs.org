@@ -1076,7 +1076,11 @@ Don't align block text with heading text. One space of additional indentation on
          (org-after-todo-statistics . yeet/org-collect-children-todo)
          (text-scale-mode-hook . yeet/update-org-latex-fragment-scale))
   :custom
-  (org-directory "~/doc/note")
+  (org-directory
+    (let ((doc-dir (getenv "XDG_DOCUMENTS_DIR")))
+      (if doc-dir
+        (f-join doc-dir "note")
+        "~/doc/note")))
   (org-tags-column 0)
   (org-adapt-indentation nil)
   (org-src-preserve-indentation t)
