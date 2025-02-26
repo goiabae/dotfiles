@@ -60,26 +60,29 @@ export def "release recordings" [release: string] {
 			inc: recordings
 		}
 	}
-	# query xml doesn't work (see #8624)
-	http get -r ($url | url join)
-	| from xml
-	| get content.0.content
-	| group-by tag
-	| get medium-list
-	| first
-	| get content.0.content
-	| group-by tag
-	| get track-list.0.content
-	| get content
-	| par-each { |it|
-		$it
-		| group-by tag
-		| get recording
-		| get 0.content
-		| group-by tag
-		| get title
-		| get 0.content.0.content
+
+	let process_resp = { |resp|
+		$resp
+		| from xml
+		| get content.0.content
+		| get-tag medium-list
+			# a release can have multiple mediums, like being split accross multiple CDs
+			| par-each { |medium|
+			| get content
+			| get-tag track-list
+			| get content
+			| par-each { |it|
+				$it
+				| get-tag recording
+				| get-tag title
+				| get 0.content
+			}
+		}
+		| flatten
 	}
+
+	# query xml doesn't work (see #8624)
+	http get -r ($url | url join) | do $process_resp $in
 }
 
 export def "search artist" [artist: string] {
