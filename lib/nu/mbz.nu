@@ -1,6 +1,12 @@
 const domain = 'musicbrainz.org'
 const version = 2
 
+# extracts the value from a table whose row has the column tag with name $tag as
+# if it were a record
+def get-tag [tag] {
+	group-by tag | get $tag | first | get content
+}
+
 export def "artist release-groups" [artist: string] {
 	let url = {
 		scheme: https
@@ -35,8 +41,7 @@ export def "release-group releases" [rg: string] {
 	| get body
 	| from xml
 	| get content.0.content
-	| group-by tag
-	| get release-list.0.content
+	| get-tag release-list
 	| each { |release|
 		$release.content.0
 		| select tag content.0.content
@@ -89,7 +94,7 @@ export def "search artist" [artist: string] {
 	http get -f ($url | url join)
 	| get body.content.0.content
 	| each { |art|
-	  { name: ($art.content | where tag == name | first | get content.0.content)
+	  { name: ($art.content | get-tag name | get 0.content)
 		, id: $art.attributes.id
 		}
 	}
