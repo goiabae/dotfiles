@@ -96,7 +96,7 @@ use x11.nu *
 use yt.nu
 use xbps.nu
 use wrappers.nu *
-use music.nu
+use music_new.nu *
 use nix-locate.nu
 use sfeed.nu
 
