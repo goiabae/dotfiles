@@ -1,6 +1,6 @@
 use mbz.nu
 
-const db = ("~/doc/table/music.db" | path expand)
+const db = ("~/net/sync/music.db" | path expand)
 
 export def main [] { open $db | query db "select * from music;" }
 
