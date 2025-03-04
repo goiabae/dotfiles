@@ -66,3 +66,8 @@ export def "music todo done" [entry, score: int] {
 	let now = date now | format date '%Y-%m-%d'
 	open $db_path | query db "update music_new set score = :score, added = :now, modified = :now where music_id = :music_id;" -p { score: $score, now: $now, music_id: $entry.music_id }
 }
+
+export def "music delete" [music_id: int] {
+  open $db_path | query db "delete from music_authors where music_id = :music_id;" -p { music_id: $music_id }
+  open $db_path | query db "delete from music_new where music_id = :music_id;" -p { music_id: $music_id }
+}
