@@ -1045,6 +1045,7 @@ After the =elpaca= queue has being emptied, load the dashboard. Whenever creatin
 #+name: full-dashboard
 #+begin_src elisp
 (use-package dashboard
+  :if (length= command-line-args 1)
   :elpaca t
   :hook ((elpaca-after-init . dashboard-insert-startupify-lists)
          (elpaca-after-init . dashboard-initialize))
