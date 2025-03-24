@@ -1639,11 +1639,11 @@ Disable =clang-format= of =clangd= when it can't find a =.clang-format= file.
   :hook ((c-mode c++-mode) . eglot-ensure)
   :custom (c-label-minimum-indentation 0)
   :config
-  (when (not (locate-file "clangd" exec-path))
-    (warn "`clangd' not in `exec-path'. Emacs won't be able to connect to C/C++ LSP server."))
   (add-to-list 'eglot-server-programs
     (cons '(c-mode c++-mode)
       (lambda (x)
+        (when (not (locate-file "clangd" exec-path))
+          (warn "`clangd' not in `exec-path'. Emacs won't be able to connect to C/C++ LSP server."))
         (list
           "clangd"
           "--fallback-style=none"
