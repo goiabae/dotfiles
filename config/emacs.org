@@ -1396,7 +1396,9 @@ My petty attempt at building the ultimate PDF annotation/search setup. Highlight
   :config (setq eshell-directory-name
                 (expand-file-name "emacs/eshell/" (xdg-data-home))))
 
-(use-package vterm :if (not (eq system-type 'windows-nt)))
+(use-package vterm
+  :disabled
+  :if (not (eq system-type 'windows-nt)))
 #+end_src
 
 ** development
