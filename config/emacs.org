@@ -1469,7 +1469,22 @@ Broken with the current version of jsonrpc included in Emacs 29. Works in Emacs 
 (defun yeet/enable-tabs  () (setq indent-tabs-mode t  ))
 
 (use-package treesit
-  :elpaca `,(maybe-recipe 'treesit))
+  :after dash
+  :elpaca `,(maybe-recipe 'treesit)
+  :config
+  (setq treesit-language-source-alist
+    '((c     . ("https://github.com/tree-sitter/tree-sitter-c"))
+      (cpp   . ("https://github.com/tree-sitter/tree-sitter-cpp"))
+      (bison . ("https://gitlab.com/btuin2/tree-sitter-bison"))))
+  ;; FIXME: check if `git' and `cc' are available before attempting to install parsers
+  (dolist (source treesit-language-source-alist)
+    (unless (treesit-ready-p (car source))
+      (treesit-install-language-grammar (car source))))
+  (setq auto-mode-alist
+    (--> auto-mode-alist
+      (map-insert it "\\.c\\'"   #'c-ts-mode)
+      (map-insert it "\\.cpp\\'" #'c++-ts-mode)
+      (map-insert it "\\.y\\'"   #'bison-ts-mode))))
 
 <<full-lisp>>
 <<full-c-cpp>>
