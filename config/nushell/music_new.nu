@@ -71,3 +71,8 @@ export def "music delete" [music_id: int] {
   open $db_path | query db "delete from music_authors where music_id = :music_id;" -p { music_id: $music_id }
   open $db_path | query db "delete from music_new where music_id = :music_id;" -p { music_id: $music_id }
 }
+
+export def "music review" [music_id: int, score: int] {
+	let today = date now | format date '%Y-%m-%d'
+	open $db_path | query db $"update music_new set modified = :today, score = :score where music_id = :music_id;" -p { today: $today, score: $score, music_id: $music_id }
+}
