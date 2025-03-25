@@ -1587,6 +1587,7 @@ Broken with the current version of jsonrpc included in Emacs 29. Works in Emacs 
 <<full-clojure>>
 <<full-elisp>>
 <<full-clisp>>
+<<full-scheme>>
 #+end_src
 
 ***** Clojure
@@ -1629,6 +1630,16 @@ Broken with the current version of jsonrpc included in Emacs 29. Works in Emacs 
   :after lisp-mode
   :commands sly
   :config (setq inferior-lisp-program "/bin/sbcl"))
+#+end_src
+
+***** Scheme
+
+#+name: full-scheme
+#+begin_src elisp
+(use-package scheme-mode
+  :elpaca nil
+  :hook ((scheme-mode . yeet/disable-tabs)
+         (scheme-mode . yeet/lisp-prettify-symbols)))
 #+end_src
 
 **** C and C++
