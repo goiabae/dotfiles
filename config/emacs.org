@@ -1669,7 +1669,7 @@ Disable =clang-format= of =clangd= when it can't find a =.clang-format= file.
               (f-join (temporary-file-directory) "eglot-build/"))))))))
 
 (use-package clang-format
-  :hook ((c-mode c++-mode) . (lambda () (add-hook 'before-save-hook 'clang-format-buffer nil t)))
+  :hook ((c-mode c++-mode c-ts-mode c++-ts-mode) . (lambda () (add-hook 'before-save-hook 'clang-format-buffer nil t)))
   :config
   (setq clang-format-style "file"
         ;; if no `.clang-format' is found, don't do anything
