@@ -1908,6 +1908,7 @@ The nushell treesitter parser is not good at all and the LSP barely does anythin
            :repo "herbertjones/nushell-ts-mode")
   :hook (nushell-ts-mode . eglot-ensure)
   :after (org treesit eglot)
+  :mode "\\.nu\\'"
   :config
   (map-put org-babel-load-languages 'nushell-ts t)
   (map-put treesit-language-source-alist 'nu '("https://github.com/nushell/tree-sitter-nu" nil nil nil nil))
