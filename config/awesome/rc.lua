@@ -18,6 +18,17 @@ local hotkeys_popup = require("awful.hotkeys_popup")
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
+---@param f function|table
+---@return function
+local function fix(f, x)
+	return function(...)
+		return f(x, ...)
+	end
+end
+
+local client_focus_next = fix(awful.client.focus.byidx, 1)
+local client_focus_prev = fix(awful.client.focus.byidx, -1)
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -266,12 +277,14 @@ local globalkeys = gears.table.join(
 	awful.key({ modkey }, "Right", awful.tag.viewnext, { description = "view next", group = "tag" }),
 	awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
 
-	awful.key({ modkey }, "j", function()
-		awful.client.focus.byidx(1)
-	end, { description = "focus next by index", group = "client" }),
-	awful.key({ modkey }, "k", function()
-		awful.client.focus.byidx(-1)
-	end, { description = "focus previous by index", group = "client" }),
+	-- change client focus
+	awful.key({ modkey }, "j", client_focus_next, { description = "focus next", group = "client" }),
+	awful.key({ modkey }, "k", client_focus_prev, { description = "focus previous", group = "client" }),
+
+	-- change tag focus
+	awful.key({ modkey }, "h", awful.tag.viewprev, { description = "view previous", group = "tag" }),
+	awful.key({ modkey }, "l", awful.tag.viewnext, { description = "view next", group = "tag" }),
+
 	awful.key({ modkey }, "w", function()
 		mymainmenu:show()
 	end, { description = "show main menu", group = "awesome" }),
@@ -307,12 +320,6 @@ local globalkeys = gears.table.join(
 	awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
 	awful.key({ modkey, "Shift" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
 
-	awful.key({ modkey }, "l", function()
-		awful.tag.incmwfact(0.05)
-	end, { description = "increase master width factor", group = "layout" }),
-	awful.key({ modkey }, "h", function()
-		awful.tag.incmwfact(-0.05)
-	end, { description = "decrease master width factor", group = "layout" }),
 	awful.key({ modkey, "Shift" }, "h", function()
 		awful.tag.incnmaster(1, nil, true)
 	end, { description = "increase the number of master clients", group = "layout" }),
