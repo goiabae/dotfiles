@@ -1446,6 +1446,7 @@ For now, I just disable formatting LSP messages altogether.
 (use-package eglot
   :elpaca `,(maybe-recipe 'eglot)
   :after (project)
+  :hook ((c-ts-mode c++-ts-mode) . eglot-ensure)
   :custom
   (eglot-ignored-server-capabilities
     '(:documentOnTypeFormattingProvider
@@ -1650,7 +1651,7 @@ Disable =clang-format= of =clangd= when it can't find a =.clang-format= file.
 (use-package cc-mode
   :elpaca nil
   :after eglot
-  :hook ((c-mode c++-mode) . eglot-ensure)
+  :hook ((c-mode c++-mode c-ts-mode c++-ts-mode) . eglot-ensure)
   :custom (c-label-minimum-indentation 0)
   :config
   (add-to-list 'eglot-server-programs
