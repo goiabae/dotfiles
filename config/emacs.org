@@ -1933,6 +1933,9 @@ Keywords like =TODO= and =FIXME= are collected into a section in Magit.
 
 (use-package magit-todos
   :after magit
+  :elpaca
+  `,(cons 'magit-todos
+      (map-insert (elpaca-order-defaults 'magit-todos) :ref "501c8db"))
   :config (magit-todos-mode 1))
 
 (use-package blamer
