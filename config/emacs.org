@@ -1925,6 +1925,9 @@ Keywords like =TODO= and =FIXME= are collected into a section in Magit.
 #+name: full-git
 #+begin_src elisp
 (use-package magit
+  :elpaca
+  `,(cons 'magit
+      (map-insert (elpaca-order-defaults 'magit) :ref "020aca7"))
   :custom
   (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
 
