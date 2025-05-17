@@ -29,6 +29,14 @@ end
 local client_focus_next = fix(awful.client.focus.byidx, 1)
 local client_focus_prev = fix(awful.client.focus.byidx, -1)
 
+local mouse_click = {
+	left = 1,
+	middle = 2,
+	right = 3,
+	scroll_up = 4,
+	scroll_down = 5,
+}
+
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -140,24 +148,24 @@ local mytextclock = wibox.widget.textclock()
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
-	awful.button({}, 1, function(t)
+	awful.button({}, mouse_click.left, function(t)
 		t:view_only()
 	end),
-	awful.button({ modkey }, 1, function(t)
+	awful.button({ modkey }, mouse_click.left, function(t)
 		if client.focus then
 			client.focus:move_to_tag(t)
 		end
 	end),
-	awful.button({}, 3, awful.tag.viewtoggle),
-	awful.button({ modkey }, 3, function(t)
+	awful.button({}, mouse_click.right, awful.tag.viewtoggle),
+	awful.button({ modkey }, mouse_click.right, function(t)
 		if client.focus then
 			client.focus:toggle_tag(t)
 		end
 	end),
-	awful.button({}, 4, function(t)
+	awful.button({}, mouse_click.scroll_down, function(t)
 		awful.tag.viewnext(t.screen)
 	end),
-	awful.button({}, 5, function(t)
+	awful.button({}, mouse_click.scroll_up, function(t)
 		awful.tag.viewprev(t.screen)
 	end)
 )
