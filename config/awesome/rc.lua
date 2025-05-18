@@ -37,7 +37,6 @@ local mouse_click = {
 	scroll_down = 5,
 }
 
--- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
 if awesome.startup_errors then
@@ -66,9 +65,7 @@ do
 		in_error = false
 	end)
 end
--- }}}
 
--- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
@@ -104,9 +101,7 @@ awful.layout.layouts = {
 	-- awful.layout.suit.corner.sw,
 	-- awful.layout.suit.corner.se,
 }
--- }}}
 
--- {{{ Menu
 -- Create a launcher widget and a main menu
 local myawesomemenu = {
 	{
@@ -137,12 +132,10 @@ local mylauncher = awful.widget.launcher { image = beautiful.awesome_icon, menu 
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
--- }}}
 
 -- Keyboard map indicator and switcher
 local mykeyboardlayout = awful.widget.keyboardlayout()
 
--- {{{ Wibar
 -- Create a textclock widget
 local mytextclock = wibox.widget.textclock()
 
@@ -266,9 +259,7 @@ awful.screen.connect_for_each_screen(function(s)
 		},
 	}
 end)
--- }}}
 
--- {{{ Mouse bindings
 root.buttons(gears.table.join(
 	awful.button({}, 3, function()
 		mymainmenu:toggle()
@@ -276,9 +267,7 @@ root.buttons(gears.table.join(
 	awful.button({}, 4, awful.tag.viewnext),
 	awful.button({}, 5, awful.tag.viewprev)
 ))
--- }}}
 
--- {{{ Key bindings
 local function command_key(keys, cmd, desc, group)
 	local key = keys[#keys]
 	if #keys > 1 then
@@ -486,9 +475,7 @@ local clientbuttons = gears.table.join(
 
 -- Set keys
 root.keys(globalkeys)
--- }}}
 
--- {{{ Rules
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
 	-- All clients will match this rule.
@@ -548,9 +535,7 @@ awful.rules.rules = {
 	-- { rule = { class = "Firefox" },
 	--   properties = { screen = 1, tag = "2" } },
 }
--- }}}
 
--- {{{ Signals
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function(c)
 	-- Set the windows at the slave,
@@ -614,4 +599,3 @@ end)
 client.connect_signal("unfocus", function(c)
 	c.border_color = beautiful.border_normal
 end)
--- }}}
