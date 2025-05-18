@@ -197,11 +197,8 @@ awful.screen.connect_for_each_screen(function(s)
 		buttons = tasklist_buttons,
 	}
 
-	-- Create the wibox
-	s.mywibox = awful.wibar { position = "top", screen = s }
-
-	-- Add widgets to the wibox
-	s.mywibox:setup {
+	local bar = awful.wibar { position = "top", screen = s }
+	bar:setup {
 		layout = wibox.layout.align.horizontal,
 		{ -- Left widgets
 			layout = wibox.layout.fixed.horizontal,
