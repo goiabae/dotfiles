@@ -161,20 +161,20 @@ local taglist_buttons = gears.table.join(
 )
 
 local tasklist_buttons = gears.table.join(
-	awful.button({}, 1, function(c)
+	awful.button({}, mouse_click.left, function(c)
 		if c == client.focus then
 			c.minimized = true
 		else
 			c:emit_signal("request::activate", "tasklist", { raise = true })
 		end
 	end),
-	awful.button({}, 3, function()
+	awful.button({}, mouse_click.right, function()
 		awful.menu.client_list { theme = { width = 250 } }
 	end),
-	awful.button({}, 4, function()
+	awful.button({}, mouse_click.scroll_up, function()
 		awful.client.focus.byidx(1)
 	end),
-	awful.button({}, 5, function()
+	awful.button({}, mouse_click.scroll_down, function()
 		awful.client.focus.byidx(-1)
 	end)
 )
@@ -207,16 +207,16 @@ awful.screen.connect_for_each_screen(function(s)
 	-- We need one layoutbox per screen.
 	s.mylayoutbox = awful.widget.layoutbox(s)
 	s.mylayoutbox:buttons(gears.table.join(
-		awful.button({}, 1, function()
+		awful.button({}, mouse_click.left, function()
 			awful.layout.inc(1)
 		end),
-		awful.button({}, 3, function()
+		awful.button({}, mouse_click.right, function()
 			awful.layout.inc(-1)
 		end),
-		awful.button({}, 4, function()
+		awful.button({}, mouse_click.scroll_up, function()
 			awful.layout.inc(1)
 		end),
-		awful.button({}, 5, function()
+		awful.button({}, mouse_click.scroll_down, function()
 			awful.layout.inc(-1)
 		end)
 	))
@@ -258,11 +258,11 @@ awful.screen.connect_for_each_screen(function(s)
 end)
 
 root.buttons(gears.table.join(
-	awful.button({}, 3, function()
+	awful.button({}, mouse_click.right, function()
 		mymainmenu:toggle()
 	end),
-	awful.button({}, 4, awful.tag.viewnext),
-	awful.button({}, 5, awful.tag.viewprev)
+	awful.button({}, mouse_click.scroll_up, awful.tag.viewnext),
+	awful.button({}, mouse_click.scroll_down, awful.tag.viewprev)
 ))
 
 local function command_key(keys, cmd, desc, group)
@@ -457,14 +457,14 @@ for i = 1, 9 do
 end
 
 local clientbuttons = gears.table.join(
-	awful.button({}, 1, function(c)
+	awful.button({}, mouse_click.left, function(c)
 		c:emit_signal("request::activate", "mouse_click", { raise = true })
 	end),
-	awful.button({ modkey }, 1, function(c)
+	awful.button({ modkey }, mouse_click.left, function(c)
 		c:emit_signal("request::activate", "mouse_click", { raise = true })
 		awful.mouse.client.move(c)
 	end),
-	awful.button({ modkey }, 3, function(c)
+	awful.button({ modkey }, mouse_click.right, function(c)
 		c:emit_signal("request::activate", "mouse_click", { raise = true })
 		awful.mouse.client.resize(c)
 	end)
@@ -549,11 +549,11 @@ end)
 client.connect_signal("request::titlebars", function(c)
 	-- buttons for the titlebar
 	local buttons = gears.table.join(
-		awful.button({}, 1, function()
+		awful.button({}, mouse_click.left, function()
 			c:emit_signal("request::activate", "titlebar", { raise = true })
 			awful.mouse.client.move(c)
 		end),
-		awful.button({}, 3, function()
+		awful.button({}, mouse_click.right, function()
 			c:emit_signal("request::activate", "titlebar", { raise = true })
 			awful.mouse.client.resize(c)
 		end)
