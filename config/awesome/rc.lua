@@ -279,6 +279,19 @@ root.buttons(gears.table.join(
 -- }}}
 
 -- {{{ Key bindings
+local function command_key(keys, cmd, desc, group)
+	local key = keys[#keys]
+	if #keys > 1 then
+		local modifiers = {}
+		for i = 1, #keys - 1 do
+			table.insert(modifiers, keys[i])
+		end
+		return awful.key(modifiers, key, function() awful.spawn(cmd) end, { desc, group })
+	else
+		return awful.key({}, key, function() awful.spawn(cmd) end, { desc, group })
+	end
+end
+
 local globalkeys = gears.table.join(
 	awful.key({ modkey }, "s", hotkeys_popup.show_help, { description = "show help", group = "awesome" }),
 	awful.key({ modkey }, "Escape", awful.tag.history.restore, { description = "go back", group = "tag" }),
@@ -317,21 +330,12 @@ local globalkeys = gears.table.join(
 	end, { description = "go back", group = "client" }),
 
 	-- Standard program
-	awful.key({ modkey, "Shift" }, "9", function()
-		awful.spawn("pamixer -d 5")
-	end, { description = "decrease volume", group = "launcher" }),
-	awful.key({ modkey, "Shift" }, "0", function()
-		awful.spawn("pamixer -i 5")
-	end, { description = "increase volume", group = "launcher" }),
-	awful.key({ modkey }, "Return", function()
-		awful.spawn(terminal)
-	end, { description = "open a terminal", group = "launcher" }),
-	awful.key({ modkey }, "b", function()
-		awful.spawn(browser)
-	end, { description = "open a browser", group = "launcher" }),
-	awful.key({ modkey }, "e", function()
-		awful.spawn(editor_cmd)
-	end, { description = "open an editor", group = "launcher" }),
+	command_key({ modkey, "Shift", "9" }, "pamixer -d 5", "decrease volume", "launcher"),
+	command_key({ modkey, "Shift", "0" }, "pamixer -i 5", "increase volume", "launcher"),
+	command_key({ modkey, "Return" }, terminal, "open a terminal", "launcher"),
+	command_key({ modkey, "b" }, browser, "open a browser", "launcher"),
+	command_key({ modkey, "e" }, editor_cmd, "open an editor", "launcher"),
+
 	awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
 	awful.key({ modkey, "Shift" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
 
