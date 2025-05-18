@@ -172,21 +172,16 @@ awful.screen.connect_for_each_screen(function(s)
 	set_wallpaper(s)
 	awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, default_layout)
 
+	local layout_next = fix(awful.layout.inc, 1)
+	local layout_prev = fix(awful.layout.inc, -1)
+
 	-- Shows the current layout of the tag as an icon. Can be interacted with to change the current layout
 	local layout_box = awful.widget.layoutbox(s)
 	layout_box:buttons(gears.table.join(
-		awful.button({}, mouse_click.left, function()
-			awful.layout.inc(1)
-		end),
-		awful.button({}, mouse_click.right, function()
-			awful.layout.inc(-1)
-		end),
-		awful.button({}, mouse_click.scroll_up, function()
-			awful.layout.inc(1)
-		end),
-		awful.button({}, mouse_click.scroll_down, function()
-			awful.layout.inc(-1)
-		end)
+		awful.button({}, mouse_click.left, layout_next),
+		awful.button({}, mouse_click.right, layout_prev),
+		awful.button({}, mouse_click.scroll_up, layout_next),
+		awful.button({}, mouse_click.scroll_down, layout_prev)
 	))
 
 	local tag_list = awful.widget.taglist {
