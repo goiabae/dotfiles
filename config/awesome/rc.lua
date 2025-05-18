@@ -88,6 +88,8 @@ awful.layout.layouts = {
 	awful.layout.suit.corner.nw,
 }
 
+local default_layout = awful.layout.layouts[1]
+
 -- Create a launcher widget and a main menu
 local myawesomemenu = {
 	{
