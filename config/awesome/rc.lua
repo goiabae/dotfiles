@@ -185,10 +185,9 @@ awful.screen.connect_for_each_screen(function(s)
 
 	-- Create a promptbox for each screen
 	s.mypromptbox = awful.widget.prompt()
-	-- Create an imagebox widget which will contain an icon indicating which layout we're using.
-	-- We need one layoutbox per screen.
-	s.mylayoutbox = awful.widget.layoutbox(s)
-	s.mylayoutbox:buttons(gears.table.join(
+	-- Shows the current layout of the tag as an icon. Can be interacted with to change the current layout
+	local layout_box = awful.widget.layoutbox(s)
+	layout_box:buttons(gears.table.join(
 		awful.button({}, mouse_click.left, function()
 			awful.layout.inc(1)
 		end),
@@ -202,15 +201,15 @@ awful.screen.connect_for_each_screen(function(s)
 			awful.layout.inc(-1)
 		end)
 	))
-	-- Create a taglist widget
-	s.mytaglist = awful.widget.taglist {
+
+	local tag_list = awful.widget.taglist {
 		screen = s,
 		filter = awful.widget.taglist.filter.all,
 		buttons = taglist_buttons,
 	}
 
 	-- Create a tasklist widget
-	s.mytasklist = awful.widget.tasklist {
+	local task_list = awful.widget.tasklist {
 		screen = s,
 		filter = awful.widget.tasklist.filter.currenttags,
 		buttons = tasklist_buttons,
@@ -225,16 +224,16 @@ awful.screen.connect_for_each_screen(function(s)
 		{ -- Left widgets
 			layout = wibox.layout.fixed.horizontal,
 			mylauncher,
-			s.mytaglist,
 			s.mypromptbox,
+			tag_list,
 		},
-		s.mytasklist, -- Middle widget
+		task_list, -- Middle widget
 		{ -- Right widgets
 			layout = wibox.layout.fixed.horizontal,
 			mykeyboardlayout,
 			wibox.widget.systray(),
 			mytextclock,
-			s.mylayoutbox,
+			layout_box,
 		},
 	}
 end)
