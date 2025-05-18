@@ -5,7 +5,6 @@ pcall(require, "luarocks.loader")
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
-require("awful.autofocus")
 -- Widget and layout library
 local wibox = require("wibox")
 -- Theme handling library
@@ -584,6 +583,8 @@ client.connect_signal("request::titlebars", function(c)
 		layout = wibox.layout.align.horizontal,
 	}
 end)
+
+require("awful.autofocus")
 
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter", function(c)
