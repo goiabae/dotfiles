@@ -143,21 +143,15 @@ local taglist_buttons = gears.table.join(
 
 local tasklist_buttons = gears.table.join(
 	awful.button({}, mouse_click.left, function(c)
+		c:emit_signal("request::activate", "tasklist", { raise = true })
+	end),
+	awful.button({}, mouse_click.right, function(c)
 		if c == client.focus then
 			c.minimized = true
-		else
-			c:emit_signal("request::activate", "tasklist", { raise = true })
 		end
 	end),
-	awful.button({}, mouse_click.right, function()
-		awful.menu.client_list { theme = { width = 250 } }
-	end),
-	awful.button({}, mouse_click.scroll_up, function()
-		awful.client.focus.byidx(1)
-	end),
-	awful.button({}, mouse_click.scroll_down, function()
-		awful.client.focus.byidx(-1)
-	end)
+	awful.button({}, mouse_click.scroll_up, client_focus_next),
+	awful.button({}, mouse_click.scroll_down, client_focus_prev)
 )
 
 local function set_wallpaper(s)
