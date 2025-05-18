@@ -99,12 +99,7 @@ local myawesomemenu = {
 	{ "manual", terminal .. " -e man awesome" },
 	{ "edit config", editor_cmd .. " " .. awesome.conffile },
 	{ "restart", awesome.restart },
-	{
-		"quit",
-		function()
-			awesome.quit()
-		end,
-	},
+	{ "quit", awesome.quit },
 }
 
 local mymainmenu = awful.menu {
