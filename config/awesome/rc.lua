@@ -317,6 +317,12 @@ local globalkeys = gears.table.join(
 	end, { description = "go back", group = "client" }),
 
 	-- Standard program
+	awful.key({ modkey, "Shift" }, "9", function()
+		awful.spawn("pamixer -d 5")
+	end, { description = "decrease volume", group = "launcher" }),
+	awful.key({ modkey, "Shift" }, "0", function()
+		awful.spawn("pamixer -i 5")
+	end, { description = "increase volume", group = "launcher" }),
 	awful.key({ modkey }, "Return", function()
 		awful.spawn(terminal)
 	end, { description = "open a terminal", group = "launcher" }),
