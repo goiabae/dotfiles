@@ -67,6 +67,8 @@ local editor = os.getenv("EDITOR") or "nano"
 local editor_cmd = "emacs"
 local browser = "firefox"
 
+menubar.utils.terminal = terminal
+
 local modkey = modifiers.super
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
@@ -113,9 +115,6 @@ local mymainmenu = awful.menu {
 }
 
 local mylauncher = awful.widget.launcher { image = beautiful.awesome_icon, menu = mymainmenu }
-
--- Menubar configuration
-menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 
 -- Keyboard map indicator and switcher
 local mykeyboardlayout = awful.widget.keyboardlayout()
