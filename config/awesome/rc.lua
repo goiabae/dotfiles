@@ -284,7 +284,7 @@ local globalkeys = gears.table.join(
 	command_key({ modkey, "e" }, editor_cmd, "open an editor", "launcher"),
 	command_key({ modkey, "m" }, "rofi -show drun", "open menu launcher", "launcher"),
 
-	awful.key({ modkey, "Control" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
+	awful.key({ modkey, "Shift" }, "r", awesome.restart, { description = "reload awesome", group = "awesome" }),
 	awful.key({ modkey, "Shift" }, "q", awesome.quit, { description = "quit awesome", group = "awesome" }),
 
 	awful.key({ modkey, "Shift" }, "h", function()
