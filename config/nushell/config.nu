@@ -1,4 +1,4 @@
-# made for nushell version 0.100.1
+# made for nushell version 0.104.0
 
 let theme = {
     separator: white
@@ -71,7 +71,7 @@ $env.config.rm.always_trash = true
 $env.config.table.mode = "none"
 $env.config.table.index_mode = "auto"
 $env.config.display_errors.exit_code = true
-$env.config.filesize.metric = true
+$env.config.filesize.unit = 'metric'
 
 $env.config.hooks.env_change = {
   PWD: [{ |before, after|
@@ -147,7 +147,7 @@ def pomodoro [
 	}
 }
 
-def album-tracks [] -> list<any> {
+def album-tracks []: nothing -> list<any> {
 	use mbz.nu
 	let author = input 'artist name: '
 	let artist = mbz search artist $author | input list 'select artist: '

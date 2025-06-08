@@ -6,12 +6,12 @@ def "from xbps-repodata" [] {
 }
 
 # parses an ipv6 or ipv4 string into a string of digits
-def "from ip" [] -> string { python3 -c $"import ipaddress; print\(int\(ipaddress.ip_address\('($in)'\)\)\)" }
+def "from ip" []: string -> string { python3 -c $"import ipaddress; print\(int\(ipaddress.ip_address\('($in)'\)\)\)" }
 
 
 def ip-geolocation [
 	ip: string # ip is a string of digits
-] -> list<any> {
+]: nothing -> list<any> {
 	let db = xdg data-home  | path join geolite2-city-ipv6-num.csv
 	if not ($db | path exists) {
 		cd (xdg data-home)
@@ -26,7 +26,7 @@ def ip-geolocation [
 	| first
 }
 
-def weather [--city (-c): string] -> list<any> {
+def weather [--city (-c): string]: nothing -> list<any> {
 	let ip = http get https://6.ident.me | from ip
 	let geo = ip-geolocation $ip
 	http get (do { |x| $x | url join } {
@@ -87,7 +87,7 @@ use anime-season
 
 const firefox_path = $nu.home-path | path join .mozilla/firefox
 
-def "firefox tabs" [] -> list<any> {
+def "firefox tabs" []: nothing -> list<any> {
 	if not ($firefox_path | path join profiles.ini | path exists) {
 		error make { msg: "no firefox profiles.ini found" }
 	}
@@ -108,7 +108,7 @@ def "firefox tabs" [] -> list<any> {
   }
 }
 
-def "firefox profiles" [] -> list<any> {
+def "firefox profiles" []: nothing -> list<any> {
   open .mozilla/firefox/profiles.ini
 	| jc --ini
 	| from json
@@ -126,7 +126,7 @@ def "firefox history" [profile: string] {
   open $file | get moz_places
 }
 
-def "emacs eval" [exp: string, --server_socket (-s): path] -> string {
+def "emacs eval" [exp: string, --server_socket (-s): path]: nothing -> string {
   let socket = (
     $server_socket
     | default (xdg runtime-dir | path join emacs server)
@@ -141,7 +141,7 @@ def "emacs eval" [exp: string, --server_socket (-s): path] -> string {
 }
 
 # cookie clicker
-def next-ascension [--pretty (-p)] -> list<any> {
+def next-ascension [--pretty (-p)]: int -> list<any> {
   into string
   | ^next-ascension # J script
   | lines
@@ -155,7 +155,7 @@ def next-ascension [--pretty (-p)] -> list<any> {
   }
 }
 
-def inv-instances [] -> list<any> {
+def inv-instances []: nothing -> list<any> {
 	http get "https://api.invidious.io/instances.json" | each { get 1 }
 }
 

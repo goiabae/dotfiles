@@ -146,7 +146,7 @@ def is_valid_mbid [str: string] {
 	$str =~ '[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'
 }
 
-export def "fetch-cover" [mbid: string, type: string] -> path {
+export def "fetch-cover" [mbid: string, type: string]: nothing -> path {
 	if $type != release-group {
 		error make { msg: "Only release-group fetching is implemented" }
 	}
