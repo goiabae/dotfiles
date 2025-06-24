@@ -454,6 +454,7 @@ Set native compilation cache path to xdg cache. Also, don't compile when the edi
 
 (push 'git-commit elpaca-ignored-dependencies)
 (setq elpaca-queue-limit 8)
+(setq elpaca-lock-file (expand-file-name "emacs.lock" (xdg-config-home)))
 
 (defvar *builtin-load-path* load-path)
 (defun is-builtin (sym)
@@ -677,8 +678,7 @@ Disable automatic resize without any confirmation.
      :inherit t
      :depth 1
      :host github
-     :repo "rejeep/f.el"
-     :ref "931b6d0"))
+     :repo "rejeep/f.el"))
 
 (use-package s
   :ensure
@@ -1952,17 +1952,11 @@ Keywords like =TODO= and =FIXME= are collected into a section in Magit.
 #+name: full-git
 #+begin_src elisp
 (use-package magit
-  :elpaca
-  `,(cons 'magit
-      (map-insert (elpaca-order-defaults 'magit) :ref "020aca7"))
   :custom
   (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
 
 (use-package magit-todos
   :after magit
-  :elpaca
-  `,(cons 'magit-todos
-      (map-insert (elpaca-order-defaults 'magit-todos) :ref "501c8db"))
   :config (magit-todos-mode 1))
 
 (use-package blamer
@@ -1974,10 +1968,7 @@ Keywords like =TODO= and =FIXME= are collected into a section in Magit.
 ;; FIXME broken
 (use-package forge
   :disabled
-  :after magit
-  :elpaca
-  `,(cons 'forge
-     (map-insert (elpaca-order-defaults 'forge) :ref "cdf34e7")))
+  :after magit)
 #+end_src
 ** interface with the operating system
 
