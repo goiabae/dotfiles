@@ -1567,6 +1567,13 @@ Broken with the current version of jsonrpc included in Emacs 29. Works in Emacs 
   :elpaca nil
   :hook (java-mode . yeet/disable-tabs))
 
+(use-package nim-mode
+  :after eglot
+  :config
+  (add-to-list 'eglot-server-programs
+    (cons 'nim-mode
+      (eglot-alternatives '(("nimlangserver"))))))
+
 (use-package k-mode
   :elpaca
   (k-mode
