@@ -1065,6 +1065,13 @@ After the =elpaca= queue has being emptied, load the dashboard. Whenever creatin
    '((recents  . 10)
      (projects . 5)
      (agenda   . 10)))
+  (dashboard-startupify-list
+    '(dashboard-insert-banner-title
+      dashboard-insert-newline
+      dashboard-insert-init-info
+      dashboard-insert-items
+      dashboard-insert-newline
+      dashboard-insert-footer))
   :config
   (dashboard-setup-startup-hook))
 #+end_src
