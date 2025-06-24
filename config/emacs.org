@@ -1583,6 +1583,14 @@ Broken with the current version of jsonrpc included in Emacs 29. Works in Emacs 
     :host github
     :files (:defaults "emacs/*.el")
     :repo "runtimeverification/k-editor-support"))
+
+(use-package uiua-mode
+  :mode "\\.ua\\'"
+  :elpaca (uiua-mode :protocol https
+     :inherit t
+     :depth 1
+     :host github
+     :repo "crmsnbleyd/uiua-mode"))
 #+end_src
 
 **** LISPs
