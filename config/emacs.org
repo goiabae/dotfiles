@@ -1563,6 +1563,10 @@ Broken with the current version of jsonrpc included in Emacs 29. Works in Emacs 
       ;; name of server is in pascal case on NixOS
       (eglot-alternatives '(("OmniSharp" "-lsp"))))))
 
+(use-package java-mode
+  :elpaca nil
+  :hook (java-mode . yeet/disable-tabs))
+
 (use-package k-mode
   :elpaca
   (k-mode
