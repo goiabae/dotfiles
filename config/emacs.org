@@ -670,7 +670,8 @@ Disable automatic resize without any confirmation.
      :inherit t
      :depth 1
      :host github
-     :repo "rejeep/f.el"))
+     :repo "rejeep/f.el"
+     :ref "931b6d0"))
 
 (use-package s
   :elpaca
