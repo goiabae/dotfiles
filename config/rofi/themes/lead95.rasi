@@ -1,138 +1,97 @@
 * {
-  highlight: bold;
+	highlight: bold;
 	scrollbar: true;
-	
-  dark-red:     #ab090f;
-  dark-olive:   #79740e;
-  dark-yellow:  #b57614;
-  dark-orange:  #a93d0a;
-  dark-purple:  #894949;
-  dark-green:   #207016;
-  dark-cyan:    #427a4e;
-  red:          #cc241d;
-  olive:        #98952a;
-  yellow:       #d09420;
-  orange:       #d6580e;
-  purple:       #b16262;
-  green:        #3f9f32;
-  cyan:         #689e69;
 
-  grey0:    #161616;
-  grey1:    #202020;
-  grey1-5:  #252525;
-  grey2:    #3c3836;
-  grey3:    #504945;
-  grey4:    #7c6f64;
-  grey5:    #928374;
-  grey6:    #a89984;
-  grey7:    #b7ac98;
-	grey8:    #bdaea0;
-	grey9:    #d1c4b8;
-	grey9-5:  #eddfce;
-	grey10:   #fdfbf4;
+	dark-green: #746f06;
+	light-green: #b5ba25;
+	orange: #b2694a;
 
-	pale6:    #ebdbb2;
-  pale8:    #fbf1c7;
+	grey0: #161616;
+	grey9: #d1c4b8;
+	pale12: #dfd7d5;
+	pale14: #c2b397;
+	pale5: #d2c3a5;
+	pale9: #e4d8bc;
+	pale10: #fef5d8;
 
-  background:  @grey9-5;
-  foreground:  @grey0;
-  lines-color: @grey6;
-
-  background-color:      @background;
-  border-color:          @lines-color;
-  text-color:            @foreground;
+	shadow: #72665e;
+	panel-background: @pale14;
+	handle-color: @pale14;
+	field-background: @pale10;
+	foreground: @grey0;
+	background-color: @panel-background;
+	text-color: @foreground;
+	highlight: #ebe0bf;
 }
 
 window {
-    background-color: @background;
-    border:           4;
-    padding:          4;
+		border: 2 0 0 2;
+		border-color: @highlight;
+		padding: 4 6 6 4;
 }
 
 mainbox {
-    border:  0;
-    padding: 0;
+		spacing: 6;
 }
 
-message {
-    border:       2px 0 0;
-    border-color: @lines-color;
-    padding:      1px;
-}
-
-textbox {
-    highlight:  @highlight;
-    text-color: @foreground;
-}
-
-element selected {
-    background-color: @grey6;
+listview {
+		border: 2 0 0 2;
+		border-color: @shadow;
+		spacing: 0;
+		padding: 0;
 }
 
 element {
-    border:  0;
-    padding: 2px;
+		border: 0;
+		padding: 2px;
+		background-color: @pale9;
+		highlight: @dark-green;
 }
 
-element.alternate.normal {
-  background-color: @grey9;
+element selected {
+		background-color: @orange;
+		highlight: @light-green;
+		text-color: @pale10;
 }
 
+element .alternate .normal {
+	background-color: @grey9;
+}
+
+/* values depend on whether the parent widget (element) is selected or not */
 element-text, element-icon {
-  background-color: inherit;
-  text-color: inherit;
+	background-color: inherit;
+	text-color: inherit;
+	highlight: inherit;
 }
 
 scrollbar {
-    width:        4px;
-    border:       0;
-    handle-color: @lines-color;
-    handle-width: 8px;
-    padding:      0;
+		border: 2px;
+		border-color: @pale12;
+		background-color: @pale9;
+		width: 4px;
+		padding: 0;
+		handle-width: 12px;
 }
 
 inputbar {
-    spacing:    0;
-    text-color: @foreground;
-		background-color: @grey10;
-    padding:    2px;
-    children:   [ prompt, textbox-prompt-sep, entry, case-indicator ];
+		border: 2 0 0 2;
+		border-color: @shadow;
+		background-color: @field-background;
+		padding: 2px;
+		/* the default doesn't have the prompt separator */
+		children: [ prompt, textbox-prompt-sep, entry, case-indicator ];
 }
 
-case-indicator,
-entry,
 prompt,
-button {
-    spacing:    0;
-		background-color: inherit; 
-    text-color: @foreground;
+entry,
+case-indicator {
+		background-color: inherit;
 }
 
 textbox-prompt-sep {
-    expand:     false;
+		expand: false;
 		background-color: inherit;
-    str:        ":";
-    text-color: @foreground;
-    margin:     0 0.3em 0 0;
+		str: ":";
+		margin: 0 0.3em 0 0;
 }
-
-/*
-listview {
-    border:       2px solid 0 0;
-    padding:      2px 0 0;
-    border-color: @lines-color;
-    spacing:      2px;
-    scrollbar:    @scrollbar;
-}
-
-mode-switcher {
-    border:       2px 0 0;
-    border-color: @lines-color;
-}
-
-button.selected {
-    background-color: @selected-normal-background;
-    text-color:       @selected-normal-foreground;
-}
-
-*/

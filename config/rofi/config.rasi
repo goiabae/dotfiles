@@ -1,6 +1,7 @@
 configuration {
 	/* modi: "window,drun,ssh,combi,run,emoji:rofimoji"; */
-  modi: "drun,run,emoji";
+  /* modi: "drun,run,emoji"; */
+	modi: "drun,run";
 /*	width: 50;*/
 /*	lines: 15;*/
 /*	columns: 1;*/
