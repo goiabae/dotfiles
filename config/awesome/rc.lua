@@ -66,7 +66,7 @@ end
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-local terminal = os.getenv("TERMINAL") or "xterm"
+local terminal = os.getenv("TERMINAL") or "xfce4-terminal"
 local editor = os.getenv("EDITOR") or "nano"
 local editor_cmd = "emacs"
 local browser = "firefox"
