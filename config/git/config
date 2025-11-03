@@ -39,3 +39,5 @@ conflictstyle = diff3
 colorMoved = default
 [init]
 	defaultBranch = master
+[log]
+	date = "format:%d/%m/%Y %H:%M:%S"
