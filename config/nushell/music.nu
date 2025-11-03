@@ -85,6 +85,8 @@ export def "main" [] {
 	open $db_path | query db "select mn.music_id, group_concat(a.name, ' + ') as authors, mn.title, mn.type, mn.score, mn.added, mn.modified from music mn inner join music_authors ma on mn.music_id = ma.music_id inner join author a on a.author_id = ma.author_id group by mn.music_id;"
 }
 
+def music [] { main }
+
 export def "music todo" [] {
 	open $db_path | query db "select mn.music_id, group_concat(a.name, ' + ') as authors, mn.title, mn.type from music mn inner join music_authors ma on mn.music_id = ma.music_id inner join author a on a.author_id = ma.author_id where mn.score is null group by mn.music_id;"
 }
