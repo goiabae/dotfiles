@@ -1,0 +1,23 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i 'emacs -Q --script' -p emacs
+;; -*- lexical-binding: t; -*-
+
+;; emacs.org hash: {{ include "config/emacs.org" | sha256sum }}
+
+(require 'org)
+(require 'xdg)
+(require 'files)
+
+(defun println (str)
+	(princ (concat str "\n")))
+
+(defvar *org-file* (expand-file-name "emacs.org" (xdg-config-home)))
+
+(when (not (file-exists-p (xdg-config-home)))
+	(make-directory (xdg-config-home)))
+
+(println (concat "tangling " "\"" *org-file* "\""))
+
+(let ((tangled-files (org-babel-tangle-file *org-file*)))
+	(dolist (file tangled-files)
+			(println (concat "tangled " "\"" *org-file* "\"" " to " "\"" file "\""))))

@@ -1,0 +1,25 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i 'emacs -Q --script' -p emacs stdenv.cc
+;; -*- lexical-binding: t; -*-
+
+(require 'xdg)
+(require 'files)
+(require 'treesit)
+
+(defun println (str)
+	(princ (concat str "\n")))
+
+(when (not (file-exists-p (xdg-config-home)))
+	(make-directory (xdg-config-home)))
+
+(setq treesit-language-source-alist
+  '((c "https://github.com/tree-sitter/tree-sitter-c")
+   (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+   (bison "https://gitlab.com/btuin2/tree-sitter-bison")
+   (nu "https://github.com/nushell/tree-sitter-nu")))
+
+(dolist (l treesit-language-source-alist)
+  (let ((lang (car l)))
+    (when (not (treesit-language-available-p lang))
+      (println (concat "Installing treesitter parser for " (symbol-name lang)))
+      (treesit-install-language-grammar lang))))
