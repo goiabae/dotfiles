@@ -17,6 +17,7 @@ export use ./himalaya-completions.nu *
 export use ./man-completions.nu *
 export use ./animdl-completions.nu *
 export use ./firefox-completions.nu *
+export use ./chezmoi-completions.nu *
 
 # run command and output diff of environment variables
 export extern diff-env [command, ...args]
