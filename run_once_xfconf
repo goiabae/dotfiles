@@ -8,6 +8,7 @@ xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>e" -t st
 xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>m" -t string --set "xfce4-popup-whiskermenu"
 xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>f" -t string --set "thunar"
 xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>period" -t string --set "rofi -show emoji"
+xfconf-query -n -c xfce4-keyboard-shortcuts -p "/commands/custom/<Super>Return" -t string --set "xfce4-terminal --drop-down"
 
 xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>h" -t string --set "prev_workspace_key"
 xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Super>j" -t string --set "cycle_windows_key"
@@ -26,7 +27,7 @@ xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Shift><Super>numb
 xfconf-query -n -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/<Shift><Super>dollar"     -t string --set "move_window_workspace_4_key"
 
 xfconf-query -n -c xfwm4 -p "/general/workspace_count" -t int --set 4
-xfconf-query -n -c xfwm4 -p "/general/theme" -t string --set "Lead95"
+xfconf-query -n -c xfwm4 -p "/general/theme" -t string --set "Chicago95"
 xfconf-query -n -c xfwm4 -p "/general/title_font" -t string --set "Sans Bold 8"
 xfconf-query -n -c xfwm4 -p "/general/easy_click" -t string --set "Super"
 
