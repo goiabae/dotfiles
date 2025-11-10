@@ -75,3 +75,5 @@ config/user-dirs.dirs
 config/mimeapps.list
 .xinitrc
 config/ludusavi/
+config/autostart/
+config/chezmoi/
