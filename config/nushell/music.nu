@@ -1,12 +1,32 @@
+
+# primary keys are marked with '*'. foreign keys are marked with '&'.
+# todo : { author, title, type }
+# music : { *music_id, title, type, score, revisions, added, modified }
+# author : { *author_id, name }
+# tag : { *tag_id, name, &parent_tag_id }
+# music_authors : { *&music_id, *&author_id }
+# music_tags : { *&music_id, *&tag_id }
+# music_music : { *relation : text, *&music_id, *&music_d }
+
 const db_path = $nu.home-path | path join "net/sync/music.db"
 
 def types [] {
 	echo ["list", "track"]
 }
 
-def add_author [name] {
+# returns an author_id for author with name or null if not found
+def find_author_id [name: string]: nothing -> int {
+	open $db_path | query db "select author_id from author where name = :name;" -p { name: $name } | get 0?.author_id?
+}
+
+def add_author [name: string]: nothing -> int {
+	let id = find_author_id $name
+	# author already exists
+	if $id != null { return $id }
 	let last_author_idx = open $db_path | query db "select max(author_id) as last_author_id from author;" | get last_author_id | first | if $in == null { -1 } else { $in }
-	open $db_path | query db "insert into author (author_id, name) values (:idx, :name);" -p { idx: ($last_author_idx + 1), name: $name }
+	let idx = $last_author_idx + 1
+	open $db_path | query db "insert into author (author_id, name) values (:idx, :name);" -p { idx: $idx, name: $name }
+	$idx
 }
 
 export def "music add" [authors_str, title, type, score: int, tags: list<string> = []]: nothing -> int {
@@ -81,6 +101,10 @@ export def "music todo add" [authors_str, title, type] {
 	}
 }
 
+export def authors-of [music_id] {
+	open $db_path | query db "select a.author_id, a.name from music mn inner join music_authors ma on mn.music_id = ma.music_id inner join author a on a.author_id = ma.author_id where mn.music_id = :music_id;" -p { music_id: $music_id }
+}
+
 export def "main" [] {
 	open $db_path | query db "select mn.music_id, group_concat(a.name, ' + ') as authors, mn.title, mn.type, mn.score, mn.added, mn.modified from music mn inner join music_authors ma on mn.music_id = ma.music_id inner join author a on a.author_id = ma.author_id group by mn.music_id;"
 }
@@ -93,6 +117,10 @@ export def "music todo" [] {
 
 export def "music of-author" [author: string] {
 	open $db_path | query db "select mn.music_id, group_concat(a.name, ' + ') as authors, mn.title, mn.type, mn.score, mn.added, mn.modified from music mn inner join music_authors ma on mn.music_id = ma.music_id inner join author a on a.author_id = ma.author_id where a.name = :author group by mn.music_id;" -p { author: $author }
+}
+
+export def "music with-title" [title: string] {
+	open $db_path | query db "select mn.music_id, group_concat(a.name, ' + ') as authors, mn.title, mn.type, mn.score, mn.added, mn.modified from music mn inner join music_authors ma on mn.music_id = ma.music_id inner join author a on a.author_id = ma.author_id where mn.title = :title group by mn.music_id;" -p { title: $title }
 }
 
 export def "music with-tag" [tag: string] {
@@ -152,4 +180,26 @@ export def "music add tag" [music_id: int, name: string] {
 	}
 
 	open $db_path | query db "insert into music_tags (music_id, tag_id) values (:music_id, :tag_id);" -p { music_id: $music_id, tag_id: $tag_id }
+}
+
+export def "music change author" [music_id: int, old_name: string, new_name: string]: nothing -> nothing {
+	let new_author_id = add_author $new_name
+	print $"New author with name \'($new_name)\' has id ($new_author_id)"
+	let old_author_id = find_author_id $old_name
+	print $"Replacing old author \'($old_name)\' with id ($old_author_id)"
+	open $db_path | query db "update music_authors set author_id = :new_author_id where author_id = :old_author_id and music_id = :music_id;" -p { new_author_id: $new_author_id, old_author_id: $old_author_id, music_id: $music_id }
+}
+
+export def "music add relation" [fst_music_id: int, snd_music_id: int, relation: string]: nothing -> nothing {
+	open $db_path | query db "insert into music_music (relation, fst_music_id, snd_music_id) values (:relation, :fst_music_id, :snd_music_id)" -p {
+		relation: $relation,
+		fst_music_id: $fst_music_id,
+		snd_music_id: $snd_music_id
+	}
+}
+
+export def "music related-to" [music_id: int] {
+	open $db_path | query db "select mm.relation as relation, mm.fst_music_id, m1.title as fst_title, mm.snd_music_id, m2.title as snd_title from music_music mm inner join music m1 on m1.music_id = mm.fst_music_id inner join music m2 on m2.music_id = mm.snd_music_id where m1.music_id = :music_id or m2.music_id = :music_id;" -p {
+		music_id: $music_id
+	}
 }
