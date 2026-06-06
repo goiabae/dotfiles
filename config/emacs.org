@@ -80,11 +80,27 @@ Disable loading those files.
 <<init-text-editting>>
 <<init-visuals>>
 <<init-rest>>
+<<file-manager>>
 
 (when (or (display-graphic-p) (daemonp))
   (require 'full))
 
 (provide 'init)
+#+end_src
+
+** file manager
+=dired-omit-files= is used to hide dotfiles by default.
+
+#+name: file-manager
+#+begin_src elisp
+(require 'dired)
+
+(add-hook 'dired-mode-hook #'auto-revert-mode)
+(add-hook 'dired-mode-hook #'dired-hide-details-mode)
+
+(require 'rx)
+
+(setq dired-omit-files (rx bol ?. (not (any ?.))))
 #+end_src
 
 ** text editting
@@ -307,36 +323,15 @@ Don't ask for confirmation when changing region case.
 #+end_src
 
 ** visuals
-Highlight matching parenthesis. Tab character width is 2.
 
 #+name: init-visuals
 #+begin_src elisp :noweb yes
 <<cursor-appearance>>
 <<highlight-whitespace>>
 
-(show-paren-mode 1)
-(setq-default tab-width 2)
-#+end_src
-
-*** cursor appearance
-When running on a non-graphic display (terminal, for example), by default Emacs does some trickery to make the cursor stand out. Disable that.
-
-#+name: cursor-appearance
-#+begin_src elisp
-(blink-cursor-mode -1)
-(setopt visible-cursor nil)
-#+end_src
-
-*** highlight whitespace
-
-#+name: highlight-whitespace
-#+begin_src elisp
-(use-package whitespace
-  :ensure nil
-  :hook ((prog-mode text-mode) . whitespace-mode)
-  :custom (whitespace-style '(face tabs tab-mark trailing))
-  (whitespace-display-mappings
-   '((tab-mark ?\t [?· ?\t] [?\\ ?\t]))))
+(show-paren-mode 1)        ;; Highlight matching parenthesis
+(setq-default tab-width 2) ;; TAB (?\t) characters are rendered as being two visual characters wide
+(tool-bar-mode -1)         ;; Hide the toolbar with the big buttons
 #+end_src
 
 ** xdg base directories
@@ -396,77 +391,87 @@ Set native compilation cache path to xdg cache. Also, don't compile when the edi
 
 #+name: package-manager
 #+begin_src elisp
-(defvar elpaca-installer-version 0.11)
-(defvar elpaca-directory (expand-file-name "emacs/elpaca/" (xdg-data-home)))
-(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+  (defvar elpaca-installer-version 0.11)
+  (defvar elpaca-directory (expand-file-name "emacs/elpaca/" (xdg-data-home)))
+  (defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+  (defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
 
-(defvar elpaca-order
-  '(elpaca
-     :repo "https://github.com/progfolio/elpaca.git"
-     :ref "029d4b4"
-     :depth 1
-     :inherit ignore
-     :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-     :build (:not elpaca--activate-package)))
+  (defvar elpaca-order
+    '(elpaca
+       :repo "https://github.com/progfolio/elpaca.git"
+       :inherit ignore
+       :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+       :build (:not elpaca--activate-package)))
 
-(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
-       (build (expand-file-name "elpaca/" elpaca-builds-directory))
-       (order (cdr elpaca-order))
-       (default-directory repo))
-  (add-to-list 'load-path (if (file-exists-p build) build repo))
-  (unless (file-exists-p repo)
-    (make-directory repo t)
-    (when (<= emacs-major-version 28) (require 'subr-x))
-    (condition-case-unless-debug err
-        (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-                  ((zerop
-                     (apply #'call-process
-                       `("git" nil ,buffer t "clone"
-                          ,@(when-let* ((depth (plist-get order :depth)))
-                              (list (format "--depth=%d" depth) "--no-single-branch"))
-                          ,(plist-get order :repo) ,repo))))
-                  ((zerop
-                     (call-process "git" nil buffer t "checkout"
-                       (or (plist-get order :ref) "--"))))
-                  (emacs (concat invocation-directory invocation-name))
-                  ((zerop
-                     (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-                       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-                  ((require 'elpaca))
-                  ((elpaca-generate-autoloads "elpaca" repo)))
-            (progn (message "%s" (buffer-string)) (kill-buffer buffer))
-          (error "%s" (with-current-buffer buffer (buffer-string))))
-      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
-  (unless (require 'elpaca-autoloads nil t)
-    (require 'elpaca)
-    (elpaca-generate-autoloads "elpaca" repo)
-    (let ((load-source-file-function nil)) (load "./elpaca-autoloads"))))
+  (let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+         (build (expand-file-name "elpaca/" elpaca-builds-directory))
+         (order (cdr elpaca-order))
+         (default-directory repo))
+    (add-to-list 'load-path (if (file-exists-p build) build repo))
+    (unless (file-exists-p repo)
+      (make-directory repo t)
+      (when (<= emacs-major-version 28) (require 'subr-x))
+      (condition-case-unless-debug err
+          (if-let* ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+                    ((zerop
+                       (apply #'call-process
+                         `("git" nil ,buffer t "clone"
+                            ,@(when-let* ((depth (plist-get order :depth)))
+                                (list (format "--depth=%d" depth) "--no-single-branch"))
+                            ,(plist-get order :repo) ,repo))))
+                    ((zerop
+                       (call-process "git" nil buffer t "checkout"
+                         (or (plist-get order :ref) "--"))))
+                    (emacs (concat invocation-directory invocation-name))
+                    ((zerop
+                       (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+                         "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+                    ((require 'elpaca))
+                    ((elpaca-generate-autoloads "elpaca" repo)))
+              (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+            (error "%s" (with-current-buffer buffer (buffer-string))))
+        ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+    (unless (require 'elpaca-autoloads nil t)
+      (require 'elpaca)
+      (elpaca-generate-autoloads "elpaca" repo)
+      (let ((load-source-file-function nil)) (load "./elpaca-autoloads"))))
 
-(add-hook 'after-init-hook #'elpaca-process-queues)
-(elpaca `(,@elpaca-order))
+  (add-hook 'after-init-hook #'elpaca-process-queues)
+  (elpaca `(,@elpaca-order))
 
-(elpaca elpaca-use-package
-  (elpaca-use-package-mode)
-  (setq elpaca-use-package-by-default t))
+  (elpaca elpaca-use-package
+    (elpaca-use-package-mode)
+    (setq elpaca-use-package-by-default t))
 
-(elpaca-wait)
+  (elpaca-wait)
 
-(push 'git-commit elpaca-ignored-dependencies)
-(setq elpaca-queue-limit 8)
-(setq elpaca-lock-file (expand-file-name "emacs.lock" (xdg-config-home)))
+  (push 'git-commit elpaca-ignored-dependencies)
+  (setq elpaca-queue-limit 8)
+  (setq elpaca-lock-file (expand-file-name "emacs.lock" (xdg-config-home)))
 
-(defvar *builtin-load-path* load-path)
-(defun is-builtin (sym)
-  "Returns whether the SYM corresponds to a given feature that can be loaded from the default load-path"
-  (let ((load-path *builtin-load-path*))
-    (and (require sym nil t) t)))
+  (defconst *builtin-package-since*
+    '((org . "22")
+      (org-tempo . "26.2")
+      (project . "25.1")
+      (eglot . "29.1")
+      (treesit . "29.1")
+      (display-line-numbers . "26.1")))
 
-(defun maybe-recipe (sym &optional recipe)
-  "If SYM is a builtin package return nil, otherwise return the RECIPE for it."
-  (unless recipe
-    (setq recipe (cons sym (elpaca-order-defaults sym))))
-  (if (is-builtin sym) nil recipe))
+  (defvar *builtin-load-path* load-path)
+
+  (defun is-builtin (sym)
+    "Returns whether the SYM corresponds to a given feature that can be loaded from the default load-path"
+    (let ((bundled-in))
+      (if (and bundled-in (version< bundled-in emacs-version))
+          t
+        (let ((load-path *builtin-load-path*))
+          (and (require sym nil t) t)))))
+
+  (defun maybe-recipe (sym &optional recipe)
+    "If SYM is a builtin package return nil, otherwise return the RECIPE for it."
+    (unless recipe
+      (setq recipe (cons sym (elpaca-order-defaults sym))))
+    (if (is-builtin sym) nil recipe))
 #+end_src
 
 ** key bindings
@@ -673,6 +678,7 @@ Disable automatic resize without any confirmation.
 #+name: fs-str-libs
 #+begin_src elisp
 (use-package f
+  :demand t
   :ensure
   (f :protocol https
      :inherit t
@@ -681,6 +687,7 @@ Disable automatic resize without any confirmation.
      :repo "rejeep/f.el"))
 
 (use-package s
+  :demand t
   :ensure
   (s :protocol https
      :inherit t
@@ -699,11 +706,11 @@ Disable automatic resize without any confirmation.
 
 <<full-visuals>>
 <<full-feel-good>>
-<<file-manager>>
 <<discoverability>>
 <<full-notes>>
 <<full-shell>>
 <<full-os-interface>>
+;; full-development
 <<full-development>>
 
 (use-package ripgrep
@@ -713,272 +720,24 @@ Disable automatic resize without any confirmation.
 (provide 'full)
 #+end_src
 
-** visuals
-Disable toolbar. When changing window hovered, focus on the new one. Unprettify symbols when "inside"" it.
-
 #+name: full-visuals
 #+begin_src elisp :noweb yes
-(tool-bar-mode -1)
+  (setq prettify-symbols-unprettify-at-point 'right-edge)
+  (setq mouse-autoselect-window t)
 
-(setq prettify-symbols-unprettify-at-point 'right-edge)
-(setq mouse-autoselect-window t)
+  ;; theme: ~50ms
+  <<theme>>
+  <<frames>>
+  <<git-line-indicator>>
+  <<mode-line>>
+  <<fonts>>
+  <<line-numbers>>
+  <<smoother-scroll>>
 
-<<theme>>
-<<frames>>
-<<git-line-indicator>>
-<<mode-line>>
-<<fonts>>
-<<line-numbers>>
-<<scroll>>
-<<visual-bell>>
-<<highlight-todo-keywords>>
-<<popup-windows>>
-<<minimap>>
-#+end_src
-
-*** theme
-The type of theme (light or dark) accompanies the day-night cycle (in theory, at least). I want to get the coordinates to be automatic, at some point. Maybe by calling an external [[id:5b304736-46f1-4c24-a62b-d68f98fda37a][nushell]] script or something.
-
-The advice ensures that the color palette is available to the user as global variables of each color.
-
-#+name: theme
-#+begin_src elisp
-(use-package autothemer)
-
-(use-package battery
-  :ensure
-  (battery :type git :host github :repo "goiabae/emacs-theme-battery"))
-
-(cl-defun yeet/get-geolocation ()
-  (with-temp-buffer
-    (call-process "whereami" nil (current-buffer) t)
-    (json-parse-string (buffer-string))))
-
-(use-package theme-changer
-  :after battery
-  :config
-  (let ((map (yeet/get-geolocation)))
-    (setq calendar-latitude  (map-elt map "lat")
-          calendar-longitude (map-elt map "lon")))
-  (change-theme 'battery-light 'battery-dark))
-#+end_src
-
-*** frames
-Set the window name of graphical frames. Frames should be resized pixel-by-pixel, rather than by character, or whatever Emacs does by default.
-
-#+name: frames
-#+begin_src elisp
-(setq frame-title-format
-      '(buffer-line-name "Emacs %b (%f)" "Emacs %b")
-      frame-resize-pixelwise t)
-#+end_src
-
-*** git status of line on left margin
-Show git status of lines on the left side of the windows. Change the default ugly signs to ASCII ones.
-
-#+name: git-line-indicator
-#+begin_src elisp
-(use-package git-gutter
-  :hook (fundamental-mode . git-gutter-mode)
-  :config
-  (setq git-gutter:added-sign    "+"
-        git-gutter:modified-sign "~"
-        git-gutter:deleted-sign  "-"
-        git-gutter:update-interval 0.02))
-#+end_src
-
-*** modeline
-
-#+name: mode-line
-#+begin_src elisp
-(defface yeet/mode-line-buffer-name
-  `((t . (:inherit 'mode-line :background "#edd76d")))
-  "Background color lightest yellow.")
-
-(defface yeet/mode-line-readable-buffer
-  `((t . (:inherit 'mode-line :foreground "#67191b" :weight bold)))
-  "Background color lightest yellow.")
-
-(defface yeet/mode-line-writeable-buffer
-  `((t . (:inherit 'mode-line :foreground "#423818" :weight bold)))
-  "Background color lightest yellow.")
-
-(defface yeet/mode-line-executable-buffer
-  `((t . (:inherit 'mode-line :foreground "#302f16" :weight bold)))
-  "Background color lightest yellow.")
-
-(setq column-number-mode t) ;; include column number in mode-line coordinates
-
-(defun yeet/make-file-executable (file-path)
-  (set-file-modes file-path
-    (logior
-     (file-modes file-path)
-     (logand ?\111 (default-file-modes)))))
-
-;; add entry in menu bar to make file executable
-(define-key global-map
- [menu-bar file make-executable]
- '("Make File Executable" . yeet/make-file-executable))
-
-(setq-default mode-line-format
-  '((:eval (meow-indicator))
-    ;; buffer-name, line and column. colored yellow if changed and has associated file
-    (:eval
-      (let ((text " %b:%l:%C "))
-        (if (and (buffer-modified-p) (buffer-file-name))
-          (propertize text
-            'face 'yeet/mode-line-buffer-name
-            'help-echo (concat "Buffer " (buffer-file-name) " has been modified"))
-          (propertize text
-            'help-echo (concat "Buffer " (buffer-file-name) " has not been modified")))))
-    " "
-    "<"
-    mode-line-mule-info
-    ;; read, write and execute properties
-    (:eval (propertize "r" 'face 'yeet/mode-line-readable-buffer 'help-echo "Buffer is readable"))
-    (:eval
-     (if buffer-read-only
-       (propertize "-"
-         'help-echo "Buffer is read-only\nmouse-1: make buffer writeable"
-         'mouse-face 'mode-line-highlight
-         'local-map (make-mode-line-mouse-map 'mouse-1 #'mode-line-toggle-read-only))
-       (propertize "w"
-         'face 'yeet/mode-line-writeable-buffer
-         'help-echo "Buffer is writeable\nmouse-1: make buffer read-only"
-         'mouse-face 'mode-line-highlight
-         'local-map (make-mode-line-mouse-map 'mouse-1 #'mode-line-toggle-read-only))))
-    ;; add a button to make the file executable
-    (:eval
-     (if (and (buffer-file-name) (file-executable-p (buffer-file-name)))
-       (propertize "x"
-         'face 'yeet/mode-line-executable-buffer
-         'help-echo "Buffer is executable")
-       (propertize "-"
-         'help-echo "Buffer is not executable\nmouse-1: make buffer file executable"
-         'mouse-face 'mode-line-highlight
-         'local-map (make-mode-line-mouse-map 'mouse-1
-                      (lambda () (interactive)
-                        (yeet/make-file-executable (buffer-file-name)))))))
-    ">"
-    " "
-    "%IB" ;; total size of file
-    " "
-    mode-line-misc-info ;; a lot of minor modes use this
-    " "
-    mode-name
-    ))
-
-(use-package hide-mode-line
-  :commands hide-mode-line-mode)
-#+end_src
-
-*** fonts
-I don't know if this is the best way of doing this. I would want to do something more declarative, rather.
-
-#+name: fonts
-#+begin_src elisp
-(set-face-attribute 'default nil :height 100)
-
-;; set font for character sets from languages of East Asia
-;; t to use the default fontset
-(set-fontset-font t 'unicode  (font-spec :family "Noto Color Emoji"))
-(set-fontset-font t 'han      (font-spec :family "Noto Sans Mono CJK SC"))
-(set-fontset-font t 'kana     (font-spec :family "Noto Sans Mono CJK JP"))
-(set-fontset-font t 'hangul   (font-spec :family "Noto Sans Mono CJK KR"))
-(set-fontset-font t 'cjk-misc (font-spec :family "Noto Sans Mono CJK KR"))
-#+end_src
-
-*** line numbers
-
-#+name: line-numbers
-#+begin_src elisp
-(use-package display-line-numbers
-  :ensure nil
-  :bind ("C-c t l" . display-line-numbers-mode)
-  :hook ((c-mode c++-mode) . display-line-numbers-mode)
-  :config (setq-default display-line-numbers-width 2))
-#+end_src
-
-*** better scrolling
-
-#+name: scroll
-#+begin_src elisp
-(setq scroll-step 1
-      scroll-preserve-screen-position t
-      scroll-margin 3
-      scroll-conservatively 101
-      scroll-up-aggressively 0.01
-      scroll-down-aggressively 0.01
-      hscroll-step 1
-      hscroll-margin 1
-
-      ;; reduce cursor lag
-      auto-window-vscroll nil)
-
-(when (not (version< emacs-version "29.1"))
-    (setq pixel-scroll-precision-large-scroll-height 40.0))
-
-(pixel-scroll-precision-mode t)
-#+end_src
-
-https://def.lakaban.net/2023-03-05-high-quality-scrolling-emacs/
-
-*** visual bell
-The src_elisp{`ring-bell'} function flashes the mode-line in inverted colors. This is triggered by events such as trying to src_elisp{`delete-backward-char'} on empty modeline buffer.
-
-#+name: visual-bell
-#+begin_src elisp
-(setq visible-bell nil
-      ring-bell-function
-      #'(lambda ()
-          (invert-face 'mode-line)
-          (run-with-timer 0.1 nil #'invert-face 'mode-line)))
-#+end_src
-
-*** highlight comment keywords
-Highlight things like TODO, FIXME and NOTE on comments. This only works for =prog-mode= and is not related to =org-mode= todo keywords.
-
-#+name: highlight-todo-keywords
-#+begin_src elisp
-(use-package hl-todo
-  :hook (prog-mode . hl-todo-mode)
-  :config
-  (setq hl-todo-keyword-faces
-        '(("TODO"  . success)
-          ("FIXME" . error)
-          ("NOTE"  . warning)
-          ("WARN"  . warning))))
-#+end_src
-
-*** pop-ups create windows, not frames
-Wether or not popups should create new frames instead of splitting windows. May not work with all modes. This is good when using a tiling window manager.
-
-#+name: popup-windows
-#+begin_src elisp
-(setq-default pop-up-frames nil
-              pop-up-windows t)
-#+end_src
-
-*** side minimap
-
-#+name: minimap
-#+begin_src elisp
-(use-package minimap
-  :custom
-  (minimap-window-location 'right)
-  (minimap-update-delay 0.5))
-#+end_src
-
-** file manager
-=dired-omit-files= is used to hide dotfiles by default.
-
-#+name: file-manager
-#+begin_src elisp
-(use-package dired
-  :ensure nil
-  :hook ((dired-mode . auto-revert-mode)
-         (dired-mode . dired-hide-details-mode))
-  :custom (dired-omit-files (rx bol ?. (not (any ?.)))))
+  <<visual-bell>>
+  <<highlight-todo-keywords>>
+  <<popup-windows>>
+  <<minimap>>
 #+end_src
 
 ** help and discoverability
@@ -1081,91 +840,105 @@ Don't align block text with heading text. One space of additional indentation on
 
 #+name: full-notes
 #+begin_src elisp :noweb yes
-(use-package org
-  :ensure `,(maybe-recipe 'org)
-  :bind (("C-c o i" . org-id-get-create)
-         ("C-c o y" . org-cut-subtree)
-         ("C-c o p" . org-paste-subtree)
-         ("C-c o a" . org-agenda))
-  :hook ((org-mode . org-indent-mode)
-         (org-mode . visual-line-mode)
-         (org-after-todo-statistics . yeet/org-collect-children-todo)
-         (text-scale-mode-hook . yeet/update-org-latex-fragment-scale))
-  :custom
-  (org-directory
-    (let ((doc-dir (getenv "XDG_DOCUMENTS_DIR")))
-      (if doc-dir
-        (expand-file-name "note" doc-dir)
-        "~/doc/note")))
-  (org-tags-column 0)
-  (org-adapt-indentation nil)
-  (org-src-preserve-indentation t)
-  (org-src-window-setup 'current-window)
-  (org-indent-indentation-per-level 1)
-  (org-startup-with-inline-images t)
-  (org-hide-emphasis-markers t)
-  (org-fontify-whole-block-delimiter-line t)
-  (org-fontify-done-headline nil)
-  (org-fontify-todo-headline nil)
-  (org-startup-folded t)
-  (org-use-tag-inheritance nil)
-  (org-agenda-start-on-weekday nil)
-  (org-agenda-span 30)
-  (org-agenda-files
-    (list
-      (expand-file-name "todo.org" org-directory)
-      (expand-file-name "task.org" org-directory)))
-  (org-todo-keywords '((sequence "TODO" "DOING" "DONE(!)")))
-  (org-todo-keyword-faces '(("DOING" . org-doing)))
-  (org-log-into-drawer t)
-  (org-export-with-todo-keywords nil) ;; When exporting to LaTeX, don't print the TODO keywords
-  :config
-  (defface org-doing
-    `((t :inherit 'default))
-    "Face for highlighting the DOING org keyword.")
+      (use-package org
+        :ensure `,(maybe-recipe 'org)
+        :bind (("C-c o i" . org-id-get-create)
+               ("C-c o y" . org-cut-subtree)
+               ("C-c o p" . org-paste-subtree)
+               ("C-c o a" . org-agenda))
+        :hook ((org-mode . org-indent-mode)
+               (org-mode . visual-line-mode)
+               (org-after-todo-statistics . yeet/org-collect-children-todo)
+               (text-scale-mode-hook . yeet/update-org-latex-fragment-scale))
+        :after f
+        :init
+        (setq org-directory
+          (let ((doc-dir (getenv "XDG_DOCUMENTS_DIR")))
+            (if doc-dir
+              (f-join doc-dir "note")
+              "~/doc/note")))
+        :custom
+        (org-directory
+          (let ((doc-dir (getenv "XDG_DOCUMENTS_DIR")))
+            (if doc-dir
+              (f-join doc-dir "note")
+              "~/doc/note")))
+        (org-tags-column 0)
+        (org-adapt-indentation nil)
+        (org-src-preserve-indentation t)
+        (org-src-window-setup 'current-window)
+        (org-indent-indentation-per-level 1)
+        (org-startup-with-inline-images t)
+        (org-hide-emphasis-markers t)
+        (org-fontify-whole-block-delimiter-line t)
+        (org-fontify-done-headline nil)
+        (org-fontify-todo-headline nil)
+        (org-startup-folded t)
+        (org-use-tag-inheritance nil)
+        (org-agenda-start-on-weekday nil)
+        (org-agenda-span 30)
+        (org-agenda-files
+          (list
+            (expand-file-name "todo.org" org-directory)
+            (expand-file-name "task.org" org-directory)
+            (expand-file-name "scratch.org" org-directory)))
+        (org-todo-keywords '((sequence "TODO" "DOING" "DONE(!)")))
+        (org-todo-keyword-faces '(("DOING" . org-doing)))
+        (org-log-into-drawer t)
+        (org-export-with-todo-keywords nil) ;; When exporting to LaTeX, don't print the TODO keywords
+        :config
+        (defface org-doing
+          `((t :inherit 'default))
+          "Face for highlighting the DOING org keyword.")
 
-  (defun yeet/org-collect-children-todo (n-done n-not-done)
-    "Switch entry to DONE when all subentries are done, DOING when some are done and TODO otherwise."
-    (let* (org-log-done
-           org-log-states
-           (state (cond ((= n-done 0)     "TODO")
-                        ((= n-not-done 0) "DONE")
-                        (t                "DOING"))))
-      (unless (string-equal (org-get-todo-state) state)
-        (org-todo state))))
-  (add-to-list 'warning-suppress-types '(org-element-cache))
-  (defun yeet/update-org-latex-fragment-scale ()
-    (let ((text-scale-factor (expt text-scale-mode-step text-scale-mode-amount)))
-      (plist-put org-format-latex-options :scale (* 1.2 text-scale-factor)))))
+        (defun yeet/org-collect-children-todo (n-done n-not-done)
+          "Switch entry to DONE when all subentries are done, DOING when some are done and TODO otherwise."
+          (let* (org-log-done
+                 org-log-states
+                 (state (cond ((= n-done 0)     "TODO")
+                              ((= n-not-done 0) "DONE")
+                              (t                "DOING"))))
+            (unless (string-equal (org-get-todo-state) state)
+              (org-todo state))))
+        (add-to-list 'warning-suppress-types '(org-element-cache))
+        (defun yeet/update-org-latex-fragment-scale ()
+          (let ((text-scale-factor (expt text-scale-mode-step text-scale-mode-amount)))
+            (plist-put org-format-latex-options :scale (* 1.2 text-scale-factor)))))
 
-;; contains additional babel sub-packages
-(use-package org-contrib
-  :after org)
+      ;; contains additional babel sub-packages
+      (use-package org-contrib
+        :defer t
+        :after org)
 
-;; copy link at point
-(use-package org-cliplink
-  :after org
-  :bind ("C-c o l c" . org-cliplink))
+      ;; copy link at point
+      (use-package org-cliplink
+        :defer t
+        :after org
+        :bind ("C-c o l c" . org-cliplink))
 
-<<full-org-slides>>
-<<full-org-blocks>>
-<<full-org-roam>>
-<<full-org-literate>>
-<<full-org-visuals>>
-<<full-org-latex>>
-<<full-spell-checker>>
-<<full-pdf>>
+      ;; ~25ms
+      ;;<<full-org-slides>>
+      <<full-org-blocks>>
+      <<full-org-roam>>
+      ;; ~30ms
+      ;;<<full-org-literate>>
+      ;;<<full-org-visuals>>
+      <<full-org-latex>>
+      ;; ~30ms
+      ;;<<full-spell-checker>>
+      ;;<<full-pdf>>
 #+end_src
 
 *** presentation slides
 
 #+name: full-org-slides
 #+begin_src elisp
-(use-package org-tree-slide
-  :after org
-  :bind (("<mouse-9>" . org-tree-slide-move-next-tree)
-         ("<mouse-8>" . org-tree-slide-move-previous-tree))
-  :custom (org-tree-slide-slide-in-effect nil))
+  (use-package org-tree-slide
+    :defer t
+  	:after org
+    :bind (("<mouse-9>" . org-tree-slide-move-next-tree)
+           ("<mouse-8>" . org-tree-slide-move-previous-tree))
+    :custom (org-tree-slide-slide-in-effect nil))
 #+end_src
 
 *** block shortcuts
@@ -1173,9 +946,10 @@ This adds little shortcuts like <s TAB, which create a new source block under po
 
 #+name: full-org-blocks
 #+begin_src elisp
-(use-package org-tempo
-  :ensure `,(maybe-recipe 'org-tempo)
-  :after org)
+  (use-package org-tempo
+    :defer t
+  	:ensure `,(maybe-recipe 'org-tempo)
+    :after org)
 #+end_src
 
 *** "/relational"/ note taking
@@ -1183,85 +957,98 @@ We add a new entry to the src_elisp{`display-buffer-alist'} for =org-roam=, such
 
 #+name: full-org-roam
 #+begin_src elisp
-(use-package org-roam
-  :after org
-  :bind (("C-c o r f" . org-roam-node-find)
-         ("C-c o r i" . org-roam-node-insert)
-         ("C-c o r w" . yeet/goto-notes-weekly)
-         ("C-c o r b" . org-roam-buffer-toggle))
-  :config
-  (defun yeet/goto-notes-weekly ()
-    "Opens current week's `org-roam' entry."
-    (interactive)
-    (org-roam-dailies-goto-today "w"))
-  :custom
-  (display-buffer-alist
-    (map-insert display-buffer-alist "\\*org-roam\\*"
-      '((display-buffer-in-side-window)
-        (side . right)
-        (slot . 0)
-        (window-width . 0.33)
-        (window-parameters
-          . ((no-other-window . t)
-             (no-delete-other-windows . t))))))
-  (org-roam-directory org-directory)
-  (org-roam-dailies-directory "journal/")
-  (org-roam-file-exclude-regexp '("\\.stfolder" "\\.stignore" "\\.stversions" "data/"))
-  (org-roam-capture-templates
-   '(("r" "random"  plain "%?" :target (file+head "random/${slug}.org" "#+title: ${title}\n"))
-     ("p" "persona" plain "%?"
-      :target (file+head "persona/${slug}.org" "#+title: ${title}\n#+filetags: :persona:\n"))
-     ("m" "music")
-     ("ml" "list" plain "%?"
-      :target (file+head "music/list/${slug}.org" "#+title: ${title}\n#+filetags: :music:list:\n"))
-     ("mt" "track" plain "%?"
-      :target (file+head "music/track/${slug}.org" "#+title: ${title}\n#+filetags: :music:track:\n"))
-     ("f" "film")
-     ("fa" "anime" plain "%?"
-      :target (file+head "film/anime/${slug}.org" "#+title: ${title}\n#+filetags: :film:anime:\n"))
-     ("fc" "Cartoon" plain "%?"
-      :target (file+head "film/cartoon/${slug}.org" "#+title: ${title}\n#+filetags: :film:cartoon:\n"))
-     ("fm" "movie" plain "%?"
-      :target (file+head "film/movie/${slug}.org" "#+title: ${title}\n#+filetags: :film:movie:\n"))
-     ("l" "literature")
-     ("lb" "book" plain "%?"
-      :target (file+head "literature/book/${slug}.org" "#+title: ${title}\n#+filetags: :literature:book:\n"))
-     ("lm" "manga" plain "%?"
-      :target (file+head "literature/manga/${slug}.org" "#+title: ${title}\n#+filetags: :literature:manga:\n"))))
-  (org-roam-dailies-capture-templates
-   '(("t" "Daily journal" entry "* %?"
-      :target (file+head "%<%d-%m-%Y->.org" "#+title: %<%d-%m-%Y>\n#+filetags: :journal:\n"))
-     ("w" "Weekly journal" plain "* %?"
-      :target (file+head "%<%Y-W%U>.org" "#+title: %<%U>th week of %<%Y>\n#+filetags: :journal:\n")))))
+    (use-package org-roam
+      :after org
+      :bind (("C-c o r f" . org-roam-node-find)
+             ("C-c o r i" . org-roam-node-insert)
+             ("C-c o r w" . yeet/goto-notes-weekly)
+             ("C-c o r b" . org-roam-buffer-toggle))
+      ;; :commands (org-roam-node-find org-roam-node-insert
+      ;;             yeet/goto-notes-weekly org-roam-buffer-toggle)
+      :config
+      (defun yeet/goto-notes-weekly ()
+        "Opens current week's `org-roam' entry."
+        (interactive)
+        (org-roam-dailies-goto-today "w"))
+      :custom
+      (display-buffer-alist
+        (map-insert display-buffer-alist "\\*org-roam\\*"
+          '((display-buffer-in-side-window)
+            (side . right)
+            (slot . 0)
+            (window-width . 0.33)
+            (window-parameters
+              . ((no-other-window . t)
+                 (no-delete-other-windows . t))))))
+      (org-roam-directory org-directory)
+      (org-roam-dailies-directory "journal/")
+      (org-roam-file-exclude-regexp '("\\.stfolder" "\\.stignore" "\\.stversions" "data/"))
+      (org-roam-capture-templates
+       '(("r" "random"  plain "%?" :target (file+head "random/${slug}.org" "#+title: ${title}\n"))
+         ("p" "persona" plain "%?"
+          :target (file+head "persona/${slug}.org" "#+title: ${title}\n#+filetags: :persona:\n"))
+         ("m" "music")
+         ("ml" "list" plain "%?"
+          :target (file+head "music/list/${slug}.org" "#+title: ${title}\n#+filetags: :music:list:\n"))
+         ("mt" "track" plain "%?"
+          :target (file+head "music/track/${slug}.org" "#+title: ${title}\n#+filetags: :music:track:\n"))
+         ("f" "film")
+         ("fa" "anime" plain "%?"
+          :target (file+head "film/anime/${slug}.org" "#+title: ${title}\n#+filetags: :film:anime:\n"))
+         ("fc" "Cartoon" plain "%?"
+          :target (file+head "film/cartoon/${slug}.org" "#+title: ${title}\n#+filetags: :film:cartoon:\n"))
+         ("fm" "movie" plain "%?"
+          :target (file+head "film/movie/${slug}.org" "#+title: ${title}\n#+filetags: :film:movie:\n"))
+         ("l" "literature")
+         ("lb" "book" plain "%?"
+          :target (file+head "literature/book/${slug}.org" "#+title: ${title}\n#+filetags: :literature:book:\n"))
+         ("lm" "manga" plain "%?"
+          :target (file+head "literature/manga/${slug}.org" "#+title: ${title}\n#+filetags: :literature:manga:\n"))))
+      (org-roam-dailies-capture-templates
+       '(("t" "Daily journal" entry "* %?"
+          :target (file+head "%<%d-%m-%Y->.org" "#+title: %<%d-%m-%Y>\n#+filetags: :journal:\n"))
+         ("w" "Weekly journal" plain "* %?"
+          :target (file+head "%<%Y-W%U>.org" "#+title: %<%U>th week of %<%Y>\n#+filetags: :journal:\n")))))
 
-(use-package org-roam-ui
-  :after org-roam
-  :bind (("C-c o r g" . org-roam-ui-mode))
-  :commands org-roam-ui-mode
-  :custom (org-roam-ui-sync-theme t))
+;; (bind-keys
+;;   ("C-c o r f" . org-roam-node-find)
+;;   ("C-c o r i" . org-roam-node-insert)
+;;   ("C-c o r w" . yeet/goto-notes-weekly)
+;;   ("C-c o r b" . org-roam-buffer-toggle))
+
+    (use-package org-roam-ui
+      :defer t
+  		:after org-roam
+      :bind (("C-c o r g" . org-roam-ui-mode))
+      :commands org-roam-ui-mode
+      :custom (org-roam-ui-sync-theme t))
 #+end_src
 
 *** source code execution and literate programming
 
 #+name: full-org-literate
 #+begin_src elisp
-;; org-babel
-(use-package ob
-  :ensure nil ;; shipped with org-mode
-  :after org
-  :custom
-  (org-babel-load-languages
-   '((R . t)
-     (emacs-lisp . t)
-     (shell . t)))
-  (org-confirm-babel-evaluate nil))
+  ;; org-babel
+  (use-package ob
+    :defer t
+  	:ensure nil ;; shipped with org-mode
+    :after org
+    :custom
+    (org-babel-load-languages
+     '((R . t)
+       (emacs-lisp . t)
+       (shell . t)))
+    (org-confirm-babel-evaluate nil))
 
-(use-package ob-async :after ob)
+  (use-package ob-async
+  	 :defer t
+  	 :after ob)
 
-;; automatically tangle blocks when saving buffer
-(use-package org-auto-tangle
-  :after org
-  :hook (org-mode . org-auto-tangle-mode))
+  ;; automatically tangle blocks when saving buffer
+  (use-package org-auto-tangle
+    :defer t
+  	:after org
+    :hook (org-mode . org-auto-tangle-mode))
 #+end_src
 
 *** TODO alignment and line wrapping
@@ -1269,108 +1056,112 @@ Have to find a better way to load src_elisp{`org-phscroll'}.
 
 #+name: full-org-visuals
 #+begin_src elisp
-(use-package olivetti
-  :hook (org-mode . olivetti-mode)
-  :custom (olivetti-body-width
-            (if (> 0 org-tags-column)
-              (+ 4 (- org-tags-column))
-              fill-column)))
+  (use-package olivetti
+  	:defer t
+    :hook (org-mode . olivetti-mode)
+    :custom (olivetti-body-width
+              (if (> 0 org-tags-column)
+                (+ 4 (- org-tags-column))
+                fill-column)))
 
-(use-package phscroll
-  :ensure (phscroll
-           :type git
-           :host github
-           :repo "misohena/phscroll")
-	:after org
-  :config (require 'org-phscroll))
+  (use-package phscroll
+  	:defer t
+    :ensure (phscroll
+             :type git
+             :host github
+             :repo "misohena/phscroll")
+  	:after org
+    :config (require 'org-phscroll))
 #+end_src
 
 *** latex fragments
 
 #+name: full-org-latex
 #+begin_src elisp
-(use-package org-latex
-  :no-require
-  :ensure nil
-  :after org
-  :config
-    ;; latex FIXME
-  (setq org-startup-with-latex-preview t
-        org-latex-inputenc-alist '(("utf8" . "utf8x"))
-        org-preview-latex-default-process 'tectonic-svg
-        org-preview-latex-image-directory (expand-file-name "org-latex/" (xdg-cache-home))
-        org-format-latex-options
-        (list :foreground 'default
-              :background "Transparent"
-              :scale 1.2
-              :html-foreground "Black"
-              :html-background "Transparent"
-              :html-scale 1.0
-              :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
+  (use-package org-latex
+  	:defer t
+    :no-require
+    :ensure nil
+    :after org
+    :config
+      ;; latex FIXME
+    (setq org-startup-with-latex-preview t
+          org-latex-inputenc-alist '(("utf8" . "utf8x"))
+          org-preview-latex-default-process 'tectonic-svg
+          org-preview-latex-image-directory (expand-file-name "org-latex/" (xdg-cache-home))
+          org-format-latex-options
+          (list :foreground 'default
+                :background "Transparent"
+                :scale 1.2
+                :html-foreground "Black"
+                :html-background "Transparent"
+                :html-scale 1.0
+                :matchers '("begin" "$1" "$" "$$" "\\(" "\\[")))
 
-  (setq org-preview-latex-process-alist
-    (map-insert org-preview-latex-process-alist 'tectonic-svg
-      '(:programs ("tectonic" "dvisvgm")
-         :description "xdv > svg"
-         :message "you need to install the programs: tectonic and dvisvgm."
-         :image-input-type "xdv"
-         :image-output-type "svg"
-         :image-size-adjust (1.7 . 1.5)
-         :latex-compiler ("tectonic --outfmt xdv --outdir %o %f")
-         :image-converter ("dvisvgm %f --no-fonts --exact-bbox --scale=%S --output=%O"))))
+    (setq org-preview-latex-process-alist
+      (map-insert org-preview-latex-process-alist 'tectonic-svg
+        '(:programs ("tectonic" "dvisvgm")
+           :description "xdv > svg"
+           :message "you need to install the programs: tectonic and dvisvgm."
+           :image-input-type "xdv"
+           :image-output-type "svg"
+           :image-size-adjust (1.7 . 1.5)
+           :latex-compiler ("tectonic --outfmt xdv --outdir %o %f")
+           :image-converter ("dvisvgm %f --no-fonts --exact-bbox --scale=%S --output=%O"))))
 
-  (let ((progs
-          (map-elt
-            (map-elt org-preview-latex-process-alist org-preview-latex-default-process)
-            :programs)))
-    (if (not
-          (seq-reduce (lambda (x y) (and x y))
-            (mapcar 'executable-find progs)
-            t))
-      (warn "Can't make latex preview images. programs are not available")))
-  ;; specify the justification you want
-  (plist-put org-format-latex-options :justify 'center)
+    (let ((progs
+            (map-elt
+              (map-elt org-preview-latex-process-alist org-preview-latex-default-process)
+              :programs)))
+      (if (not
+            (seq-reduce (lambda (x y) (and x y))
+              (mapcar 'executable-find progs)
+              t))
+        (warn "Can't make latex preview images. programs are not available")))
+    ;; specify the justification you want
+    (plist-put org-format-latex-options :justify 'center)
 
-  (defun org-justify-fragment-overlay (beg end image imagetype)
-    "Adjust the justification of a LaTeX fragment.
-The justification is set by :justify in
-`org-format-latex-options'. Only equations at the beginning of a
-line are justified."
-    (cond
-     ;; Centered justification
-     ((and (eq 'center (plist-get org-format-latex-options :justify))
-           (= beg (line-beginning-position)))
-      (let* ((img (create-image image 'imagemagick t))
-             (width (car (image-size img)))
-             (offset (floor (- (/ (window-text-width) 2) (/ width 2)))))
-        (overlay-put (ov-at) 'before-string (make-string offset ? ))))
-     ;; Right justification
-     ((and (eq 'right (plist-get org-format-latex-options :justify))
-           (= beg (line-beginning-position)))
-      (let* ((img (create-image image 'imagemagick t))
-             (width (car (image-display-size (overlay-get (ov-at) 'display))))
-             (offset (floor (- (window-text-width) width (- (line-end-position) end)))))
-        (overlay-put (ov-at) 'before-string (make-string offset ? ))))))
+    (defun org-justify-fragment-overlay (beg end image imagetype)
+      "Adjust the justification of a LaTeX fragment.
+  The justification is set by :justify in
+  `org-format-latex-options'. Only equations at the beginning of a
+  line are justified."
+      (cond
+       ;; Centered justification
+       ((and (eq 'center (plist-get org-format-latex-options :justify))
+             (= beg (line-beginning-position)))
+        (let* ((img (create-image image 'imagemagick t))
+               (width (car (image-size img)))
+               (offset (floor (- (/ (window-text-width) 2) (/ width 2)))))
+          (overlay-put (ov-at) 'before-string (make-string offset ? ))))
+       ;; Right justification
+       ((and (eq 'right (plist-get org-format-latex-options :justify))
+             (= beg (line-beginning-position)))
+        (let* ((img (create-image image 'imagemagick t))
+               (width (car (image-display-size (overlay-get (ov-at) 'display))))
+               (offset (floor (- (window-text-width) width (- (line-end-position) end)))))
+          (overlay-put (ov-at) 'before-string (make-string offset ? ))))))
 
-  (defun org-latex-fragment-tooltip (beg end image imagetype)
-    "Add the fragment tooltip to the overlay and set click function to toggle it."
-    (overlay-put (ov-at) 'help-echo
-                 (concat (buffer-substring beg end)
-                         "mouse-1 to toggle."))
-    (overlay-put (ov-at) 'local-map (let ((map (make-sparse-keymap)))
-                                      (define-key map [mouse-1]
-                                        `(lambda ()
-                                           (interactive)
-                                           (org-remove-latex-fragment-image-overlays ,beg ,end)))
-                                      map)))
+    (defun org-latex-fragment-tooltip (beg end image imagetype)
+      "Add the fragment tooltip to the overlay and set click function to toggle it."
+      (overlay-put (ov-at) 'help-echo
+                   (concat (buffer-substring beg end)
+                           "mouse-1 to toggle."))
+      (overlay-put (ov-at) 'local-map (let ((map (make-sparse-keymap)))
+                                        (define-key map [mouse-1]
+                                          `(lambda ()
+                                             (interactive)
+                                             (org-remove-latex-fragment-image-overlays ,beg ,end)))
+                                        map)))
 
-  (advice-add 'org--format-latex-make-overlay :after 'org-justify-fragment-overlay)
-  (advice-add 'org--format-latex-make-overlay :after 'org-latex-fragment-tooltip))
+    (advice-add 'org--format-latex-make-overlay :after 'org-justify-fragment-overlay)
+    (advice-add 'org--format-latex-make-overlay :after 'org-latex-fragment-tooltip))
 
-;; auto generate inline latex images
-(use-package org-fragtog
-  :after org
-  :hook (org-mode . org-fragtog-mode))
+  ;; auto generate inline latex images
+  (use-package org-fragtog
+  	:defer t
+    :after org
+    :hook (org-mode . org-fragtog-mode))
 #+end_src
 
 *** spell checker
@@ -1394,6 +1185,7 @@ My petty attempt at building the ultimate PDF annotation/search setup. Highlight
 #+name: full-pdf
 #+begin_src elisp
 (use-package pdf-tools
+  :disabled
   :if (not (eq system-type 'windows-nt))
   :config
   (pdf-tools-install)
@@ -1420,11 +1212,17 @@ My petty attempt at building the ultimate PDF annotation/search setup. Highlight
 
 #+name: full-development
 #+begin_src elisp :noweb yes
+;; ~5ms
 <<full-project>>
+;; ~0ms
 <<full-direnv>>
+;; ~30ms
 <<full-lsp>>
+;; ~0ms
 <<full-dap>>
+;; full-languages: ~600ms
 <<full-languages>>
+;; ~300ms
 <<full-git>>
 #+end_src
 
@@ -1512,6 +1310,7 @@ Broken with the current version of jsonrpc included in Emacs 29. Works in Emacs 
 <<full-lua>>
 <<full-python>>
 <<full-markdown>>
+;; full-ocaml
 <<full-ocaml>>
 <<full-tex>>
 <<full-nushell>>
@@ -1606,6 +1405,15 @@ Broken with the current version of jsonrpc included in Emacs 29. Works in Emacs 
      :depth 1
      :host github
      :repo "crmsnbleyd/uiua-mode"))
+
+(use-package nael
+  :ensure
+  (nael
+    :type git
+    :host codeberg
+    :repo "mekeor/nael"
+    :files (:defaults "nael/*"))
+  :hook ((nael-mode . yeet/disable-tabs)))
 #+end_src
 
 **** LISPs
@@ -1715,6 +1523,9 @@ Disable =clang-format= of =clangd= when it can't find a =.clang-format= file.
 <<full-compilation>>
 <<full-bison-flex>>
 #+end_src
+
+#+RESULTS: full-c-cpp
+: [nil 27137 12661 854681 nil elpaca-process-queues nil nil 38000 nil]
 
 ***** cmake
 Have not found a good solution with working with CMake in Emacs yet. This will have to do. If the treesitter package is available, then we use it instead of =cmake-mode=.
@@ -1830,7 +1641,6 @@ Zig always indents by 4 spaces. Use =zls= as the language server.
 #+name: full-lua
 #+begin_src elisp
 (use-package lua-mode
-  :ensure `,(maybe-recipe 'lua-mode)
   :commands lua-mode
   :after eglot
   :requires f
@@ -1959,14 +1769,18 @@ Keywords like =TODO= and =FIXME= are collected into a section in Magit.
 #+name: full-git
 #+begin_src elisp
 (use-package magit
+  :defer t
+  :commands magit-project-status
   :custom
   (magit-display-buffer-function 'magit-display-buffer-same-window-except-diff-v1))
 
 (use-package magit-todos
+  :defer t
   :after magit
   :config (magit-todos-mode 1))
 
 (use-package blamer
+  :defer t
   :custom
   (blamer-idle-time 0.3)
   (blamer-min-offset 70)
@@ -2006,4 +1820,270 @@ Open some file types using external programs.
             (regex (eval `(rx ,(cons 'or (mapcar #'(lambda (x) (concat "." x)) exts))))))
       `((,regex "xdg-open" '(file)))))
   :init (openwith-mode t))
+#+end_src
+Disable toolbar. When changing window hovered, focus on the new one. Unprettify symbols when "inside"" it.
+
+* visuals
+** theme
+The type of theme (light or dark) accompanies the day-night cycle (in theory, at least). I want to get the coordinates to be automatic, at some point. Maybe by calling an external [[id:5b304736-46f1-4c24-a62b-d68f98fda37a][nushell]] script or something.
+
+The advice ensures that the color palette is available to the user as global variables of each color.
+
+#+name: theme
+#+begin_src elisp
+  (use-package autothemer)
+
+  (use-package battery
+    :ensure
+    (battery :type git :host github :repo "goiabae/emacs-theme-battery"))
+
+  (cl-defun yeet/get-geolocation ()
+    (with-temp-buffer
+      (call-process "whereami" nil (current-buffer) t)
+      (json-parse-string (buffer-string))))
+
+  (use-package theme-changer
+    :after battery
+    :config
+    ;; FIXME: This is really slow, find some way to cache this
+    ;; (let ((map (yeet/get-geolocation)))
+    ;;   (setq calendar-latitude  (map-elt map "lat")
+    ;;         calendar-longitude (map-elt map "lon")))
+    (setq calendar-latitude  -24.72274
+          calendar-longitude -53.74082)
+    (change-theme 'battery-light 'battery-dark))
+#+end_src
+
+** frame custom title and smooth resizing
+
+#+name: frames
+#+begin_src elisp
+;; Terminal mode does not support changing the title, even though terminals do have that capability
+(setq frame-title-format
+      '(buffer-line-name "Emacs %b (%f)" "Emacs %b"))
+
+;; When this is nil, Emacs will attempt to resize in increments of the size of
+;; the character boxes, instead of pixel by pixel.
+(setq frame-resize-pixelwise t)
+#+end_src
+
+** git status of line on left margin
+Show git status of lines on the left side of the windows. Change the default ugly signs to ASCII ones.
+
+#+name: git-line-indicator
+#+begin_src elisp
+(use-package git-gutter
+  :hook (fundamental-mode . git-gutter-mode)
+  :config
+  (setq git-gutter:added-sign    "+"
+        git-gutter:modified-sign "~"
+        git-gutter:deleted-sign  "-"
+        git-gutter:update-interval 0.02))
+#+end_src
+
+** modeline
+
+#+name: mode-line
+#+begin_src elisp
+(defface yeet/mode-line-buffer-name
+  `((t . (:inherit 'mode-line :background "#edd76d")))
+  "Background color lightest yellow.")
+
+(defface yeet/mode-line-readable-buffer
+  `((t . (:inherit 'mode-line :foreground "#67191b" :weight bold)))
+  "Background color lightest yellow.")
+
+(defface yeet/mode-line-writeable-buffer
+  `((t . (:inherit 'mode-line :foreground "#423818" :weight bold)))
+  "Background color lightest yellow.")
+
+(defface yeet/mode-line-executable-buffer
+  `((t . (:inherit 'mode-line :foreground "#302f16" :weight bold)))
+  "Background color lightest yellow.")
+
+(setq column-number-mode t) ;; include column number in mode-line coordinates
+
+(defun yeet/make-file-executable (file-path)
+  (set-file-modes file-path
+    (logior
+     (file-modes file-path)
+     (logand ?\111 (default-file-modes)))))
+
+;; add entry in menu bar to make file executable
+(define-key global-map
+ [menu-bar file make-executable]
+ '("Make File Executable" . yeet/make-file-executable))
+
+(setq-default mode-line-format
+  '((:eval (meow-indicator))
+    ;; buffer-name, line and column. colored yellow if changed and has associated file
+    (:eval
+      (let ((text " %b:%l:%C "))
+        (if (and (buffer-modified-p) (buffer-file-name))
+          (propertize text
+            'face 'yeet/mode-line-buffer-name
+            'help-echo (concat "Buffer " (buffer-file-name) " has been modified"))
+          (propertize text
+            'help-echo (concat "Buffer " (buffer-file-name) " has not been modified")))))
+    " "
+    "<"
+    mode-line-mule-info
+    ;; read, write and execute properties
+    (:eval (propertize "r" 'face 'yeet/mode-line-readable-buffer 'help-echo "Buffer is readable"))
+    (:eval
+     (if buffer-read-only
+       (propertize "-"
+         'help-echo "Buffer is read-only\nmouse-1: make buffer writeable"
+         'mouse-face 'mode-line-highlight
+         'local-map (make-mode-line-mouse-map 'mouse-1 #'mode-line-toggle-read-only))
+       (propertize "w"
+         'face 'yeet/mode-line-writeable-buffer
+         'help-echo "Buffer is writeable\nmouse-1: make buffer read-only"
+         'mouse-face 'mode-line-highlight
+         'local-map (make-mode-line-mouse-map 'mouse-1 #'mode-line-toggle-read-only))))
+    ;; add a button to make the file executable
+    (:eval
+     (if (and (buffer-file-name) (file-executable-p (buffer-file-name)))
+       (propertize "x"
+         'face 'yeet/mode-line-executable-buffer
+         'help-echo "Buffer is executable")
+       (propertize "-"
+         'help-echo "Buffer is not executable\nmouse-1: make buffer file executable"
+         'mouse-face 'mode-line-highlight
+         'local-map (make-mode-line-mouse-map 'mouse-1
+                      (lambda () (interactive)
+                        (yeet/make-file-executable (buffer-file-name)))))))
+    ">"
+    " "
+    "%IB" ;; total size of file
+    " "
+    mode-line-misc-info ;; a lot of minor modes use this
+    " "
+    mode-name
+    ))
+
+(use-package hide-mode-line
+  :commands hide-mode-line-mode)
+#+end_src
+
+** fonts
+I don't know if this is the best way of doing this. I would want to do something more declarative, rather.
+
+#+name: fonts
+#+begin_src elisp
+(set-face-attribute 'default nil :height 100)
+
+;; set font for character sets from languages of East Asia
+;; t to use the default fontset
+(set-fontset-font t 'unicode  (font-spec :family "Noto Color Emoji"))
+(set-fontset-font t 'han      (font-spec :family "Noto Sans Mono CJK SC"))
+(set-fontset-font t 'kana     (font-spec :family "Noto Sans Mono CJK JP"))
+(set-fontset-font t 'hangul   (font-spec :family "Noto Sans Mono CJK KR"))
+(set-fontset-font t 'cjk-misc (font-spec :family "Noto Sans Mono CJK KR"))
+#+end_src
+
+** line numbers
+
+#+name: line-numbers
+#+begin_src elisp
+(use-package display-line-numbers
+  :ensure nil
+  :bind ("C-c t l" . display-line-numbers-mode)
+  :hook ((c-mode c++-mode) . display-line-numbers-mode)
+  :config (setq-default display-line-numbers-width 2))
+#+end_src
+
+** better scrolling
+
+#+name: smoother-scroll
+#+begin_src elisp
+(setq scroll-step 1
+      scroll-preserve-screen-position t
+      scroll-margin 3
+      scroll-conservatively 101
+      scroll-up-aggressively 0.01
+      scroll-down-aggressively 0.01
+      hscroll-step 1
+      hscroll-margin 1
+
+      ;; reduce cursor lag
+      auto-window-vscroll nil)
+
+(when (not (version< emacs-version "29.1"))
+    (setq pixel-scroll-precision-large-scroll-height 40.0))
+
+(pixel-scroll-precision-mode t)
+#+end_src
+
+https://def.lakaban.net/2023-03-05-high-quality-scrolling-emacs/
+
+** visual bell
+
+The src_elisp{`ring-bell'} function flashes the mode-line in inverted colors. This is triggered by events such as trying to src_elisp{`delete-backward-char'} on empty modeline buffer.
+
+#+name: visual-bell
+#+begin_src elisp
+  ;; When visible-bell is non-nil, Emacs will flash the whole frame when ringing. Let's just flash the modeline for 0.1 seconds, instead.
+  (setq visible-bell nil
+        ring-bell-function
+        #'(lambda ()
+            (invert-face 'mode-line)
+            (run-with-timer 0.1 nil #'invert-face 'mode-line)))
+#+end_src
+
+** highlight comment keywords
+Highlight things like TODO, FIXME and NOTE on comments. This only works for =prog-mode= and is not related to =org-mode= todo keywords.
+
+#+name: highlight-todo-keywords
+#+begin_src elisp
+(use-package hl-todo
+  :hook (prog-mode . hl-todo-mode)
+  :config
+  (setq hl-todo-keyword-faces
+        '(("TODO"  . success)
+          ("FIXME" . error)
+          ("NOTE"  . warning)
+          ("WARN"  . warning))))
+#+end_src
+
+** pop-ups create windows, not frames
+Wether or not popups should create new frames instead of splitting windows. May not work with all modes. This is good when using a tiling window manager.
+
+#+name: popup-windows
+#+begin_src elisp
+(require 'window)
+(setq-default pop-up-frames nil
+              pop-up-windows t)
+#+end_src
+
+** side minimap
+
+#+name: minimap
+#+begin_src elisp
+(use-package minimap
+  :custom
+  (minimap-window-location 'right)
+  (minimap-update-delay 0.5))
+#+end_src
+
+** highlight whitespace
+
+Highlights trailing whitespace (tabs and spaces) with the =whitespace-trailing= face (red background).
+
+#+name: highlight-whitespace
+#+begin_src elisp
+(use-package whitespace
+  :ensure nil
+  :hook ((prog-mode text-mode) . whitespace-mode)
+  :custom (whitespace-style '(face tabs tab-mark trailing))
+  (whitespace-display-mappings
+   '((tab-mark ?\t [?· ?\t] [?\\ ?\t]))))
+#+end_src
+
+** cursor appearance
+
+#+name: cursor-appearance
+#+begin_src elisp
+(blink-cursor-mode -1)      ;; Disable blinking cursor
+(setopt visible-cursor nil) ;; Same thing, but just on the terminal client
 #+end_src
