@@ -73,7 +73,7 @@ module anime-season {
 
 			$as = ($as | append (
 				$res.data.Page.media | update relations.nodes { |row|
-					$row.relations.nodes | filter { |it| $it.type == ANIME }
+					$row.relations.nodes | where { |it| $it.type == ANIME }
 				}
 			))
 			$idx = $idx + 1
