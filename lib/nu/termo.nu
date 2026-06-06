@@ -8,7 +8,7 @@ const VOWELS = {
 
 def make_set [xs: list<string>, is_negative: bool] {
 	$xs
-	| each { |c| $VOWELS | get -i $c | default $c }
+	| each { |c| $VOWELS | get --optional $c | default $c }
 	| str join
 	| "[" + (if $is_negative { "^" } else { "" }) + $in + "]"
 }
@@ -30,8 +30,9 @@ def make_lambda_set [acc, pos] {
 	}
 }
 
-export def filter-words [doesnt: string, pos: list<any>] {
+export def filter-words [doesnt: string, does: string] {
 	let $dicio = $in
+	let pos = $does | split chars | each --keep-empty { |it| if $it == "_" { null } else { $it } }
 	let l = (make_lambda_set { |str| true } $pos)
 	let a = ($pos | each { |it|
 		if $it == null {
@@ -44,6 +45,7 @@ export def filter-words [doesnt: string, pos: list<any>] {
 			make_set ($it | split chars) false
 		}
 	} | str join)
+	print $a
 	$dicio
-	| where { |it| $it =~ ((make_set ($doesnt | split chars) true) + "{5}") and $it =~ $a and (do $l $it) }
+	| where { |it| ($it | str length) == 5 and $it =~ ((make_set ($doesnt | split chars) true) + "{5}") and $it =~ $a and (do $l $it) }
 }
