@@ -15,6 +15,10 @@ def types [] {
 	echo ["list", "track"]
 }
 
+def is-valid-symbol [] {
+	$in =~ '^[a-z0-9]+(-[a-z0-9]+)*$'
+}
+
 # returns an author_id for author with name or null if not found
 def find_author_id [name: string]: nothing -> int {
 	open $db_path | query db "select author_id from author where name = :name;" -p { name: $name } | get 0?.author_id?
@@ -168,6 +172,9 @@ export def "music create tag" [name: string, parent?: int] {
 }
 
 export def "music add tag" [music_id: int, name: string] {
+	if (not ($name | is-valid-symbol)) {
+		error make { msg: $"tag ($name) is not a valid symbol" }
+	}
 	if (music | where music_id == $music_id | is-empty) {
 		error make { msg: $"music with id (music_id) doesn't exist" }
 	}
@@ -192,6 +199,9 @@ export def "music change author" [music_id: int, old_name: string, new_name: str
 }
 
 export def "music add relation" [fst_music_id: int, snd_music_id: int, relation: string]: nothing -> nothing {
+	if (not ($relation | is-valid-symbol)) {
+		error make { msg: $"tag ($relation) is not a valid symbol" }
+	}
 	open $db_path | query db "insert into music_music (relation, fst_music_id, snd_music_id) values (:relation, :fst_music_id, :snd_music_id)" -p {
 		relation: $relation,
 		fst_music_id: $fst_music_id,
