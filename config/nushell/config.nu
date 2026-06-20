@@ -1,4 +1,4 @@
-# made for nushell version 0.104.0
+# made for nushell version 0.112.2
 
 let theme = {
     separator: white

@@ -1,3 +1,5 @@
+# made for nushell version 0.112.2
+
 def "from xbps-repodata" [] {
 	zstdcat '-'
 	| tar --extract --to-stdout --file '-' index.plist
@@ -85,7 +87,7 @@ module anime-season {
 
 use anime-season
 
-const firefox_path = $nu.home-path | path join .mozilla/firefox
+const firefox_path = $nu.home-dir | path join .mozilla/firefox
 
 def "firefox tabs" []: nothing -> list<any> {
 	if not ($firefox_path | path join profiles.ini | path exists) {

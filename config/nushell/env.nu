@@ -1,6 +1,8 @@
+# made for nushell version 0.112.2
+
 def short-path [] {
   let p = ($env.PWD | path split)
-  let p = (if ($p | take 3 | $in == ($nu.home-path | path split)) {
+  let p = (if ($p | take 3 | $in == ($nu.home-dir | path split)) {
     $p | skip 3 | prepend '~'
   } else {
     $p
@@ -66,5 +68,5 @@ $env.ENV_CONVERSIONS = {
   }
 }
 
-$env.NU_LIB_DIRS    = [($nu.home-path | path join lib nu) ($nu.config-path | path dirname)]
-$env.NU_PLUGIN_DIRS = [($nu.home-path | path join bin nu.d)]
+$env.NU_LIB_DIRS    = [($nu.home-dir | path join lib nu) ($nu.config-path | path dirname)]
+$env.NU_PLUGIN_DIRS = [($nu.home-dir | path join bin nu.d)]

@@ -1,3 +1,5 @@
+# made for nushell version 0.112.2
+
 export def free [] {
   ^free
   | lines

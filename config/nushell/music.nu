@@ -1,3 +1,4 @@
+# made for nushell version 0.112.2
 
 # primary keys are marked with '*'. foreign keys are marked with '&'.
 # todo : { author, title, type }
@@ -8,7 +9,7 @@
 # music_tags : { *&music_id, *&tag_id }
 # music_music : { *relation : text, *&music_id, *&music_d }
 
-const db_path = $nu.home-path | path join "net/sync/music.db"
+const db_path = $nu.home-dir | path join "net/sync/music.db"
 
 def types [] {
 	echo ["list", "track"]
